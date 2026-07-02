@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>日芸自販機まっぷ</title>
+<style>
+  :root{
+    --bg: #f6f7f3;
+    --bg-elevated: #ffffff;
+    --text: #2b2b28;
+    --text-muted: #7a7a72;
+    --border: #e3e2da;
+    --accent: #ff8a3d;
+    --accent-text: #ffffff;
+    --chip-bg: #eeede4;
+    --chip-bg-active: #2b6f5c;
+    --chip-text-active: #ffffff;
+    --shadow: 0 2px 10px rgba(30,30,20,0.06);
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 999px;
+
+    --drink-fg:#1f6fb2; --drink-bg:#e6f2fb;
+    --food-fg:#b5651d;  --food-bg:#fdf0e2;
+    --ice-fg:#1f8f8a;   --ice-bg:#e2f7f5;
+    --noodle-fg:#c22f45;--noodle-bg:#fbe9ec;
+    --other-fg:#6a5acd; --other-bg:#ece9fb;
+  }
+  html[data-theme="dark"]{
+    --bg: #181917;
+    --bg-elevated: #232420;
+    --text: #f1efe7;
+    --text-muted: #a6a49a;
+    --border: #34352f;
+    --accent: #ff9d5c;
+    --accent-text: #1c1c1a;
+    --chip-bg: #2c2d27;
+    --chip-bg-active: #57a98c;
+    --chip-text-active: #10201a;
+    --shadow: 0 2px 14px rgba(0,0,0,0.4);
+
+    --drink-fg:#7fc0f2; --drink-bg:#1c2c38;
+    --food-fg:#f2b06e;  --food-bg:#332417;
+    --ice-fg:#7fe3dc;   --ice-bg:#123330;
+    --noodle-fg:#f2909f;--noodle-bg:#361d21;
+    --other-fg:#c3b8f7; --other-bg:#26213a;
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+                 "Yu Gothic", "Segoe UI", Roboto, Meiryo, sans-serif;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    padding-bottom: 56px;
+  }
+  a{ color: inherit; }
+  button{ font-family: inherit; }
+  .hidden{ display:none !important; }
+
+  /* ---------- header ---------- */
+  header.topbar{
+    background: linear-gradient(135deg, var(--accent), #ffb26b);
+    color: #2b1a08;
+    padding: 18px 16px 22px;
+    border-radius: 0 0 24px 24px;
+    box-shadow: var(--shadow);
+  }
+  html[data-theme="dark"] header.topbar{ color:#1c1206; }
+  .topbar-inner{ max-width: 880px; margin:0 auto; }
+  .topbar-row{ display:flex; align-items:flex-start; justify-content:space-between; gap: 8px; }
+  header.topbar h1{ margin:0; font-size: 1.35rem; font-weight: 800; letter-spacing: .02em; }
+  header.topbar .subtitle{ margin: 4px 0 0; font-size: .8rem; opacity:.85; }
+  .header-actions{ display:flex; gap:6px; flex-shrink:0; }
+  .icon-btn{
+    border:none; background: rgba(255,255,255,.55); color:#2b1a08;
+    width:38px; height:38px; border-radius:50%; font-size:1rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  html[data-theme="dark"] .icon-btn{ background: rgba(0,0,0,.35); color:#fff; }
+  .icon-btn:active{ transform: scale(.94); }
+
+  /* ---------- controls ---------- */
+  .controls{
+    max-width: 880px; margin: -14px auto 0; padding: 0 16px;
+    position: relative; z-index: 5;
+  }
+  .search-row{
+    display:flex; gap:8px; margin-bottom:10px;
+  }
+  #searchInput{
+    flex:1; padding: 12px 14px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg-elevated);
+    color: var(--text); font-size: .95rem; box-shadow: var(--shadow);
+  }
+  #searchInput:focus{ outline: 2px solid var(--accent); }
+
+  .view-tabs{
+    display:flex; background: var(--bg-elevated); border-radius: var(--radius-sm);
+    padding: 4px; box-shadow: var(--shadow); gap: 4px;
+  }
+  .view-tabs button{
+    flex:1; border:none; background:transparent; color: var(--text-muted);
+    padding: 8px 10px; border-radius: var(--radius-sm); font-size:.85rem; font-weight:600; cursor:pointer;
+  }
+  .view-tabs button.active{ background: var(--accent); color: var(--accent-text); }
+
+  .filter-toggle-row{ display:flex; align-items:center; gap:8px; margin: 10px 0; }
+  #filterToggle, #shareBtn2, #clearFilters{
+    border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    padding: 8px 14px; border-radius: var(--radius-sm); font-size:.85rem; cursor:pointer;
+  }
+  .result-count{ font-size:.8rem; color: var(--text-muted); margin-left:auto; white-space:nowrap; }
+
+  .filter-panel{
+    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-md);
+    padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow);
+  }
+  .filter-panel section{ margin-bottom: 12px; }
+  .filter-panel section:last-of-type{ margin-bottom: 0; }
+  .filter-panel h3{ margin: 0 0 6px; font-size: .75rem; color: var(--text-muted); font-weight:700; letter-spacing:.03em; }
+  .chip-group{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip{
+    border:1px solid var(--border); background: var(--chip-bg); color: var(--text);
+    padding: 7px 12px; border-radius: var(--radius-sm); font-size: .82rem; cursor:pointer;
+    white-space:nowrap;
+  }
+  .chip.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color: transparent; font-weight:600; }
+  .filter-panel-footer{ display:flex; justify-content:flex-end; margin-top: 10px; }
+
+  main{ max-width: 880px; margin: 0 auto; padding: 4px 16px 24px; }
+
+  /* ---------- building accordion ---------- */
+  .building-block{
+    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-lg);
+    margin-bottom: 14px; overflow:hidden; box-shadow: var(--shadow);
+  }
+  .building-head{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    background:transparent; border:none; color: var(--text); padding: 14px 16px; cursor:pointer;
+    font-size: 1rem; font-weight:800; text-align:left;
+  }
+  .building-head .count-badge{
+    font-size:.72rem; font-weight:600; color: var(--text-muted); margin-left:8px;
+  }
+  .building-head .chevron{ transition: transform .15s ease; color: var(--text-muted); }
+  .building-block.open .chevron{ transform: rotate(180deg); }
+  .building-body{ padding: 0 14px 14px; }
+  .building-block:not(.open) .building-body{ display:none; }
+
+  .floor-group{ margin-bottom: 10px; }
+  .floor-label{ font-size:.75rem; font-weight:700; color: var(--text-muted); margin: 10px 2px 6px; }
+  .floor-empty-note{ font-size:.75rem; color: var(--text-muted); padding: 4px 2px 10px; }
+
+  .empty-state{
+    text-align:center; padding: 26px 10px; color: var(--text-muted); font-size:.9rem;
+  }
+  .empty-state .emoji{ font-size:1.6rem; display:block; margin-bottom:6px; }
+
+  /* ---------- vm card ---------- */
+  .vm-card{
+    border:1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 8px;
+    background: var(--bg); overflow:hidden;
+  }
+  .vm-card.highlight{ outline: 3px solid var(--accent); }
+  .vm-card-head{
+    display:flex; align-items:center; gap:10px; padding: 12px; cursor:pointer;
+  }
+  .type-badge{
+    flex-shrink:0; width:38px; height:38px; border-radius:12px; display:flex; align-items:center;
+    justify-content:center; font-size:1.15rem;
+  }
+  .type-badge.drink{ background: var(--drink-bg); color: var(--drink-fg); }
+  .type-badge.food{ background: var(--food-bg); color: var(--food-fg); }
+  .type-badge.ice{ background: var(--ice-bg); color: var(--ice-fg); }
+  .type-badge.noodle{ background: var(--noodle-bg); color: var(--noodle-fg); }
+  .type-badge.other{ background: var(--other-bg); color: var(--other-fg); }
+
+  .vm-card-main{ flex:1; min-width:0; }
+  .vm-card-title{ font-weight:700; font-size:.92rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .vm-card-loc{ font-size:.78rem; color: var(--text-muted); margin-top:2px; }
+  .vm-card-meta{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+  .mini-badge{
+    font-size:.68rem; background: var(--chip-bg); color: var(--text-muted);
+    padding: 2px 8px; border-radius: var(--radius-sm);
+  }
+  .star-btn{
+    border:none; background:transparent; font-size:1.2rem; cursor:pointer; flex-shrink:0; padding:4px;
+    color: var(--text-muted);
+  }
+  .star-btn.active{ color: #f0b400; }
+  .expand-caret{ color: var(--text-muted); flex-shrink:0; transition: transform .15s ease; }
+  .vm-card.expanded .expand-caret{ transform: rotate(180deg); }
+
+  .vm-card-detail{ padding: 0 12px 14px; display:none; }
+  .vm-card.expanded .vm-card-detail{ display:block; }
+  .menu-table{ width:100%; border-collapse: collapse; margin-top: 4px; }
+  .menu-table td{ padding: 5px 4px; font-size:.85rem; border-bottom: 1px dashed var(--border); }
+  .menu-table td:last-child{ text-align:right; font-variant-numeric: tabular-nums; white-space:nowrap; }
+  .vm-note{ font-size:.78rem; color: var(--text-muted); margin-top:8px; background: var(--chip-bg); padding:8px 10px; border-radius:10px; }
+  .vm-updated{ font-size:.7rem; color: var(--text-muted); margin-top:8px; text-align:right; }
+
+  /* ---------- map view ---------- */
+  .map-building{
+    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-lg);
+    margin-bottom: 14px; padding: 14px; box-shadow: var(--shadow);
+  }
+  .map-building h2{ margin: 0 0 10px; font-size:.98rem; font-weight:800; }
+  .map-nodata{ font-size:.8rem; color: var(--text-muted); padding: 8px 0; }
+  .floor-row{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .floor-row .floor-tag{
+    width:44px; flex-shrink:0; font-size:.68rem; color: var(--text-muted); text-align:right; font-weight:700;
+  }
+  .floor-track{
+    position:relative; flex:1; height: 34px; background: var(--chip-bg); border-radius: 10px;
+  }
+  .pin{
+    position:absolute; top:50%; transform: translate(-50%,-50%); width:26px; height:26px;
+    border-radius:50%; border:none; display:flex; align-items:center; justify-content:center;
+    font-size:.85rem; cursor:pointer; box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  }
+  .pin.drink{ background: var(--drink-fg); }
+  .pin.food{ background: var(--food-fg); }
+  .pin.ice{ background: var(--ice-fg); }
+  .pin.noodle{ background: var(--noodle-fg); }
+  .pin.other{ background: var(--other-fg); }
+
+  footer.app-footer{
+    max-width: 880px; margin: 20px auto 0; padding: 0 16px; font-size: .72rem; color: var(--text-muted);
+    text-align:center;
+  }
+
+  .toast{
+    position: fixed; left:50%; bottom: 18px; transform: translateX(-50%);
+    background: var(--text); color: var(--bg); padding: 9px 16px; border-radius: var(--radius-sm);
+    font-size:.8rem; opacity:0; pointer-events:none; transition: opacity .2s ease; z-index: 50;
+  }
+  .toast.show{ opacity:1; }
+
+  @media (min-width: 640px){
+    .search-row{ align-items:center; }
+    .view-tabs{ max-width: 220px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-row">
+      <div>
+        <h1>🥤 日芸自販機まっぷ</h1>
+        <p class="subtitle">日本大学芸術学部 江古田キャンパス</p>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="themeToggle" title="ダークモード切替">🌙</button>
+        <button class="icon-btn" id="shareBtn" title="このフィルタ条件を共有">🔗</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="search-row">
+    <input type="search" id="searchInput" placeholder="商品名・棟名・場所で検索（例：コーラ、A館、正面玄関）">
+  </div>
+  <div class="view-tabs">
+    <button data-view="list" class="active">📋 一覧</button>
+    <button data-view="map">🗺️ マップ</button>
+  </div>
+  <div class="filter-toggle-row">
+    <button id="filterToggle">🔍 絞り込み <span id="filterActiveCount"></span>▾</button>
+    <button id="favToggle" title="お気に入りのみ表示">☆ お気に入り</button>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+
+  <div class="filter-panel hidden" id="filterPanel">
+    <section>
+      <h3>棟</h3>
+      <div class="chip-group" id="buildingChips"></div>
+    </section>
+    <section>
+      <h3>階</h3>
+      <div class="chip-group" id="floorChips"></div>
+    </section>
+    <section>
+      <h3>種類</h3>
+      <div class="chip-group" id="typeChips"></div>
+    </section>
+    <section>
+      <h3>支払い方法</h3>
+      <div class="chip-group" id="paymentChips"></div>
+    </section>
+    <div class="filter-panel-footer">
+      <button id="clearFilters">条件をクリア</button>
+    </div>
+  </div>
+</div>
+
+<main id="listView"></main>
+<main id="mapView" class="hidden"></main>
+
+<footer class="app-footer">
+  ※ 掲載データはサンプルです。実際の設置状況と異なる場合があります。情報の追加・修正は学部窓口へご連絡ください。<br>
+  file:// で開いてもオフラインで全機能が動作します。
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     1. データ定義
+  ========================================================= */
+
+  // キャンパス内の棟・階構成（データが無い棟・階でも一覧に表示するための台帳）
+  var CAMPUS_STRUCTURE = {
+    "A館": ["B1F","1F","2F","3F","4F"],
+    "B館": ["1F","2F","3F"],
+    "C館": ["1F","2F"],
+    "1号館": ["1F","2F"],
+    "東棟": ["1F"],
+    "西棟": ["1F","2F"]
+  };
+
+  var VM_DATA = [
+    {
+      id: "vm001", building: "A館", floor: "B1F", location: "学生食堂前",
+      type: "食品", payment: ["現金","IC"],
+      items: [
+        { name: "カップヌードル（しょうゆ）", price: 220 },
+        { name: "カップヌードル（カレー）", price: 220 },
+        { name: "どん兵衛（きつねうどん）", price: 230 }
+      ],
+      note: "学生食堂の営業時間内のみ利用可能です。",
+      updatedAt: "2026-06-20", mapX: 50
+    },
+    {
+      id: "vm002", building: "A館", floor: "1F", location: "正面玄関横",
+      type: "飲料", payment: ["現金","IC","PayPay"],
+      items: [
+        { name: "コカ・コーラ", price: 160 },
+        { name: "綾鷹（緑茶）", price: 150 },
+        { name: "アクエリアス", price: 150 },
+        { name: "ブラックコーヒー", price: 130 }
+      ],
+      note: "夜21時以降は稼働停止します。",
+      updatedAt: "2026-07-01", mapX: 15
+    },
+    {
+      id: "vm003", building: "A館", floor: "1F", location: "エレベーター横",
+      type: "アイス", payment: ["現金","IC"],
+      items: [
+        { name: "ガリガリ君（ソーダ）", price: 80 },
+        { name: "パルム（チョコレート）", price: 160 },
+        { name: "ハーゲンダッツ（バニラ）", price: 320 }
+      ],
+      updatedAt: "2026-05-14", mapX: 80
+    },
+    {
+      id: "vm004", building: "A館", floor: "3F", location: "自習室前",
+      type: "飲料", payment: ["IC","PayPay"],
+      items: [
+        { name: "綾鷹（緑茶）", price: 150 },
+        { name: "い・ろ・は・す", price: 130 },
+        { name: "レモンウォーター", price: 150 }
+      ],
+      note: "試験期間中は品切れになりやすいです。",
+      updatedAt: "2026-06-02", mapX: 40
+    },
+    {
+      id: "vm005", building: "B館", floor: "1F", location: "エントランス",
+      type: "飲料", payment: ["現金","IC","PayPay"],
+      items: [
+        { name: "コカ・コーラ", price: 160 },
+        { name: "ファンタグレープ", price: 160 },
+        { name: "午後の紅茶（ミルクティー）", price: 150 }
+      ],
+      updatedAt: "2026-06-25", mapX: 25
+    },
+    {
+      id: "vm006", building: "B館", floor: "2F", location: "廊下（印刷室横）",
+      type: "飲料", payment: ["現金"],
+      items: [
+        { name: "缶コーヒー（微糖）", price: 120 },
+        { name: "十六茶", price: 140 }
+      ],
+      note: "硬貨投入のみ対応。両替機はありません。",
+      updatedAt: "2026-04-30", mapX: 60
+    },
+    {
+      id: "vm007", building: "C館", floor: "1F", location: "正面入口",
+      type: "アイス", payment: ["現金","IC"],
+      items: [
+        { name: "ガリガリ君（梨）", price: 80 },
+        { name: "MOW（バニラ）", price: 180 }
+      ],
+      updatedAt: "2026-06-10", mapX: 30
+    },
+    {
+      id: "vm008", building: "C館", floor: "2F", location: "実習室前",
+      type: "飲料", payment: ["IC","PayPay"],
+      items: [
+        { name: "天然水", price: 130 },
+        { name: "炭酸水", price: 140 },
+        { name: "ポカリスエット", price: 160 }
+      ],
+      updatedAt: "2026-05-28", mapX: 70
+    },
+    {
+      id: "vm009", building: "1号館", floor: "1F", location: "ロビー",
+      type: "飲料", payment: ["現金","IC"],
+      items: [
+        { name: "コカ・コーラ", price: 160 },
+        { name: "おーいお茶", price: 150 },
+        { name: "ジョージア（微糖）", price: 130 }
+      ],
+      note: "24時間稼働しています。",
+      updatedAt: "2026-06-30", mapX: 50
+    },
+    {
+      id: "vm010", building: "東棟", floor: "1F", location: "入口横",
+      type: "カップ麺", payment: ["現金","IC","PayPay"],
+      items: [
+        { name: "カップヌードル（シーフード）", price: 220 },
+        { name: "日清麺職人（醤油）", price: 230 }
+      ],
+      updatedAt: "2026-06-18", mapX: 50
+    }
+  ];
+
+  var TYPE_LIST = ["飲料","食品","アイス","カップ麺"];
+  var PAYMENT_LIST = ["現金","IC","PayPay"];
+
+  var TYPE_META = {
+    "飲料":   { icon: "🥤", cls: "drink"  },
+    "食品":   { icon: "🍱", cls: "food"   },
+    "アイス": { icon: "🍦", cls: "ice"    },
+    "カップ麺": { icon: "🍜", cls: "noodle" }
+  };
+  function typeMeta(t){ return TYPE_META[t] || { icon: "🛒", cls: "other" }; }
+
+  var PAYMENT_ICON = { "現金": "💴", "IC": "📶", "PayPay": "📱" };
+
+  /* =========================================================
+     2. 状態管理
+  ========================================================= */
+
+  var state = {
+    q: "",
+    buildings: new Set(),
+    floors: new Set(),
+    types: new Set(),
+    payments: new Set(),
+    view: "list",
+    favOnly: false
+  };
+
+  var expandedBuildings = new Set(Object.keys(CAMPUS_STRUCTURE)); // デフォルトは全て展開
+  var expandedCards = new Set();
+  var FAV_KEY = "vm-favorites";
+  var THEME_KEY = "vm-theme";
+  var favorites = loadFavorites();
+
+  function loadFavorites(){
+    try{
+      var raw = localStorage.getItem(FAV_KEY);
+      return raw ? new Set(JSON.parse(raw)) : new Set();
+    }catch(e){ return new Set(); }
+  }
+  function saveFavorites(){
+    try{ localStorage.setItem(FAV_KEY, JSON.stringify(Array.from(favorites))); }catch(e){}
+  }
+
+  function parseFloor(f){
+    var m = f.match(/^B(\d+)F$/i);
+    if(m) return -Number(m[1]);
+    m = f.match(/^(\d+)F$/i);
+    if(m) return Number(m[1]);
+    return 9999;
+  }
+
+  function anyFilterActive(){
+    return !!(state.q || state.buildings.size || state.floors.size || state.types.size || state.payments.size || state.favOnly);
+  }
+
+  /* =========================================================
+     3. URL クエリパラメータとの同期
+  ========================================================= */
+
+  function loadStateFromUrl(){
+    var params = new URLSearchParams(location.search);
+    state.q = params.get("q") || "";
+    ["building","floor","type","payment"].forEach(function(key){
+      var val = params.get(key);
+      var target = { building: state.buildings, floor: state.floors, type: state.types, payment: state.payments }[key];
+      if(val){
+        val.split(",").filter(Boolean).forEach(function(v){ target.add(decodeURIComponent(v)); });
+      }
+    });
+    if(params.get("view") === "map") state.view = "map";
+    if(params.get("fav") === "1") state.favOnly = true;
+  }
+
+  function syncUrl(){
+    var params = new URLSearchParams();
+    if(state.q) params.set("q", state.q);
+    if(state.buildings.size) params.set("building", Array.from(state.buildings).join(","));
+    if(state.floors.size) params.set("floor", Array.from(state.floors).join(","));
+    if(state.types.size) params.set("type", Array.from(state.types).join(","));
+    if(state.payments.size) params.set("payment", Array.from(state.payments).join(","));
+    if(state.view === "map") params.set("view", "map");
+    if(state.favOnly) params.set("fav", "1");
+    var qs = params.toString();
+    var newUrl = location.pathname + (qs ? "?" + qs : "");
+    history.replaceState(null, "", newUrl);
+  }
+
+  /* =========================================================
+     4. フィルタリング
+  ========================================================= */
+
+  function matchesQuery(m, q){
+    q = q.toLowerCase();
+    if(m.building.toLowerCase().indexOf(q) !== -1) return true;
+    if(m.location.toLowerCase().indexOf(q) !== -1) return true;
+    if(m.floor.toLowerCase().indexOf(q) !== -1) return true;
+    return m.items.some(function(it){ return it.name.toLowerCase().indexOf(q) !== -1; });
+  }
+
+  function machineMatches(m){
+    if(state.buildings.size && !state.buildings.has(m.building)) return false;
+    if(state.floors.size && !state.floors.has(m.floor)) return false;
+    if(state.types.size && !state.types.has(m.type)) return false;
+    if(state.payments.size){
+      var ok = Array.from(state.payments).every(function(p){ return m.payment.indexOf(p) !== -1; });
+      if(!ok) return false;
+    }
+    if(state.favOnly && !favorites.has(m.id)) return false;
+    if(state.q && !matchesQuery(m, state.q)) return false;
+    return true;
+  }
+
+  function getFiltered(){ return VM_DATA.filter(machineMatches); }
+
+  /* =========================================================
+     5. レンダリング：フィルタパネル
+  ========================================================= */
+
+  function el(tag, cls, html){
+    var e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  function renderChipGroup(container, options, activeSet, onToggle){
+    container.innerHTML = "";
+    options.forEach(function(opt){
+      var chip = el("button", "chip" + (activeSet.has(opt) ? " active" : ""), opt);
+      chip.type = "button";
+      chip.addEventListener("click", function(){
+        if(activeSet.has(opt)) activeSet.delete(opt); else activeSet.add(opt);
+        onToggle();
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function allFloorsSorted(){
+    var set = new Set();
+    Object.keys(CAMPUS_STRUCTURE).forEach(function(b){ CAMPUS_STRUCTURE[b].forEach(function(f){ set.add(f); }); });
+    return Array.from(set).sort(function(a,b){ return parseFloor(a) - parseFloor(b); });
+  }
+
+  function renderFilters(){
+    renderChipGroup(document.getElementById("buildingChips"), Object.keys(CAMPUS_STRUCTURE), state.buildings, onFilterChange);
+    renderChipGroup(document.getElementById("floorChips"), allFloorsSorted(), state.floors, onFilterChange);
+    renderChipGroup(document.getElementById("typeChips"), TYPE_LIST, state.types, onFilterChange);
+    renderChipGroup(document.getElementById("paymentChips"), PAYMENT_LIST, state.payments, onFilterChange);
+
+    var count = state.buildings.size + state.floors.size + state.types.size + state.payments.size;
+    document.getElementById("filterActiveCount").textContent = count ? "(" + count + ") " : "";
+
+    var favBtn = document.getElementById("favToggle");
+    favBtn.classList.toggle("active", state.favOnly);
+    favBtn.textContent = (state.favOnly ? "★" : "☆") + " お気に入り";
+  }
+
+  function onFilterChange(){
+    syncUrl();
+    renderFilters();
+    renderAll();
+  }
+
+  /* =========================================================
+     6. レンダリング：一覧ビュー
+  ========================================================= */
+
+  function buildMenuTable(items){
+    var table = el("table", "menu-table");
+    items.forEach(function(it){
+      var row = el("tr");
+      row.appendChild(el("td", null, escapeHtml(it.name)));
+      row.appendChild(el("td", null, "¥" + it.price.toLocaleString()));
+      table.appendChild(row);
+    });
+    return table;
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+
+  function buildVmCard(m){
+    var card = el("div", "vm-card");
+    card.id = "card-" + m.id;
+    if(expandedCards.has(m.id)) card.classList.add("expanded");
+
+    var head = el("div", "vm-card-head");
+    var tm = typeMeta(m.type);
+
+    var badge = el("div", "type-badge " + tm.cls, tm.icon);
+    head.appendChild(badge);
+
+    var main = el("div", "vm-card-main");
+    var title = el("div", "vm-card-title");
+    title.innerHTML = escapeHtml(m.building) + " " + escapeHtml(m.floor) +
+      '<span class="mini-badge">' + escapeHtml(m.type) + '</span>';
+    main.appendChild(title);
+    main.appendChild(el("div", "vm-card-loc", escapeHtml(m.location)));
+
+    var meta = el("div", "vm-card-meta");
+    m.payment.forEach(function(p){
+      meta.appendChild(el("span", "mini-badge", (PAYMENT_ICON[p]||"") + " " + escapeHtml(p)));
+    });
+    meta.appendChild(el("span", "mini-badge", "🍽️ " + m.items.length + "品"));
+    main.appendChild(meta);
+    head.appendChild(main);
+
+    var star = el("button", "star-btn" + (favorites.has(m.id) ? " active" : ""), favorites.has(m.id) ? "★" : "☆");
+    star.type = "button";
+    star.title = "お気に入り登録/解除";
+    star.addEventListener("click", function(ev){
+      ev.stopPropagation();
+      if(favorites.has(m.id)) favorites.delete(m.id); else favorites.add(m.id);
+      saveFavorites();
+      renderAll();
+      renderFilters();
+    });
+    head.appendChild(star);
+    head.appendChild(el("div", "expand-caret", "▾"));
+
+    head.addEventListener("click", function(){
+      if(expandedCards.has(m.id)) expandedCards.delete(m.id); else expandedCards.add(m.id);
+      card.classList.toggle("expanded");
+    });
+    card.appendChild(head);
+
+    var detail = el("div", "vm-card-detail");
+    detail.appendChild(buildMenuTable(m.items));
+    if(m.note) detail.appendChild(el("div", "vm-note", "💡 " + escapeHtml(m.note)));
+    detail.appendChild(el("div", "vm-updated", "最終更新: " + escapeHtml(m.updatedAt)));
+    card.appendChild(detail);
+
+    return card;
+  }
+
+  function renderListView(filtered){
+    var root = document.getElementById("listView");
+    root.innerHTML = "";
+
+    Object.keys(CAMPUS_STRUCTURE).forEach(function(building){
+      var rawForBuilding = VM_DATA.filter(function(m){ return m.building === building; });
+      var filteredForBuilding = filtered.filter(function(m){ return m.building === building; });
+
+      var block = el("div", "building-block" + (expandedBuildings.has(building) ? " open" : ""));
+      var head = el("button", "building-head");
+      head.type = "button";
+      head.innerHTML = "🏢 " + escapeHtml(building) +
+        '<span class="count-badge">' + filteredForBuilding.length + "件</span>";
+      var chevron = el("span", "chevron", "▾");
+      head.appendChild(chevron);
+      head.addEventListener("click", function(){
+        if(expandedBuildings.has(building)) expandedBuildings.delete(building); else expandedBuildings.add(building);
+        block.classList.toggle("open");
+      });
+      block.appendChild(head);
+
+      var body = el("div", "building-body");
+
+      if(rawForBuilding.length === 0){
+        body.appendChild(el("div", "empty-state",
+          '<span class="emoji">📭</span>情報募集中：この棟の自販機情報はまだ登録されていません。<br>知っている情報があれば学部窓口までご連絡ください。'));
+      } else if(filteredForBuilding.length === 0){
+        body.appendChild(el("div", "empty-state",
+          '<span class="emoji">🔍</span>条件に一致する自販機が見つかりませんでした。'));
+      } else {
+        var floors = CAMPUS_STRUCTURE[building].slice().sort(function(a,b){ return parseFloor(a) - parseFloor(b); });
+        floors.forEach(function(floor){
+          var floorRaw = rawForBuilding.filter(function(m){ return m.floor === floor; });
+          var floorFiltered = filteredForBuilding.filter(function(m){ return m.floor === floor; });
+
+          if(floorRaw.length === 0){
+            if(!anyFilterActive()){
+              var fg = el("div", "floor-group");
+              fg.appendChild(el("div", "floor-label", floor));
+              fg.appendChild(el("div", "floor-empty-note", "この階の情報はまだありません。"));
+              body.appendChild(fg);
+            }
+            return;
+          }
+          if(floorFiltered.length === 0) return;
+
+          var group = el("div", "floor-group");
+          group.appendChild(el("div", "floor-label", floor));
+          floorFiltered.forEach(function(m){ group.appendChild(buildVmCard(m)); });
+          body.appendChild(group);
+        });
+      }
+
+      block.appendChild(body);
+      root.appendChild(block);
+    });
+  }
+
+  /* =========================================================
+     7. レンダリング：マップビュー
+  ========================================================= */
+
+  function renderMapView(filtered){
+    var root = document.getElementById("mapView");
+    root.innerHTML = "";
+
+    Object.keys(CAMPUS_STRUCTURE).forEach(function(building){
+      if(state.buildings.size && !state.buildings.has(building)) return;
+
+      var rawForBuilding = VM_DATA.filter(function(m){ return m.building === building; });
+      var filteredForBuilding = filtered.filter(function(m){ return m.building === building; });
+
+      var panel = el("div", "map-building");
+      panel.appendChild(el("h2", null, "🏢 " + escapeHtml(building)));
+
+      if(rawForBuilding.length === 0){
+        panel.appendChild(el("div", "map-nodata", "📭 情報募集中：この棟の自販機情報はまだありません。"));
+        root.appendChild(panel);
+        return;
+      }
+      if(filteredForBuilding.length === 0){
+        panel.appendChild(el("div", "map-nodata", "🔍 条件に一致する自販機がありません。"));
+        root.appendChild(panel);
+        return;
+      }
+
+      var floors = CAMPUS_STRUCTURE[building].slice().sort(function(a,b){ return parseFloor(b) - parseFloor(a); });
+      floors.forEach(function(floor){
+        var machinesOnFloor = filteredForBuilding.filter(function(m){ return m.floor === floor; });
+        var row = el("div", "floor-row");
+        row.appendChild(el("div", "floor-tag", floor));
+        var track = el("div", "floor-track");
+        machinesOnFloor.forEach(function(m){
+          var tm = typeMeta(m.type);
+          var pin = el("button", "pin " + tm.cls, tm.icon);
+          pin.type = "button";
+          pin.style.left = (m.mapX != null ? m.mapX : 50) + "%";
+          pin.title = m.building + " " + m.floor + " " + m.location;
+          pin.addEventListener("click", function(){ jumpToCard(m); });
+          track.appendChild(pin);
+        });
+        row.appendChild(track);
+        panel.appendChild(row);
+      });
+
+      root.appendChild(panel);
+    });
+  }
+
+  function jumpToCard(m){
+    setView("list");
+    expandedBuildings.add(m.building);
+    expandedCards.add(m.id);
+    renderAll();
+    requestAnimationFrame(function(){
+      var cardEl = document.getElementById("card-" + m.id);
+      if(cardEl){
+        cardEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        cardEl.classList.add("highlight");
+        setTimeout(function(){ cardEl.classList.remove("highlight"); }, 1800);
+      }
+    });
+  }
+
+  /* =========================================================
+     8. 全体レンダリング
+  ========================================================= */
+
+  function renderAll(){
+    var filtered = getFiltered();
+    document.getElementById("resultCount").textContent = filtered.length + " / " + VM_DATA.length + " 件表示中";
+    renderListView(filtered);
+    renderMapView(filtered);
+  }
+
+  function setView(view){
+    state.view = view;
+    document.querySelectorAll(".view-tabs button").forEach(function(btn){
+      btn.classList.toggle("active", btn.getAttribute("data-view") === view);
+    });
+    document.getElementById("listView").classList.toggle("hidden", view !== "list");
+    document.getElementById("mapView").classList.toggle("hidden", view !== "map");
+    syncUrl();
+  }
+
+  /* =========================================================
+     9. テーマ（ダークモード）
+  ========================================================= */
+
+  function applyTheme(theme){
+    document.documentElement.setAttribute("data-theme", theme);
+    document.getElementById("themeToggle").textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+
+  function initTheme(){
+    var stored = null;
+    try{ stored = localStorage.getItem(THEME_KEY); }catch(e){}
+    if(stored){ applyTheme(stored); return; }
+    var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(prefersDark ? "dark" : "light");
+  }
+
+  /* =========================================================
+     10. 共有（URL コピー）
+  ========================================================= */
+
+  function showToast(msg){
+    var toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(function(){ toast.classList.remove("show"); }, 2000);
+  }
+
+  function copyShareUrl(){
+    var url = location.href;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){
+        showToast("リンクをコピーしました");
+      }).catch(function(){ legacyCopy(url); });
+    } else {
+      legacyCopy(url);
+    }
+  }
+
+  function legacyCopy(text){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      showToast(ok ? "リンクをコピーしました" : "コピーできませんでした: " + text);
+    }catch(e){
+      showToast("コピーできませんでした: " + text);
+    }
+  }
+
+  /* =========================================================
+     11. 初期化
+  ========================================================= */
+
+  function init(){
+    loadStateFromUrl();
+    initTheme();
+
+    document.getElementById("searchInput").value = state.q;
+    document.getElementById("searchInput").addEventListener("input", function(e){
+      state.q = e.target.value;
+      syncUrl();
+      renderAll();
+    });
+
+    document.querySelectorAll(".view-tabs button").forEach(function(btn){
+      btn.addEventListener("click", function(){ setView(btn.getAttribute("data-view")); });
+    });
+    setView(state.view);
+
+    document.getElementById("filterToggle").addEventListener("click", function(){
+      document.getElementById("filterPanel").classList.toggle("hidden");
+    });
+
+    document.getElementById("favToggle").addEventListener("click", function(){
+      state.favOnly = !state.favOnly;
+      onFilterChange();
+    });
+
+    document.getElementById("clearFilters").addEventListener("click", function(){
+      state.q = ""; state.buildings.clear(); state.floors.clear();
+      state.types.clear(); state.payments.clear(); state.favOnly = false;
+      document.getElementById("searchInput").value = "";
+      onFilterChange();
+    });
+
+    document.getElementById("themeToggle").addEventListener("click", function(){
+      var current = document.documentElement.getAttribute("data-theme");
+      var next = current === "dark" ? "light" : "dark";
+      applyTheme(next);
+      try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+    });
+
+    document.getElementById("shareBtn").addEventListener("click", copyShareUrl);
+
+    renderFilters();
+    renderAll();
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
