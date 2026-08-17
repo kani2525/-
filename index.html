@@ -3,48 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>日芸自販機まっぷ</title>
+<title>じぶん手帳｜プロフィール記録アプリ</title>
 <style>
   :root{
-    --bg: #f6f7f3;
+    --bg: #f6f5fb;
     --bg-elevated: #ffffff;
-    --text: #2b2b28;
-    --text-muted: #7a7a72;
-    --border: #e3e2da;
-    --accent: #ff8a3d;
+    --text: #2b2a33;
+    --text-muted: #7a7886;
+    --border: #e5e2f0;
+    --accent: #7c6fe0;
+    --accent-2: #a695f2;
     --accent-text: #ffffff;
-    --chip-bg: #eeede4;
-    --chip-bg-active: #2b6f5c;
+    --chip-bg: #eeecf9;
+    --chip-bg-active: #7c6fe0;
     --chip-text-active: #ffffff;
-    --shadow: 0 2px 10px rgba(30,30,20,0.06);
+    --shadow: 0 2px 10px rgba(60,50,110,0.07);
     --radius-lg: 20px;
     --radius-md: 14px;
     --radius-sm: 999px;
-
-    --drink-fg:#1f6fb2; --drink-bg:#e6f2fb;
-    --food-fg:#b5651d;  --food-bg:#fdf0e2;
-    --ice-fg:#1f8f8a;   --ice-bg:#e2f7f5;
-    --noodle-fg:#c22f45;--noodle-bg:#fbe9ec;
-    --other-fg:#6a5acd; --other-bg:#ece9fb;
+    --danger: #d0466a;
+    --ok: #2f9e6e;
   }
   html[data-theme="dark"]{
-    --bg: #181917;
-    --bg-elevated: #232420;
+    --bg: #1a1824;
+    --bg-elevated: #242232;
     --text: #f1efe7;
-    --text-muted: #a6a49a;
-    --border: #34352f;
-    --accent: #ff9d5c;
-    --accent-text: #1c1c1a;
-    --chip-bg: #2c2d27;
-    --chip-bg-active: #57a98c;
-    --chip-text-active: #10201a;
+    --text-muted: #a6a2b8;
+    --border: #38354a;
+    --accent: #9d8ff7;
+    --accent-2: #b9adf9;
+    --accent-text: #1c1a2a;
+    --chip-bg: #2d2a3f;
+    --chip-bg-active: #9d8ff7;
+    --chip-text-active: #1c1a2a;
     --shadow: 0 2px 14px rgba(0,0,0,0.4);
-
-    --drink-fg:#7fc0f2; --drink-bg:#1c2c38;
-    --food-fg:#f2b06e;  --food-bg:#332417;
-    --ice-fg:#7fe3dc;   --ice-bg:#123330;
-    --noodle-fg:#f2909f;--noodle-bg:#361d21;
-    --other-fg:#c3b8f7; --other-bg:#26213a;
+    --danger: #f28ba3;
+    --ok: #79d6ac;
   }
 
   *{ box-sizing: border-box; }
@@ -54,183 +48,188 @@
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
                  "Yu Gothic", "Segoe UI", Roboto, Meiryo, sans-serif;
-    line-height: 1.5;
+    line-height: 1.55;
     -webkit-text-size-adjust: 100%;
-    padding-bottom: 56px;
+    padding-bottom: 72px;
   }
   a{ color: inherit; }
   button{ font-family: inherit; }
+  textarea{ font-family: inherit; }
   .hidden{ display:none !important; }
 
   /* ---------- header ---------- */
   header.topbar{
-    background: linear-gradient(135deg, var(--accent), #ffb26b);
-    color: #2b1a08;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
     padding: 18px 16px 22px;
     border-radius: 0 0 24px 24px;
     box-shadow: var(--shadow);
   }
-  html[data-theme="dark"] header.topbar{ color:#1c1206; }
-  .topbar-inner{ max-width: 880px; margin:0 auto; }
+  .topbar-inner{ max-width: 720px; margin:0 auto; }
   .topbar-row{ display:flex; align-items:flex-start; justify-content:space-between; gap: 8px; }
-  header.topbar h1{ margin:0; font-size: 1.35rem; font-weight: 800; letter-spacing: .02em; }
-  header.topbar .subtitle{ margin: 4px 0 0; font-size: .8rem; opacity:.85; }
+  header.topbar h1{ margin:0; font-size: 1.3rem; font-weight: 800; letter-spacing: .02em; }
+  header.topbar .subtitle{ margin: 4px 0 0; font-size: .8rem; opacity:.9; }
   .header-actions{ display:flex; gap:6px; flex-shrink:0; }
   .icon-btn{
-    border:none; background: rgba(255,255,255,.55); color:#2b1a08;
+    border:none; background: rgba(255,255,255,.28); color:#fff;
     width:38px; height:38px; border-radius:50%; font-size:1rem; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
   }
-  html[data-theme="dark"] .icon-btn{ background: rgba(0,0,0,.35); color:#fff; }
   .icon-btn:active{ transform: scale(.94); }
 
-  /* ---------- controls ---------- */
+  .progress-wrap{ margin-top: 12px; }
+  .progress-label{ display:flex; justify-content:space-between; font-size:.72rem; opacity:.9; margin-bottom:4px; }
+  .progress-track{ height:7px; background: rgba(255,255,255,.28); border-radius:999px; overflow:hidden; }
+  .progress-fill{ height:100%; background:#fff; border-radius:999px; transition: width .3s ease; }
+
+  /* ---------- nav tabs ---------- */
   .controls{
-    max-width: 880px; margin: -14px auto 0; padding: 0 16px;
+    max-width: 720px; margin: -14px auto 0; padding: 0 16px;
     position: relative; z-index: 5;
   }
-  .search-row{
-    display:flex; gap:8px; margin-bottom:10px;
-  }
-  #searchInput{
-    flex:1; padding: 12px 14px; border-radius: var(--radius-md);
-    border:1px solid var(--border); background: var(--bg-elevated);
-    color: var(--text); font-size: .95rem; box-shadow: var(--shadow);
-  }
-  #searchInput:focus{ outline: 2px solid var(--accent); }
-
   .view-tabs{
     display:flex; background: var(--bg-elevated); border-radius: var(--radius-sm);
-    padding: 4px; box-shadow: var(--shadow); gap: 4px;
+    padding: 4px; box-shadow: var(--shadow); gap: 4px; overflow-x:auto;
   }
   .view-tabs button{
     flex:1; border:none; background:transparent; color: var(--text-muted);
-    padding: 8px 10px; border-radius: var(--radius-sm); font-size:.85rem; font-weight:600; cursor:pointer;
+    padding: 9px 8px; border-radius: var(--radius-sm); font-size:.78rem; font-weight:700; cursor:pointer;
+    white-space: nowrap;
   }
   .view-tabs button.active{ background: var(--accent); color: var(--accent-text); }
 
-  .filter-toggle-row{ display:flex; align-items:center; gap:8px; margin: 10px 0; }
-  #filterToggle, #shareBtn2, #clearFilters{
-    border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
-    padding: 8px 14px; border-radius: var(--radius-sm); font-size:.85rem; cursor:pointer;
-  }
-  .result-count{ font-size:.8rem; color: var(--text-muted); margin-left:auto; white-space:nowrap; }
+  main{ max-width: 720px; margin: 0 auto; padding: 14px 16px 24px; }
 
-  .filter-panel{
-    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-md);
-    padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow);
+  .card{
+    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-lg);
+    margin-bottom: 14px; padding: 16px; box-shadow: var(--shadow);
   }
-  .filter-panel section{ margin-bottom: 12px; }
-  .filter-panel section:last-of-type{ margin-bottom: 0; }
-  .filter-panel h3{ margin: 0 0 6px; font-size: .75rem; color: var(--text-muted); font-weight:700; letter-spacing:.03em; }
-  .chip-group{ display:flex; flex-wrap:wrap; gap:6px; }
+  .card h2{ margin: 0 0 4px; font-size: 1rem; font-weight:800; display:flex; align-items:center; gap:6px; }
+  .card .card-desc{ margin: 0 0 12px; font-size:.78rem; color: var(--text-muted); }
+
+  .field{ margin-bottom: 12px; }
+  .field:last-child{ margin-bottom: 0; }
+  .field label{ display:block; font-size:.75rem; font-weight:700; color: var(--text-muted); margin-bottom:5px; }
+  .field input[type="text"], .field input[type="date"], .field select, .field textarea{
+    width:100%; padding: 10px 12px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:.9rem;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline: 2px solid var(--accent); }
+  .field textarea{ resize: vertical; min-height: 64px; }
+  .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 420px){ .two-col{ grid-template-columns: 1fr; } }
+
+  /* ---------- chip tag editor ---------- */
+  .chip-list{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:8px; }
   .chip{
+    display:inline-flex; align-items:center; gap:6px;
     border:1px solid var(--border); background: var(--chip-bg); color: var(--text);
-    padding: 7px 12px; border-radius: var(--radius-sm); font-size: .82rem; cursor:pointer;
-    white-space:nowrap;
+    padding: 6px 6px 6px 12px; border-radius: var(--radius-sm); font-size: .82rem;
   }
-  .chip.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color: transparent; font-weight:600; }
-  .filter-panel-footer{ display:flex; justify-content:flex-end; margin-top: 10px; }
+  .chip button{
+    border:none; background: rgba(0,0,0,.08); color: inherit; width:18px; height:18px; border-radius:50%;
+    cursor:pointer; font-size:.7rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  html[data-theme="dark"] .chip button{ background: rgba(255,255,255,.12); }
+  .chip-empty{ font-size:.8rem; color: var(--text-muted); padding: 2px 0 8px; }
+  .add-row{ display:flex; gap:8px; }
+  .add-row input{ flex:1; }
+  .add-row select{ flex: 0 0 auto; max-width: 40%; }
+  .add-btn{
+    border:none; background: var(--accent); color: var(--accent-text); padding: 0 16px; border-radius: var(--radius-md);
+    font-size:.85rem; font-weight:700; cursor:pointer; flex-shrink:0;
+  }
+  .add-btn:active{ transform: scale(.96); }
 
-  main{ max-width: 880px; margin: 0 auto; padding: 4px 16px 24px; }
+  .fav-item{ display:flex; align-items:center; gap:8px; padding: 8px 0; border-bottom: 1px dashed var(--border); }
+  .fav-item:last-of-type{ border-bottom:none; }
+  .fav-item .fav-cat{ font-size:.72rem; font-weight:700; color: var(--accent); background: var(--chip-bg); padding:3px 9px; border-radius: var(--radius-sm); flex-shrink:0; }
+  .fav-item .fav-val{ flex:1; font-size:.88rem; }
+  .fav-item .del-btn{ border:none; background:transparent; color: var(--text-muted); cursor:pointer; font-size:.9rem; padding:4px; }
 
-  /* ---------- building accordion ---------- */
-  .building-block{
-    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-lg);
-    margin-bottom: 14px; overflow:hidden; box-shadow: var(--shadow);
+  .custom-section{ border:1px dashed var(--border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 10px; }
+  .custom-section .cs-head{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .custom-section .cs-head input{ flex:1; font-weight:700; }
+  .cs-del{ border:none; background:transparent; color: var(--danger); cursor:pointer; font-size:1rem; padding:4px; }
+  .add-section-btn{
+    width:100%; border:1px dashed var(--border); background:transparent; color: var(--accent);
+    padding: 12px; border-radius: var(--radius-md); font-weight:700; font-size:.85rem; cursor:pointer;
   }
-  .building-head{
-    width:100%; display:flex; align-items:center; justify-content:space-between;
-    background:transparent; border:none; color: var(--text); padding: 14px 16px; cursor:pointer;
-    font-size: 1rem; font-weight:800; text-align:left;
-  }
-  .building-head .count-badge{
-    font-size:.72rem; font-weight:600; color: var(--text-muted); margin-left:8px;
-  }
-  .building-head .chevron{ transition: transform .15s ease; color: var(--text-muted); }
-  .building-block.open .chevron{ transform: rotate(180deg); }
-  .building-body{ padding: 0 14px 14px; }
-  .building-block:not(.open) .building-body{ display:none; }
 
-  .floor-group{ margin-bottom: 10px; }
-  .floor-label{ font-size:.75rem; font-weight:700; color: var(--text-muted); margin: 10px 2px 6px; }
-  .floor-empty-note{ font-size:.75rem; color: var(--text-muted); padding: 4px 2px 10px; }
+  /* ---------- self-discovery Q&A ---------- */
+  .today-q{
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; border-radius: var(--radius-lg);
+    padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow);
+  }
+  .today-q .tq-label{ font-size:.7rem; opacity:.85; font-weight:700; letter-spacing:.04em; }
+  .today-q .tq-text{ font-size:1rem; font-weight:800; margin: 6px 0 10px; }
+  .today-q textarea{
+    width:100%; border-radius: var(--radius-md); border:none; padding:10px 12px; font-size:.88rem;
+    min-height:56px; background: rgba(255,255,255,.92); color:#2b2a33;
+  }
+  .today-q .tq-actions{ display:flex; justify-content:flex-end; margin-top:8px; }
+  .today-q .tq-actions button{
+    border:none; background: rgba(255,255,255,.9); color: var(--accent); font-weight:700;
+    padding: 7px 16px; border-radius: var(--radius-sm); font-size:.82rem; cursor:pointer;
+  }
 
-  .empty-state{
-    text-align:center; padding: 26px 10px; color: var(--text-muted); font-size:.9rem;
+  .cat-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .cat-chip{
+    border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    padding: 6px 12px; border-radius: var(--radius-sm); font-size:.78rem; cursor:pointer;
   }
-  .empty-state .emoji{ font-size:1.6rem; display:block; margin-bottom:6px; }
+  .cat-chip.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
 
-  /* ---------- vm card ---------- */
-  .vm-card{
-    border:1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 8px;
-    background: var(--bg); overflow:hidden;
-  }
-  .vm-card.highlight{ outline: 3px solid var(--accent); }
-  .vm-card-head{
-    display:flex; align-items:center; gap:10px; padding: 12px; cursor:pointer;
-  }
-  .type-badge{
-    flex-shrink:0; width:38px; height:38px; border-radius:12px; display:flex; align-items:center;
-    justify-content:center; font-size:1.15rem;
-  }
-  .type-badge.drink{ background: var(--drink-bg); color: var(--drink-fg); }
-  .type-badge.food{ background: var(--food-bg); color: var(--food-fg); }
-  .type-badge.ice{ background: var(--ice-bg); color: var(--ice-fg); }
-  .type-badge.noodle{ background: var(--noodle-bg); color: var(--noodle-fg); }
-  .type-badge.other{ background: var(--other-bg); color: var(--other-fg); }
+  .qa-item{ background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-md); padding: 13px 14px; margin-bottom: 10px; box-shadow: var(--shadow); }
+  .qa-item .qa-cat{ font-size:.68rem; color: var(--accent); font-weight:700; }
+  .qa-item .qa-text{ font-size:.9rem; font-weight:700; margin: 4px 0 8px; }
+  .qa-item textarea{ width:100%; border-radius: var(--radius-md); border:1px solid var(--border); background: var(--bg); color: var(--text); padding:9px 11px; font-size:.85rem; min-height:52px; }
+  .qa-item .qa-save{ border:none; background: var(--accent); color: var(--accent-text); padding:7px 14px; border-radius: var(--radius-sm); font-size:.78rem; font-weight:700; cursor:pointer; margin-top:6px; }
+  .qa-answer{ background: var(--chip-bg); border-radius: var(--radius-md); padding: 10px 12px; font-size:.86rem; }
+  .qa-answer .qa-date{ font-size:.68rem; color: var(--text-muted); margin-top:4px; }
+  .qa-item-actions{ display:flex; gap:8px; margin-top:8px; }
+  .qa-item-actions button{ border:none; background:transparent; color: var(--accent); font-size:.76rem; font-weight:700; cursor:pointer; padding:4px 0; }
+  .qa-history{ margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 8px; }
+  .qa-history .hist-entry{ font-size:.78rem; color: var(--text-muted); margin-bottom:6px; }
+  .qa-history .hist-entry .hd{ font-size:.68rem; }
 
-  .vm-card-main{ flex:1; min-width:0; }
-  .vm-card-title{ font-weight:700; font-size:.92rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-  .vm-card-loc{ font-size:.78rem; color: var(--text-muted); margin-top:2px; }
-  .vm-card-meta{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
-  .mini-badge{
-    font-size:.68rem; background: var(--chip-bg); color: var(--text-muted);
-    padding: 2px 8px; border-radius: var(--radius-sm);
+  /* ---------- intro generator ---------- */
+  .toggle-row{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+  .toggle-row button{
+    border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 7px 13px; border-radius: var(--radius-sm); font-size:.8rem; cursor:pointer;
   }
-  .star-btn{
-    border:none; background:transparent; font-size:1.2rem; cursor:pointer; flex-shrink:0; padding:4px;
-    color: var(--text-muted);
+  .toggle-row button.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
+  .check-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 12px; }
+  .check-pill{ display:flex; align-items:center; gap:6px; border:1px solid var(--border); background: var(--bg); padding:6px 12px; border-radius: var(--radius-sm); font-size:.8rem; cursor:pointer; }
+  .check-pill input{ margin:0; }
+  .gen-btn{ width:100%; border:none; background: var(--accent); color: var(--accent-text); padding: 12px; border-radius: var(--radius-md); font-size:.92rem; font-weight:800; cursor:pointer; }
+  .gen-output{
+    margin-top: 12px; background: var(--chip-bg); border-radius: var(--radius-md); padding: 14px; font-size:.92rem;
+    white-space: pre-wrap; min-height: 60px;
   }
-  .star-btn.active{ color: #f0b400; }
-  .expand-caret{ color: var(--text-muted); flex-shrink:0; transition: transform .15s ease; }
-  .vm-card.expanded .expand-caret{ transform: rotate(180deg); }
+  .gen-output.empty{ color: var(--text-muted); font-size:.85rem; }
+  .gen-actions{ display:flex; gap:8px; margin-top:10px; }
+  .gen-actions button{
+    flex:1; border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    padding: 9px; border-radius: var(--radius-sm); font-size:.82rem; font-weight:700; cursor:pointer;
+  }
 
-  .vm-card-detail{ padding: 0 12px 14px; display:none; }
-  .vm-card.expanded .vm-card-detail{ display:block; }
-  .menu-table{ width:100%; border-collapse: collapse; margin-top: 4px; }
-  .menu-table td{ padding: 5px 4px; font-size:.85rem; border-bottom: 1px dashed var(--border); }
-  .menu-table td:last-child{ text-align:right; font-variant-numeric: tabular-nums; white-space:nowrap; }
-  .vm-note{ font-size:.78rem; color: var(--text-muted); margin-top:8px; background: var(--chip-bg); padding:8px 10px; border-radius:10px; }
-  .vm-updated{ font-size:.7rem; color: var(--text-muted); margin-top:8px; text-align:right; }
-
-  /* ---------- map view ---------- */
-  .map-building{
-    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-lg);
-    margin-bottom: 14px; padding: 14px; box-shadow: var(--shadow);
+  /* ---------- settings ---------- */
+  .stat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-bottom: 4px; }
+  .stat-box{ background: var(--chip-bg); border-radius: var(--radius-md); padding: 12px 8px; text-align:center; }
+  .stat-box .num{ font-size:1.3rem; font-weight:800; color: var(--accent); }
+  .stat-box .lbl{ font-size:.68rem; color: var(--text-muted); margin-top:2px; }
+  .settings-btn{
+    width:100%; text-align:left; border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 12px 14px; border-radius: var(--radius-md); font-size:.85rem; cursor:pointer; margin-bottom:8px;
+    display:flex; align-items:center; gap:10px;
   }
-  .map-building h2{ margin: 0 0 10px; font-size:.98rem; font-weight:800; }
-  .map-nodata{ font-size:.8rem; color: var(--text-muted); padding: 8px 0; }
-  .floor-row{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
-  .floor-row .floor-tag{
-    width:44px; flex-shrink:0; font-size:.68rem; color: var(--text-muted); text-align:right; font-weight:700;
-  }
-  .floor-track{
-    position:relative; flex:1; height: 34px; background: var(--chip-bg); border-radius: 10px;
-  }
-  .pin{
-    position:absolute; top:50%; transform: translate(-50%,-50%); width:26px; height:26px;
-    border-radius:50%; border:none; display:flex; align-items:center; justify-content:center;
-    font-size:.85rem; cursor:pointer; box-shadow: 0 1px 4px rgba(0,0,0,.25);
-  }
-  .pin.drink{ background: var(--drink-fg); }
-  .pin.food{ background: var(--food-fg); }
-  .pin.ice{ background: var(--ice-fg); }
-  .pin.noodle{ background: var(--noodle-fg); }
-  .pin.other{ background: var(--other-fg); }
+  .settings-btn.danger{ color: var(--danger); border-color: var(--danger); }
+  #importFile{ display:none; }
 
   footer.app-footer{
-    max-width: 880px; margin: 20px auto 0; padding: 0 16px; font-size: .72rem; color: var(--text-muted);
+    max-width: 720px; margin: 20px auto 0; padding: 0 16px; font-size: .72rem; color: var(--text-muted);
     text-align:center;
   }
 
@@ -238,13 +237,11 @@
     position: fixed; left:50%; bottom: 18px; transform: translateX(-50%);
     background: var(--text); color: var(--bg); padding: 9px 16px; border-radius: var(--radius-sm);
     font-size:.8rem; opacity:0; pointer-events:none; transition: opacity .2s ease; z-index: 50;
+    max-width: 90%; text-align:center;
   }
   .toast.show{ opacity:1; }
 
-  @media (min-width: 640px){
-    .search-row{ align-items:center; }
-    .view-tabs{ max-width: 220px; }
-  }
+  .empty-state{ text-align:center; padding: 24px 10px; color: var(--text-muted); font-size:.85rem; }
 </style>
 </head>
 <body>
@@ -253,60 +250,37 @@
   <div class="topbar-inner">
     <div class="topbar-row">
       <div>
-        <h1>🥤 日芸自販機まっぷ</h1>
-        <p class="subtitle">日本大学芸術学部 江古田キャンパス</p>
+        <h1>📔 じぶん手帳</h1>
+        <p class="subtitle">自己紹介にもう困らない、わたしのプロフィール帳</p>
       </div>
       <div class="header-actions">
         <button class="icon-btn" id="themeToggle" title="ダークモード切替">🌙</button>
-        <button class="icon-btn" id="shareBtn" title="このフィルタ条件を共有">🔗</button>
       </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>プロフィール充実度</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     </div>
   </div>
 </header>
 
 <div class="controls">
-  <div class="search-row">
-    <input type="search" id="searchInput" placeholder="商品名・棟名・場所で検索（例：コーラ、A館、正面玄関）">
-  </div>
   <div class="view-tabs">
-    <button data-view="list" class="active">📋 一覧</button>
-    <button data-view="map">🗺️ マップ</button>
-  </div>
-  <div class="filter-toggle-row">
-    <button id="filterToggle">🔍 絞り込み <span id="filterActiveCount"></span>▾</button>
-    <button id="favToggle" title="お気に入りのみ表示">☆ お気に入り</button>
-    <span class="result-count" id="resultCount"></span>
-  </div>
-
-  <div class="filter-panel hidden" id="filterPanel">
-    <section>
-      <h3>棟</h3>
-      <div class="chip-group" id="buildingChips"></div>
-    </section>
-    <section>
-      <h3>階</h3>
-      <div class="chip-group" id="floorChips"></div>
-    </section>
-    <section>
-      <h3>種類</h3>
-      <div class="chip-group" id="typeChips"></div>
-    </section>
-    <section>
-      <h3>支払い方法</h3>
-      <div class="chip-group" id="paymentChips"></div>
-    </section>
-    <div class="filter-panel-footer">
-      <button id="clearFilters">条件をクリア</button>
-    </div>
+    <button data-view="profile" class="active">📇 プロフィール</button>
+    <button data-view="discover">🔍 じぶんを知る</button>
+    <button data-view="intro">💬 自己紹介文</button>
+    <button data-view="settings">⚙️ データ</button>
   </div>
 </div>
 
-<main id="listView"></main>
-<main id="mapView" class="hidden"></main>
+<main id="app"></main>
 
 <footer class="app-footer">
-  ※ 掲載データはサンプルです。実際の設置状況と異なる場合があります。情報の追加・修正は学部窓口へご連絡ください。<br>
-  file:// で開いてもオフラインで全機能が動作します。
+  データはこの端末のブラウザ内（localStorage）だけに保存されます。サーバーには送信されません。<br>
+  機種変更の前は「データ」タブからバックアップ（エクスポート）してください。
 </footer>
 
 <div class="toast" id="toast"></div>
@@ -319,615 +293,752 @@
      1. データ定義
   ========================================================= */
 
-  // キャンパス内の棟・階構成（データが無い棟・階でも一覧に表示するための台帳）
-  var CAMPUS_STRUCTURE = {
-    "A館": ["B1F","1F","2F","3F","4F"],
-    "B館": ["1F","2F","3F"],
-    "C館": ["1F","2F"],
-    "1号館": ["1F","2F"],
-    "東棟": ["1F"],
-    "西棟": ["1F","2F"]
-  };
+  var STORAGE_KEY = "jibun-techo-data-v1";
+  var THEME_KEY = "jibun-techo-theme";
 
-  var VM_DATA = [
-    {
-      id: "vm001", building: "A館", floor: "B1F", location: "学生食堂前",
-      type: "食品", payment: ["現金","IC"],
-      items: [
-        { name: "カップヌードル（しょうゆ）", price: 220 },
-        { name: "カップヌードル（カレー）", price: 220 },
-        { name: "どん兵衛（きつねうどん）", price: 230 }
-      ],
-      note: "学生食堂の営業時間内のみ利用可能です。",
-      updatedAt: "2026-06-20", mapX: 50
-    },
-    {
-      id: "vm002", building: "A館", floor: "1F", location: "正面玄関横",
-      type: "飲料", payment: ["現金","IC","PayPay"],
-      items: [
-        { name: "コカ・コーラ", price: 160 },
-        { name: "綾鷹（緑茶）", price: 150 },
-        { name: "アクエリアス", price: 150 },
-        { name: "ブラックコーヒー", price: 130 }
-      ],
-      note: "夜21時以降は稼働停止します。",
-      updatedAt: "2026-07-01", mapX: 15
-    },
-    {
-      id: "vm003", building: "A館", floor: "1F", location: "エレベーター横",
-      type: "アイス", payment: ["現金","IC"],
-      items: [
-        { name: "ガリガリ君（ソーダ）", price: 80 },
-        { name: "パルム（チョコレート）", price: 160 },
-        { name: "ハーゲンダッツ（バニラ）", price: 320 }
-      ],
-      updatedAt: "2026-05-14", mapX: 80
-    },
-    {
-      id: "vm004", building: "A館", floor: "3F", location: "自習室前",
-      type: "飲料", payment: ["IC","PayPay"],
-      items: [
-        { name: "綾鷹（緑茶）", price: 150 },
-        { name: "い・ろ・は・す", price: 130 },
-        { name: "レモンウォーター", price: 150 }
-      ],
-      note: "試験期間中は品切れになりやすいです。",
-      updatedAt: "2026-06-02", mapX: 40
-    },
-    {
-      id: "vm005", building: "B館", floor: "1F", location: "エントランス",
-      type: "飲料", payment: ["現金","IC","PayPay"],
-      items: [
-        { name: "コカ・コーラ", price: 160 },
-        { name: "ファンタグレープ", price: 160 },
-        { name: "午後の紅茶（ミルクティー）", price: 150 }
-      ],
-      updatedAt: "2026-06-25", mapX: 25
-    },
-    {
-      id: "vm006", building: "B館", floor: "2F", location: "廊下（印刷室横）",
-      type: "飲料", payment: ["現金"],
-      items: [
-        { name: "缶コーヒー（微糖）", price: 120 },
-        { name: "十六茶", price: 140 }
-      ],
-      note: "硬貨投入のみ対応。両替機はありません。",
-      updatedAt: "2026-04-30", mapX: 60
-    },
-    {
-      id: "vm007", building: "C館", floor: "1F", location: "正面入口",
-      type: "アイス", payment: ["現金","IC"],
-      items: [
-        { name: "ガリガリ君（梨）", price: 80 },
-        { name: "MOW（バニラ）", price: 180 }
-      ],
-      updatedAt: "2026-06-10", mapX: 30
-    },
-    {
-      id: "vm008", building: "C館", floor: "2F", location: "実習室前",
-      type: "飲料", payment: ["IC","PayPay"],
-      items: [
-        { name: "天然水", price: 130 },
-        { name: "炭酸水", price: 140 },
-        { name: "ポカリスエット", price: 160 }
-      ],
-      updatedAt: "2026-05-28", mapX: 70
-    },
-    {
-      id: "vm009", building: "1号館", floor: "1F", location: "ロビー",
-      type: "飲料", payment: ["現金","IC"],
-      items: [
-        { name: "コカ・コーラ", price: 160 },
-        { name: "おーいお茶", price: 150 },
-        { name: "ジョージア（微糖）", price: 130 }
-      ],
-      note: "24時間稼働しています。",
-      updatedAt: "2026-06-30", mapX: 50
-    },
-    {
-      id: "vm010", building: "東棟", floor: "1F", location: "入口横",
-      type: "カップ麺", payment: ["現金","IC","PayPay"],
-      items: [
-        { name: "カップヌードル（シーフード）", price: 220 },
-        { name: "日清麺職人（醤油）", price: 230 }
-      ],
-      updatedAt: "2026-06-18", mapX: 50
-    }
+  var FAV_CATEGORIES = ["食べ物","飲み物","音楽・アーティスト","映画・アニメ","本・漫画","スポーツ","場所・旅先","言葉・座右の銘","その他"];
+
+  var QUESTION_BANK = [
+    { id:"q1",  cat:"価値観", text:"仕事や勉強で、いちばん大事にしていることは何ですか？" },
+    { id:"q2",  cat:"価値観", text:"「これだけは譲れない」と思う考え方はありますか？" },
+    { id:"q3",  cat:"価値観", text:"尊敬する人・憧れる人は誰ですか？その理由は？" },
+    { id:"q4",  cat:"価値観", text:"お金を使うとき、何に一番お金をかけたいですか？" },
+    { id:"q5",  cat:"過去", text:"子どもの頃、夢中になっていたものは何でしたか？" },
+    { id:"q6",  cat:"過去", text:"人生でいちばん頑張ったと思う出来事は？" },
+    { id:"q7",  cat:"過去", text:"これまでで一番うれしかったことは何ですか？" },
+    { id:"q8",  cat:"過去", text:"失敗から学んだ、印象に残っていることはありますか？" },
+    { id:"q9",  cat:"好み", text:"一日ずっと家にいるとしたら、何をして過ごしますか？" },
+    { id:"q10", cat:"好み", text:"最近ハマっていること・気になっていることは？" },
+    { id:"q11", cat:"好み", text:"好きな季節・好きな時間帯はいつですか？その理由は？" },
+    { id:"q12", cat:"好み", text:"疲れたとき、何をすると元気になりますか？" },
+    { id:"q13", cat:"好み", text:"誰かに一つだけおすすめするなら、何を紹介したいですか？" },
+    { id:"q14", cat:"人間関係", text:"友人からよく言われる自分の性格は？" },
+    { id:"q15", cat:"人間関係", text:"人と話すとき、意識していることはありますか？" },
+    { id:"q16", cat:"人間関係", text:"どんな人と一緒にいると居心地がいいですか？" },
+    { id:"q17", cat:"人間関係", text:"初対面の人に、まず何を知ってもらいたいですか？" },
+    { id:"q18", cat:"未来", text:"1年後、どんな自分になっていたいですか？" },
+    { id:"q19", cat:"未来", text:"いつか挑戦してみたいことは何ですか？" },
+    { id:"q20", cat:"未来", text:"今、頑張っている・伸ばしたいと思っているスキルは？" },
+    { id:"q21", cat:"未来", text:"将来、どんな形で人の役に立ちたいですか？" },
+    { id:"q22", cat:"自分らしさ", text:"自分の長所を一言で言うと？" },
+    { id:"q23", cat:"自分らしさ", text:"自分の短所だと思うところ、直したいところは？" },
+    { id:"q24", cat:"自分らしさ", text:"周りの人と自分は、どこが違うと思いますか？" },
+    { id:"q25", cat:"自分らしさ", text:"「自分らしいな」と感じる瞬間はどんなときですか？" },
+    { id:"q26", cat:"自分らしさ", text:"もし自分にキャッチコピーをつけるなら？" }
   ];
 
-  var TYPE_LIST = ["飲料","食品","アイス","カップ麺"];
-  var PAYMENT_LIST = ["現金","IC","PayPay"];
-
-  var TYPE_META = {
-    "飲料":   { icon: "🥤", cls: "drink"  },
-    "食品":   { icon: "🍱", cls: "food"   },
-    "アイス": { icon: "🍦", cls: "ice"    },
-    "カップ麺": { icon: "🍜", cls: "noodle" }
+  var DEFAULT_DATA = {
+    basic: { name:"", furigana:"", nickname:"", birthday:"", bloodType:"", hometown:"", occupation:"", motto:"" },
+    lists: { skills:[], hobbies:[], strengths:[], weaknesses:[], dislikes:[] },
+    favorites: [],
+    goals: "",
+    customSections: [],
+    qa: {},
+    meta: { createdAt: null, updatedAt: null }
   };
-  function typeMeta(t){ return TYPE_META[t] || { icon: "🛒", cls: "other" }; }
 
-  var PAYMENT_ICON = { "現金": "💴", "IC": "📶", "PayPay": "📱" };
+  var LIST_META = {
+    skills:     { label:"特技",     desc:"できること・得意なことを登録しましょう", ph:"例：ピアノ、料理、Excel" },
+    hobbies:    { label:"趣味",     desc:"好きでよくやっていることを登録しましょう", ph:"例：読書、映画鑑賞、キャンプ" },
+    strengths:  { label:"長所",     desc:"自分の強みだと思うところ", ph:"例：計画的、聞き上手" },
+    weaknesses: { label:"短所",     desc:"直したい・課題だと感じているところ", ph:"例：心配性、飽きっぽい" },
+    dislikes:   { label:"苦手なもの", desc:"苦手なこと・避けたいこと", ph:"例：早起き、虫" }
+  };
 
   /* =========================================================
-     2. 状態管理
+     2. 状態管理・永続化
   ========================================================= */
 
-  var state = {
-    q: "",
-    buildings: new Set(),
-    floors: new Set(),
-    types: new Set(),
-    payments: new Set(),
-    view: "list",
-    favOnly: false
-  };
+  var data = loadData();
+  var state = { view:"profile", discoverCat:"すべて", todayQId: pickTodayQuestionId() };
 
-  var expandedBuildings = new Set(Object.keys(CAMPUS_STRUCTURE)); // デフォルトは全て展開
-  var expandedCards = new Set();
-  var FAV_KEY = "vm-favorites";
-  var THEME_KEY = "vm-theme";
-  var favorites = loadFavorites();
-
-  function loadFavorites(){
+  function loadData(){
     try{
-      var raw = localStorage.getItem(FAV_KEY);
-      return raw ? new Set(JSON.parse(raw)) : new Set();
-    }catch(e){ return new Set(); }
-  }
-  function saveFavorites(){
-    try{ localStorage.setItem(FAV_KEY, JSON.stringify(Array.from(favorites))); }catch(e){}
-  }
-
-  function parseFloor(f){
-    var m = f.match(/^B(\d+)F$/i);
-    if(m) return -Number(m[1]);
-    m = f.match(/^(\d+)F$/i);
-    if(m) return Number(m[1]);
-    return 9999;
-  }
-
-  function anyFilterActive(){
-    return !!(state.q || state.buildings.size || state.floors.size || state.types.size || state.payments.size || state.favOnly);
-  }
-
-  /* =========================================================
-     3. URL クエリパラメータとの同期
-  ========================================================= */
-
-  function loadStateFromUrl(){
-    var params = new URLSearchParams(location.search);
-    state.q = params.get("q") || "";
-    ["building","floor","type","payment"].forEach(function(key){
-      var val = params.get(key);
-      var target = { building: state.buildings, floor: state.floors, type: state.types, payment: state.payments }[key];
-      if(val){
-        val.split(",").filter(Boolean).forEach(function(v){ target.add(decodeURIComponent(v)); });
-      }
-    });
-    if(params.get("view") === "map") state.view = "map";
-    if(params.get("fav") === "1") state.favOnly = true;
-  }
-
-  function syncUrl(){
-    var params = new URLSearchParams();
-    if(state.q) params.set("q", state.q);
-    if(state.buildings.size) params.set("building", Array.from(state.buildings).join(","));
-    if(state.floors.size) params.set("floor", Array.from(state.floors).join(","));
-    if(state.types.size) params.set("type", Array.from(state.types).join(","));
-    if(state.payments.size) params.set("payment", Array.from(state.payments).join(","));
-    if(state.view === "map") params.set("view", "map");
-    if(state.favOnly) params.set("fav", "1");
-    var qs = params.toString();
-    var newUrl = location.pathname + (qs ? "?" + qs : "");
-    history.replaceState(null, "", newUrl);
-  }
-
-  /* =========================================================
-     4. フィルタリング
-  ========================================================= */
-
-  function matchesQuery(m, q){
-    q = q.toLowerCase();
-    if(m.building.toLowerCase().indexOf(q) !== -1) return true;
-    if(m.location.toLowerCase().indexOf(q) !== -1) return true;
-    if(m.floor.toLowerCase().indexOf(q) !== -1) return true;
-    return m.items.some(function(it){ return it.name.toLowerCase().indexOf(q) !== -1; });
-  }
-
-  function machineMatches(m){
-    if(state.buildings.size && !state.buildings.has(m.building)) return false;
-    if(state.floors.size && !state.floors.has(m.floor)) return false;
-    if(state.types.size && !state.types.has(m.type)) return false;
-    if(state.payments.size){
-      var ok = Array.from(state.payments).every(function(p){ return m.payment.indexOf(p) !== -1; });
-      if(!ok) return false;
-    }
-    if(state.favOnly && !favorites.has(m.id)) return false;
-    if(state.q && !matchesQuery(m, state.q)) return false;
-    return true;
-  }
-
-  function getFiltered(){ return VM_DATA.filter(machineMatches); }
-
-  /* =========================================================
-     5. レンダリング：フィルタパネル
-  ========================================================= */
-
-  function el(tag, cls, html){
-    var e = document.createElement(tag);
-    if(cls) e.className = cls;
-    if(html !== undefined) e.innerHTML = html;
-    return e;
-  }
-
-  function renderChipGroup(container, options, activeSet, onToggle){
-    container.innerHTML = "";
-    options.forEach(function(opt){
-      var chip = el("button", "chip" + (activeSet.has(opt) ? " active" : ""), opt);
-      chip.type = "button";
-      chip.addEventListener("click", function(){
-        if(activeSet.has(opt)) activeSet.delete(opt); else activeSet.add(opt);
-        onToggle();
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return deepClone(DEFAULT_DATA);
+      var parsed = JSON.parse(raw);
+      return Object.assign(deepClone(DEFAULT_DATA), parsed, {
+        basic: Object.assign({}, DEFAULT_DATA.basic, parsed.basic),
+        lists: Object.assign({}, DEFAULT_DATA.lists, parsed.lists),
+        meta: Object.assign({}, DEFAULT_DATA.meta, parsed.meta)
       });
-      container.appendChild(chip);
-    });
+    }catch(e){ return deepClone(DEFAULT_DATA); }
   }
 
-  function allFloorsSorted(){
-    var set = new Set();
-    Object.keys(CAMPUS_STRUCTURE).forEach(function(b){ CAMPUS_STRUCTURE[b].forEach(function(f){ set.add(f); }); });
-    return Array.from(set).sort(function(a,b){ return parseFloor(a) - parseFloor(b); });
+  function saveData(){
+    data.meta.updatedAt = new Date().toISOString();
+    if(!data.meta.createdAt) data.meta.createdAt = data.meta.updatedAt;
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }catch(e){}
   }
 
-  function renderFilters(){
-    renderChipGroup(document.getElementById("buildingChips"), Object.keys(CAMPUS_STRUCTURE), state.buildings, onFilterChange);
-    renderChipGroup(document.getElementById("floorChips"), allFloorsSorted(), state.floors, onFilterChange);
-    renderChipGroup(document.getElementById("typeChips"), TYPE_LIST, state.types, onFilterChange);
-    renderChipGroup(document.getElementById("paymentChips"), PAYMENT_LIST, state.payments, onFilterChange);
+  function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
 
-    var count = state.buildings.size + state.floors.size + state.types.size + state.payments.size;
-    document.getElementById("filterActiveCount").textContent = count ? "(" + count + ") " : "";
-
-    var favBtn = document.getElementById("favToggle");
-    favBtn.classList.toggle("active", state.favOnly);
-    favBtn.textContent = (state.favOnly ? "★" : "☆") + " お気に入り";
+  function pickTodayQuestionId(){
+    var d = new Date();
+    var seed = Number(d.getFullYear()+""+(d.getMonth()+1)+""+d.getDate());
+    return QUESTION_BANK[seed % QUESTION_BANK.length].id;
   }
 
-  function onFilterChange(){
-    syncUrl();
-    renderFilters();
-    renderAll();
-  }
-
-  /* =========================================================
-     6. レンダリング：一覧ビュー
-  ========================================================= */
-
-  function buildMenuTable(items){
-    var table = el("table", "menu-table");
-    items.forEach(function(it){
-      var row = el("tr");
-      row.appendChild(el("td", null, escapeHtml(it.name)));
-      row.appendChild(el("td", null, "¥" + it.price.toLocaleString()));
-      table.appendChild(row);
-    });
-    return table;
-  }
+  function uid(){ return "id" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
   function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, function(c){
-      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
     });
   }
 
-  function buildVmCard(m){
-    var card = el("div", "vm-card");
-    card.id = "card-" + m.id;
-    if(expandedCards.has(m.id)) card.classList.add("expanded");
-
-    var head = el("div", "vm-card-head");
-    var tm = typeMeta(m.type);
-
-    var badge = el("div", "type-badge " + tm.cls, tm.icon);
-    head.appendChild(badge);
-
-    var main = el("div", "vm-card-main");
-    var title = el("div", "vm-card-title");
-    title.innerHTML = escapeHtml(m.building) + " " + escapeHtml(m.floor) +
-      '<span class="mini-badge">' + escapeHtml(m.type) + '</span>';
-    main.appendChild(title);
-    main.appendChild(el("div", "vm-card-loc", escapeHtml(m.location)));
-
-    var meta = el("div", "vm-card-meta");
-    m.payment.forEach(function(p){
-      meta.appendChild(el("span", "mini-badge", (PAYMENT_ICON[p]||"") + " " + escapeHtml(p)));
-    });
-    meta.appendChild(el("span", "mini-badge", "🍽️ " + m.items.length + "品"));
-    main.appendChild(meta);
-    head.appendChild(main);
-
-    var star = el("button", "star-btn" + (favorites.has(m.id) ? " active" : ""), favorites.has(m.id) ? "★" : "☆");
-    star.type = "button";
-    star.title = "お気に入り登録/解除";
-    star.addEventListener("click", function(ev){
-      ev.stopPropagation();
-      if(favorites.has(m.id)) favorites.delete(m.id); else favorites.add(m.id);
-      saveFavorites();
-      renderAll();
-      renderFilters();
-    });
-    head.appendChild(star);
-    head.appendChild(el("div", "expand-caret", "▾"));
-
-    head.addEventListener("click", function(){
-      if(expandedCards.has(m.id)) expandedCards.delete(m.id); else expandedCards.add(m.id);
-      card.classList.toggle("expanded");
-    });
-    card.appendChild(head);
-
-    var detail = el("div", "vm-card-detail");
-    detail.appendChild(buildMenuTable(m.items));
-    if(m.note) detail.appendChild(el("div", "vm-note", "💡 " + escapeHtml(m.note)));
-    detail.appendChild(el("div", "vm-updated", "最終更新: " + escapeHtml(m.updatedAt)));
-    card.appendChild(detail);
-
-    return card;
-  }
-
-  function renderListView(filtered){
-    var root = document.getElementById("listView");
-    root.innerHTML = "";
-
-    Object.keys(CAMPUS_STRUCTURE).forEach(function(building){
-      var rawForBuilding = VM_DATA.filter(function(m){ return m.building === building; });
-      var filteredForBuilding = filtered.filter(function(m){ return m.building === building; });
-
-      var block = el("div", "building-block" + (expandedBuildings.has(building) ? " open" : ""));
-      var head = el("button", "building-head");
-      head.type = "button";
-      head.innerHTML = "🏢 " + escapeHtml(building) +
-        '<span class="count-badge">' + filteredForBuilding.length + "件</span>";
-      var chevron = el("span", "chevron", "▾");
-      head.appendChild(chevron);
-      head.addEventListener("click", function(){
-        if(expandedBuildings.has(building)) expandedBuildings.delete(building); else expandedBuildings.add(building);
-        block.classList.toggle("open");
-      });
-      block.appendChild(head);
-
-      var body = el("div", "building-body");
-
-      if(rawForBuilding.length === 0){
-        body.appendChild(el("div", "empty-state",
-          '<span class="emoji">📭</span>情報募集中：この棟の自販機情報はまだ登録されていません。<br>知っている情報があれば学部窓口までご連絡ください。'));
-      } else if(filteredForBuilding.length === 0){
-        body.appendChild(el("div", "empty-state",
-          '<span class="emoji">🔍</span>条件に一致する自販機が見つかりませんでした。'));
-      } else {
-        var floors = CAMPUS_STRUCTURE[building].slice().sort(function(a,b){ return parseFloor(a) - parseFloor(b); });
-        floors.forEach(function(floor){
-          var floorRaw = rawForBuilding.filter(function(m){ return m.floor === floor; });
-          var floorFiltered = filteredForBuilding.filter(function(m){ return m.floor === floor; });
-
-          if(floorRaw.length === 0){
-            if(!anyFilterActive()){
-              var fg = el("div", "floor-group");
-              fg.appendChild(el("div", "floor-label", floor));
-              fg.appendChild(el("div", "floor-empty-note", "この階の情報はまだありません。"));
-              body.appendChild(fg);
-            }
-            return;
-          }
-          if(floorFiltered.length === 0) return;
-
-          var group = el("div", "floor-group");
-          group.appendChild(el("div", "floor-label", floor));
-          floorFiltered.forEach(function(m){ group.appendChild(buildVmCard(m)); });
-          body.appendChild(group);
-        });
-      }
-
-      block.appendChild(body);
-      root.appendChild(block);
-    });
+  function fmtDate(iso){
+    if(!iso) return "";
+    var d = new Date(iso);
+    if(isNaN(d)) return iso;
+    return d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate();
   }
 
   /* =========================================================
-     7. レンダリング：マップビュー
+     3. テーマ
   ========================================================= */
 
-  function renderMapView(filtered){
-    var root = document.getElementById("mapView");
-    root.innerHTML = "";
-
-    Object.keys(CAMPUS_STRUCTURE).forEach(function(building){
-      if(state.buildings.size && !state.buildings.has(building)) return;
-
-      var rawForBuilding = VM_DATA.filter(function(m){ return m.building === building; });
-      var filteredForBuilding = filtered.filter(function(m){ return m.building === building; });
-
-      var panel = el("div", "map-building");
-      panel.appendChild(el("h2", null, "🏢 " + escapeHtml(building)));
-
-      if(rawForBuilding.length === 0){
-        panel.appendChild(el("div", "map-nodata", "📭 情報募集中：この棟の自販機情報はまだありません。"));
-        root.appendChild(panel);
-        return;
-      }
-      if(filteredForBuilding.length === 0){
-        panel.appendChild(el("div", "map-nodata", "🔍 条件に一致する自販機がありません。"));
-        root.appendChild(panel);
-        return;
-      }
-
-      var floors = CAMPUS_STRUCTURE[building].slice().sort(function(a,b){ return parseFloor(b) - parseFloor(a); });
-      floors.forEach(function(floor){
-        var machinesOnFloor = filteredForBuilding.filter(function(m){ return m.floor === floor; });
-        var row = el("div", "floor-row");
-        row.appendChild(el("div", "floor-tag", floor));
-        var track = el("div", "floor-track");
-        machinesOnFloor.forEach(function(m){
-          var tm = typeMeta(m.type);
-          var pin = el("button", "pin " + tm.cls, tm.icon);
-          pin.type = "button";
-          pin.style.left = (m.mapX != null ? m.mapX : 50) + "%";
-          pin.title = m.building + " " + m.floor + " " + m.location;
-          pin.addEventListener("click", function(){ jumpToCard(m); });
-          track.appendChild(pin);
-        });
-        row.appendChild(track);
-        panel.appendChild(row);
-      });
-
-      root.appendChild(panel);
-    });
+  function applyTheme(t){
+    if(t === "dark"){ document.documentElement.setAttribute("data-theme","dark"); }
+    else{ document.documentElement.removeAttribute("data-theme"); }
+    document.getElementById("themeToggle").textContent = t === "dark" ? "☀️" : "🌙";
   }
-
-  function jumpToCard(m){
-    setView("list");
-    expandedBuildings.add(m.building);
-    expandedCards.add(m.id);
-    renderAll();
-    requestAnimationFrame(function(){
-      var cardEl = document.getElementById("card-" + m.id);
-      if(cardEl){
-        cardEl.scrollIntoView({ behavior: "smooth", block: "center" });
-        cardEl.classList.add("highlight");
-        setTimeout(function(){ cardEl.classList.remove("highlight"); }, 1800);
-      }
-    });
-  }
-
-  /* =========================================================
-     8. 全体レンダリング
-  ========================================================= */
-
-  function renderAll(){
-    var filtered = getFiltered();
-    document.getElementById("resultCount").textContent = filtered.length + " / " + VM_DATA.length + " 件表示中";
-    renderListView(filtered);
-    renderMapView(filtered);
-  }
-
-  function setView(view){
-    state.view = view;
-    document.querySelectorAll(".view-tabs button").forEach(function(btn){
-      btn.classList.toggle("active", btn.getAttribute("data-view") === view);
-    });
-    document.getElementById("listView").classList.toggle("hidden", view !== "list");
-    document.getElementById("mapView").classList.toggle("hidden", view !== "map");
-    syncUrl();
-  }
-
-  /* =========================================================
-     9. テーマ（ダークモード）
-  ========================================================= */
-
-  function applyTheme(theme){
-    document.documentElement.setAttribute("data-theme", theme);
-    document.getElementById("themeToggle").textContent = theme === "dark" ? "☀️" : "🌙";
-  }
-
   function initTheme(){
-    var stored = null;
-    try{ stored = localStorage.getItem(THEME_KEY); }catch(e){}
-    if(stored){ applyTheme(stored); return; }
-    var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    applyTheme(prefersDark ? "dark" : "light");
+    var saved = localStorage.getItem(THEME_KEY);
+    var t = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    applyTheme(t);
+  }
+  document.getElementById("themeToggle").addEventListener("click", function(){
+    var cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    var next = cur === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
+
+  /* =========================================================
+     4. トースト
+  ========================================================= */
+
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
   }
 
   /* =========================================================
-     10. 共有（URL コピー）
+     5. プロフィール充実度
   ========================================================= */
 
-  function showToast(msg){
-    var toast = document.getElementById("toast");
-    toast.textContent = msg;
-    toast.classList.add("show");
-    setTimeout(function(){ toast.classList.remove("show"); }, 2000);
+  function computeCompleteness(){
+    var total = 0, filled = 0;
+    var basicFields = ["name","nickname","birthday","bloodType","hometown","occupation","motto"];
+    basicFields.forEach(function(k){ total++; if(data.basic[k]) filled++; });
+    Object.keys(data.lists).forEach(function(k){ total++; if(data.lists[k].length) filled++; });
+    total++; if(data.favorites.length) filled++;
+    total++; if(data.goals) filled++;
+    total++; if(Object.keys(data.qa).length) filled++;
+    return Math.round((filled/total)*100);
   }
 
-  function copyShareUrl(){
-    var url = location.href;
+  function renderProgress(){
+    var pct = computeCompleteness();
+    document.getElementById("progressPct").textContent = pct + "%";
+    document.getElementById("progressFill").style.width = pct + "%";
+  }
+
+  /* =========================================================
+     6. タブ切り替え
+  ========================================================= */
+
+  document.querySelectorAll(".view-tabs button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll(".view-tabs button").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      state.view = btn.dataset.view;
+      render();
+    });
+  });
+
+  function render(){
+    renderProgress();
+    var app = document.getElementById("app");
+    if(state.view === "profile") app.innerHTML = renderProfileView();
+    else if(state.view === "discover") app.innerHTML = renderDiscoverView();
+    else if(state.view === "intro") app.innerHTML = renderIntroView();
+    else app.innerHTML = renderSettingsView();
+    bindViewEvents();
+  }
+
+  /* =========================================================
+     7. プロフィールタブ
+  ========================================================= */
+
+  function renderProfileView(){
+    var html = "";
+
+    html += '<div class="card"><h2>🪪 基本情報</h2><p class="card-desc">自己紹介の土台になる情報です</p>';
+    html += '<div class="two-col">';
+    html += field("name","text","名前","お名前", data.basic.name);
+    html += field("nickname","text","呼ばれたい名前","ニックネーム", data.basic.nickname);
+    html += '</div>';
+    html += '<div class="two-col">';
+    html += field("birthday","date","誕生日","", data.basic.birthday);
+    html += bloodTypeField();
+    html += '</div>';
+    html += '<div class="two-col">';
+    html += field("hometown","text","出身地","例：東京都", data.basic.hometown);
+    html += field("occupation","text","所属・職業","例：大学生／◯◯部所属", data.basic.occupation);
+    html += '</div>';
+    html += field("motto","text","座右の銘・大切にしている言葉","例：一期一会", data.basic.motto);
+    html += '</div>';
+
+    Object.keys(LIST_META).forEach(function(key){
+      html += renderTagCard(key);
+    });
+
+    html += '<div class="card"><h2>❤️ 好きなもの</h2><p class="card-desc">カテゴリ別に好きなものを登録できます</p>';
+    html += renderFavorites();
+    html += '<div class="add-row">';
+    html += '<select id="favCatSelect">' + FAV_CATEGORIES.map(function(c){ return '<option value="'+escapeHtml(c)+'">'+escapeHtml(c)+'</option>'; }).join("") + '</select>';
+    html += '<input type="text" id="favValInput" placeholder="好きなものを入力">';
+    html += '<button class="add-btn" id="favAddBtn">追加</button>';
+    html += '</div></div>';
+
+    html += '<div class="card"><h2>🎯 将来の夢・目標</h2><p class="card-desc">今後やりたいこと、目指していることを自由に書いてください</p>';
+    html += '<div class="field"><textarea id="goalsInput" placeholder="例：◯◯の資格を取りたい／◯◯の仕事に就きたい">'+escapeHtml(data.goals)+'</textarea></div>';
+    html += '</div>';
+
+    html += '<div class="card"><h2>✨ じぶんだけの項目</h2><p class="card-desc">用意された項目以外にも、自分について記録したいことを自由に追加できます</p>';
+    html += renderCustomSections();
+    html += '<button class="add-section-btn" id="addSectionBtn">＋ 新しい項目を追加</button>';
+    html += '</div>';
+
+    return html;
+  }
+
+  function field(key,type,label,ph,val){
+    return '<div class="field"><label>'+escapeHtml(label)+'</label>'+
+      '<input type="'+type+'" data-basic="'+key+'" placeholder="'+escapeHtml(ph)+'" value="'+escapeHtml(val)+'"></div>';
+  }
+
+  function bloodTypeField(){
+    var opts = ["","A","B","O","AB"];
+    var html = '<div class="field"><label>血液型</label><select data-basic="bloodType">';
+    opts.forEach(function(o){
+      html += '<option value="'+o+'"'+(data.basic.bloodType===o?" selected":"")+'>'+(o||"未設定")+(o?"型":"")+'</option>';
+    });
+    html += '</select></div>';
+    return html;
+  }
+
+  function renderTagCard(key){
+    var meta = LIST_META[key];
+    var items = data.lists[key];
+    var html = '<div class="card"><h2>'+tagIcon(key)+' '+escapeHtml(meta.label)+'</h2><p class="card-desc">'+escapeHtml(meta.desc)+'</p>';
+    html += '<div class="chip-list" data-tag-list="'+key+'">';
+    if(!items.length){ html += '<div class="chip-empty">まだ登録がありません</div>'; }
+    items.forEach(function(v,i){
+      html += '<span class="chip">'+escapeHtml(v)+'<button data-remove-tag="'+key+'" data-idx="'+i+'">×</button></span>';
+    });
+    html += '</div>';
+    html += '<div class="add-row"><input type="text" data-tag-input="'+key+'" placeholder="'+escapeHtml(meta.ph)+'">'+
+      '<button class="add-btn" data-tag-add="'+key+'">追加</button></div></div>';
+    return html;
+  }
+  function tagIcon(key){
+    return { skills:"🛠️", hobbies:"🎨", strengths:"💪", weaknesses:"🌱", dislikes:"🙅" }[key] || "•";
+  }
+
+  function renderFavorites(){
+    if(!data.favorites.length) return '<div class="chip-empty">まだ登録がありません</div>';
+    var html = "";
+    data.favorites.forEach(function(f,i){
+      html += '<div class="fav-item"><span class="fav-cat">'+escapeHtml(f.category)+'</span>'+
+        '<span class="fav-val">'+escapeHtml(f.value)+'</span>'+
+        '<button class="del-btn" data-del-fav="'+i+'">🗑️</button></div>';
+    });
+    return html;
+  }
+
+  function renderCustomSections(){
+    if(!data.customSections.length) return '';
+    var html = "";
+    data.customSections.forEach(function(sec){
+      html += '<div class="custom-section" data-cs-id="'+sec.id+'">';
+      html += '<div class="cs-head"><input type="text" data-cs-title="'+sec.id+'" placeholder="項目名（例：休日の過ごし方）" value="'+escapeHtml(sec.title)+'">'+
+        '<button class="cs-del" data-cs-del="'+sec.id+'">🗑️</button></div>';
+      html += '<div class="chip-list">';
+      if(!sec.items.length){ html += '<div class="chip-empty">まだ登録がありません</div>'; }
+      sec.items.forEach(function(v,i){
+        html += '<span class="chip">'+escapeHtml(v)+'<button data-cs-remove="'+sec.id+'" data-idx="'+i+'">×</button></span>';
+      });
+      html += '</div>';
+      html += '<div class="add-row"><input type="text" data-cs-input="'+sec.id+'" placeholder="内容を入力">'+
+        '<button class="add-btn" data-cs-add="'+sec.id+'">追加</button></div>';
+      html += '</div>';
+    });
+    return html;
+  }
+
+  /* =========================================================
+     8. じぶんを知る（Q&A）タブ
+  ========================================================= */
+
+  function renderDiscoverView(){
+    var answeredCount = Object.keys(data.qa).length;
+    var total = QUESTION_BANK.length;
+    var cats = ["すべて"].concat(uniq(QUESTION_BANK.map(function(q){ return q.cat; })));
+
+    var html = "";
+    var todayQ = QUESTION_BANK.find(function(q){ return q.id === state.todayQId; });
+    if(todayQ){
+      var already = data.qa[todayQ.id];
+      html += '<div class="today-q">';
+      html += '<div class="tq-label">📅 今日の質問</div>';
+      html += '<div class="tq-text">'+escapeHtml(todayQ.text)+'</div>';
+      html += '<textarea id="todayQInput" placeholder="思いつくまま書いてみましょう">'+(already ? escapeHtml(already[already.length-1].text) : '')+'</textarea>';
+      html += '<div class="tq-actions"><button id="todayQSave">記録する</button></div>';
+      html += '</div>';
+    }
+
+    html += '<p class="card-desc" style="margin:0 0 10px;">回答した質問：'+answeredCount+' / '+total+'　自分について書き溜めるほど、自己紹介文の材料が増えていきます。</p>';
+
+    html += '<div class="cat-chips">';
+    cats.forEach(function(c){
+      html += '<button class="cat-chip'+(state.discoverCat===c?" active":"")+'" data-cat="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>';
+    });
+    html += '</div>';
+
+    var list = QUESTION_BANK.filter(function(q){ return state.discoverCat === "すべて" || q.cat === state.discoverCat; });
+    list.forEach(function(q){
+      html += renderQaItem(q);
+    });
+
+    return html;
+  }
+
+  function uniq(arr){ return arr.filter(function(v,i){ return arr.indexOf(v) === i; }); }
+
+  function renderQaItem(q){
+    var hist = data.qa[q.id] || [];
+    var latest = hist[hist.length-1];
+    var html = '<div class="qa-item" data-qid="'+q.id+'">';
+    html += '<div class="qa-cat">'+escapeHtml(q.cat)+'</div>';
+    html += '<div class="qa-text">'+escapeHtml(q.text)+'</div>';
+
+    if(latest && !state["editing_"+q.id]){
+      html += '<div class="qa-answer">'+escapeHtml(latest.text)+'<div class="qa-date">'+fmtDate(latest.date)+' に記録</div></div>';
+      html += '<div class="qa-item-actions"><button data-qa-edit="'+q.id+'">✏️ 書き直す</button>';
+      if(hist.length > 1){ html += '<button data-qa-hist="'+q.id+'">🕰️ 過去の回答（'+(hist.length-1)+'件）</button>'; }
+      html += '</div>';
+      if(state["hist_"+q.id] && hist.length > 1){
+        html += '<div class="qa-history">';
+        for(var i=hist.length-2;i>=0;i--){
+          html += '<div class="hist-entry">'+escapeHtml(hist[i].text)+'<div class="hd">'+fmtDate(hist[i].date)+'</div></div>';
+        }
+        html += '</div>';
+      }
+    }else{
+      html += '<textarea data-qa-input="'+q.id+'" placeholder="回答を入力">'+(latest ? escapeHtml(latest.text) : '')+'</textarea>';
+      html += '<button class="qa-save" data-qa-save="'+q.id+'">保存する</button>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  /* =========================================================
+     9. 自己紹介文タブ
+  ========================================================= */
+
+  var introState = { length:"standard", tone:"formal", lastText:"" };
+
+  var PHRASES = {
+    formal: {
+      opening: ["はじめまして、{name}です。","{name}と申します。","こんにちは、{name}です。"],
+      closing: ["よろしくお願いいたします。","本日はよろしくお願いいたします。","これからよろしくお願いします。"]
+    },
+    casual: {
+      opening: ["はじめまして、{name}です！","{name}です！よろしく！","こんにちは、{name}です。"],
+      closing: ["よろしくお願いします！","仲良くしてください！","よろしくね！"]
+    }
+  };
+
+  function renderIntroView(){
+    var html = "";
+    html += '<div class="card"><h2>💬 自己紹介文ジェネレーター</h2>';
+    html += '<p class="card-desc">プロフィールタブに登録した内容から、話す内容を自動で組み立てます。項目を増やすほど自然な文章になります。</p>';
+
+    html += '<label style="display:block;font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">長さ</label>';
+    html += '<div class="toggle-row">';
+    [["compact","短め（30秒）"],["standard","標準"],["detailed","しっかり"]].forEach(function(o){
+      html += '<button data-len="'+o[0]+'" class="'+(introState.length===o[0]?"active":"")+'">'+o[1]+'</button>';
+    });
+    html += '</div>';
+
+    html += '<label style="display:block;font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">トーン</label>';
+    html += '<div class="toggle-row">';
+    [["formal","丁寧"],["casual","カジュアル"]].forEach(function(o){
+      html += '<button data-tone="'+o[0]+'" class="'+(introState.tone===o[0]?"active":"")+'">'+o[1]+'</button>';
+    });
+    html += '</div>';
+
+    html += '<button class="gen-btn" id="genBtn">✨ 自己紹介文をつくる</button>';
+
+    html += '<div class="gen-output'+(introState.lastText?'':' empty')+'" id="genOutput">'+
+      (introState.lastText ? escapeHtml(introState.lastText) : 'ボタンを押すと、ここに自己紹介文が表示されます。') + '</div>';
+
+    if(introState.lastText){
+      html += '<div class="gen-actions"><button id="copyBtn">📋 コピー</button><button id="regenBtn">🔁 表現を変える</button></div>';
+    }
+    html += '</div>';
+
+    return html;
+  }
+
+  function buildIntro(){
+    var b = data.basic;
+    var name = b.nickname || b.name || "（名前未登録）";
+    var tone = introState.tone;
+    var p = PHRASES[tone];
+    var parts = [];
+    parts.push(pick(p.opening).replace("{name}", name));
+
+    if(b.occupation && introState.length !== "compact"){
+      parts.push(b.occupation + "です。");
+    }
+    if(b.hometown && introState.length === "detailed"){
+      parts.push("出身は" + b.hometown + "です。");
+    }
+
+    var hobbySrc = data.lists.hobbies;
+    var skillSrc = data.lists.skills;
+    if(introState.length === "compact"){
+      if(hobbySrc.length){ parts.push("趣味は" + joinList(hobbySrc,2) + "です。"); }
+      else if(skillSrc.length){ parts.push("特技は" + joinList(skillSrc,2) + "です。"); }
+    }else{
+      if(hobbySrc.length){ parts.push("趣味は" + joinList(hobbySrc,3) + "です。"); }
+      if(skillSrc.length){ parts.push("特技は" + joinList(skillSrc,3) + "です。"); }
+    }
+
+    if(introState.length !== "compact" && data.favorites.length){
+      var fav = pick(data.favorites);
+      parts.push("最近は" + fav.value + "（" + fav.category + "）にはまっています。");
+    }
+
+    if(introState.length === "detailed"){
+      if(data.lists.strengths.length){ parts.push("長所は" + joinList(data.lists.strengths,2) + "なところです。"); }
+      if(b.motto){ parts.push("大切にしている言葉は「" + b.motto + "」です。"); }
+      if(data.goals){ parts.push("今後は" + data.goals.replace(/\n/g," ") + "と思っています。"); }
+    }
+
+    parts.push(pick(p.closing));
+    return parts.join("");
+  }
+
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function joinList(arr,max){
+    var picked = arr.length <= max ? arr.slice() : shuffle(arr.slice()).slice(0,max);
+    return picked.join("、");
+  }
+  function shuffle(arr){
+    for(var i=arr.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var tmp = arr[i]; arr[i]=arr[j]; arr[j]=tmp;
+    }
+    return arr;
+  }
+
+  /* =========================================================
+     10. データ・設定タブ
+  ========================================================= */
+
+  function renderSettingsView(){
+    var qaCount = Object.keys(data.qa).length;
+    var favCount = data.favorites.length;
+    var tagCount = Object.keys(data.lists).reduce(function(s,k){ return s + data.lists[k].length; },0);
+
+    var html = "";
+    html += '<div class="card"><h2>📊 記録の状況</h2>';
+    html += '<div class="stat-grid">';
+    html += '<div class="stat-box"><div class="num">'+tagCount+'</div><div class="lbl">登録タグ数</div></div>';
+    html += '<div class="stat-box"><div class="num">'+favCount+'</div><div class="lbl">好きなもの</div></div>';
+    html += '<div class="stat-box"><div class="num">'+qaCount+'</div><div class="lbl">回答した質問</div></div>';
+    html += '</div>';
+    if(data.meta.updatedAt){
+      html += '<p class="card-desc" style="margin-top:10px;">最終更新：'+fmtDate(data.meta.updatedAt)+'</p>';
+    }
+    html += '</div>';
+
+    html += '<div class="card"><h2>💾 データの管理</h2><p class="card-desc">この端末のブラウザだけに保存されています。機種変更やブラウザの変更前にバックアップしましょう。</p>';
+    html += '<button class="settings-btn" id="exportBtn">⬇️ エクスポート（JSONで保存）</button>';
+    html += '<button class="settings-btn" id="importBtn">⬆️ インポート（JSONを読み込む）</button>';
+    html += '<input type="file" id="importFile" accept="application/json">';
+    html += '<button class="settings-btn danger" id="resetBtn">🗑️ すべてのデータを削除</button>';
+    html += '</div>';
+
+    return html;
+  }
+
+  /* =========================================================
+     11. イベントバインド
+  ========================================================= */
+
+  function bindViewEvents(){
+    var app = document.getElementById("app");
+
+    // --- 基本情報 ---
+    app.querySelectorAll("[data-basic]").forEach(function(el){
+      el.addEventListener("change", function(){
+        data.basic[el.dataset.basic] = el.value;
+        saveData();
+        renderProgress();
+      });
+    });
+
+    // --- タグリスト（特技・趣味・長所・短所・苦手） ---
+    Object.keys(LIST_META).forEach(function(key){
+      var addBtn = app.querySelector('[data-tag-add="'+key+'"]');
+      var input = app.querySelector('[data-tag-input="'+key+'"]');
+      if(addBtn){
+        addBtn.addEventListener("click", function(){ addTag(key, input); });
+      }
+      if(input){
+        input.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); addTag(key, input); } });
+      }
+    });
+    app.querySelectorAll("[data-remove-tag]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var key = btn.dataset.removeTag, idx = Number(btn.dataset.idx);
+        data.lists[key].splice(idx,1);
+        saveData(); render();
+      });
+    });
+
+    // --- 好きなもの ---
+    var favAddBtn = app.querySelector("#favAddBtn");
+    if(favAddBtn){
+      favAddBtn.addEventListener("click", function(){
+        var cat = app.querySelector("#favCatSelect").value;
+        var input = app.querySelector("#favValInput");
+        var val = input.value.trim();
+        if(!val) return;
+        data.favorites.push({ category: cat, value: val });
+        saveData(); render();
+        toast("追加しました");
+      });
+    }
+    app.querySelectorAll("[data-del-fav]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        data.favorites.splice(Number(btn.dataset.delFav),1);
+        saveData(); render();
+      });
+    });
+
+    // --- 目標 ---
+    var goalsInput = app.querySelector("#goalsInput");
+    if(goalsInput){
+      goalsInput.addEventListener("change", function(){ data.goals = goalsInput.value; saveData(); renderProgress(); });
+    }
+
+    // --- カスタムセクション ---
+    var addSectionBtn = app.querySelector("#addSectionBtn");
+    if(addSectionBtn){
+      addSectionBtn.addEventListener("click", function(){
+        data.customSections.push({ id: uid(), title:"", items:[] });
+        saveData(); render();
+      });
+    }
+    app.querySelectorAll("[data-cs-title]").forEach(function(el){
+      el.addEventListener("change", function(){
+        var sec = data.customSections.find(function(s){ return s.id === el.dataset.csTitle; });
+        if(sec){ sec.title = el.value; saveData(); }
+      });
+    });
+    app.querySelectorAll("[data-cs-del]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        data.customSections = data.customSections.filter(function(s){ return s.id !== btn.dataset.csDel; });
+        saveData(); render();
+      });
+    });
+    app.querySelectorAll("[data-cs-add]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.dataset.csAdd;
+        var input = app.querySelector('[data-cs-input="'+id+'"]');
+        addCustomItem(id, input);
+      });
+    });
+    app.querySelectorAll("[data-cs-input]").forEach(function(input){
+      input.addEventListener("keydown", function(e){
+        if(e.key === "Enter"){ e.preventDefault(); addCustomItem(input.dataset.csInput, input); }
+      });
+    });
+    app.querySelectorAll("[data-cs-remove]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var sec = data.customSections.find(function(s){ return s.id === btn.dataset.csRemove; });
+        if(sec){ sec.items.splice(Number(btn.dataset.idx),1); saveData(); render(); }
+      });
+    });
+
+    // --- じぶんを知る ---
+    var todaySave = app.querySelector("#todayQSave");
+    if(todaySave){
+      todaySave.addEventListener("click", function(){
+        var val = app.querySelector("#todayQInput").value.trim();
+        if(!val) return;
+        saveAnswer(state.todayQId, val);
+        toast("記録しました");
+        render();
+      });
+    }
+    app.querySelectorAll("[data-cat]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state.discoverCat = btn.dataset.cat; render(); });
+    });
+    app.querySelectorAll("[data-qa-edit]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state["editing_"+btn.dataset.qaEdit] = true; render(); });
+    });
+    app.querySelectorAll("[data-qa-hist]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.dataset.qaHist;
+        state["hist_"+id] = !state["hist_"+id];
+        render();
+      });
+    });
+    app.querySelectorAll("[data-qa-save]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.dataset.qaSave;
+        var val = app.querySelector('[data-qa-input="'+id+'"]').value.trim();
+        if(!val) return;
+        saveAnswer(id, val);
+        state["editing_"+id] = false;
+        toast("保存しました");
+        render();
+      });
+    });
+
+    // --- 自己紹介文 ---
+    app.querySelectorAll("[data-len]").forEach(function(btn){
+      btn.addEventListener("click", function(){ introState.length = btn.dataset.len; render(); });
+    });
+    app.querySelectorAll("[data-tone]").forEach(function(btn){
+      btn.addEventListener("click", function(){ introState.tone = btn.dataset.tone; render(); });
+    });
+    var genBtn = app.querySelector("#genBtn");
+    if(genBtn){
+      genBtn.addEventListener("click", function(){ introState.lastText = buildIntro(); render(); });
+    }
+    var regenBtn = app.querySelector("#regenBtn");
+    if(regenBtn){
+      regenBtn.addEventListener("click", function(){ introState.lastText = buildIntro(); render(); });
+    }
+    var copyBtn = app.querySelector("#copyBtn");
+    if(copyBtn){
+      copyBtn.addEventListener("click", function(){
+        copyText(introState.lastText);
+      });
+    }
+
+    // --- 設定・データ ---
+    var exportBtn = app.querySelector("#exportBtn");
+    if(exportBtn){ exportBtn.addEventListener("click", exportData); }
+    var importBtn = app.querySelector("#importBtn");
+    var importFile = app.querySelector("#importFile");
+    if(importBtn && importFile){
+      importBtn.addEventListener("click", function(){ importFile.click(); });
+      importFile.addEventListener("change", function(){
+        var file = importFile.files[0];
+        if(file) importData(file);
+      });
+    }
+    var resetBtn = app.querySelector("#resetBtn");
+    if(resetBtn){ resetBtn.addEventListener("click", resetData); }
+  }
+
+  function addTag(key, input){
+    var val = input.value.trim();
+    if(!val) return;
+    if(data.lists[key].indexOf(val) !== -1){ toast("すでに登録されています"); return; }
+    data.lists[key].push(val);
+    saveData(); render();
+  }
+
+  function addCustomItem(id, input){
+    var val = input.value.trim();
+    if(!val) return;
+    var sec = data.customSections.find(function(s){ return s.id === id; });
+    if(sec){ sec.items.push(val); saveData(); render(); }
+  }
+
+  function saveAnswer(qid, text){
+    if(!data.qa[qid]) data.qa[qid] = [];
+    data.qa[qid].push({ text: text, date: new Date().toISOString() });
+    saveData();
+  }
+
+  function copyText(text){
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(url).then(function(){
-        showToast("リンクをコピーしました");
-      }).catch(function(){ legacyCopy(url); });
-    } else {
-      legacyCopy(url);
-    }
+      navigator.clipboard.writeText(text).then(function(){ toast("コピーしました"); }, function(){ fallbackCopy(text); });
+    }else{ fallbackCopy(text); }
+  }
+  function fallbackCopy(text){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); toast("コピーしました"); }catch(e){ toast("コピーできませんでした"); }
+    document.body.removeChild(ta);
   }
 
-  function legacyCopy(text){
-    try{
-      var ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.focus(); ta.select();
-      var ok = document.execCommand("copy");
-      document.body.removeChild(ta);
-      showToast(ok ? "リンクをコピーしました" : "コピーできませんでした: " + text);
-    }catch(e){
-      showToast("コピーできませんでした: " + text);
-    }
+  function exportData(){
+    var blob = new Blob([JSON.stringify(data,null,2)], { type:"application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    var d = new Date();
+    var stamp = d.getFullYear()+""+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");
+    a.href = url; a.download = "jibun-techo-"+stamp+".json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast("エクスポートしました");
+  }
+
+  function importData(file){
+    var reader = new FileReader();
+    reader.onload = function(){
+      try{
+        var parsed = JSON.parse(reader.result);
+        if(!confirm("現在のデータを上書きしてインポートしますか？")) return;
+        data = Object.assign(deepClone(DEFAULT_DATA), parsed, {
+          basic: Object.assign({}, DEFAULT_DATA.basic, parsed.basic),
+          lists: Object.assign({}, DEFAULT_DATA.lists, parsed.lists),
+          meta: Object.assign({}, DEFAULT_DATA.meta, parsed.meta)
+        });
+        saveData();
+        render();
+        toast("インポートしました");
+      }catch(e){
+        alert("ファイルの読み込みに失敗しました。正しいJSONファイルか確認してください。");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function resetData(){
+    if(!confirm("すべてのプロフィールデータを削除します。この操作は取り消せません。よろしいですか？")) return;
+    if(!confirm("本当に削除してよろしいですか？")) return;
+    data = deepClone(DEFAULT_DATA);
+    saveData();
+    render();
+    toast("データを削除しました");
   }
 
   /* =========================================================
-     11. 初期化
+     12. 初期化
   ========================================================= */
 
-  function init(){
-    loadStateFromUrl();
-    initTheme();
+  initTheme();
+  render();
 
-    document.getElementById("searchInput").value = state.q;
-    document.getElementById("searchInput").addEventListener("input", function(e){
-      state.q = e.target.value;
-      syncUrl();
-      renderAll();
-    });
-
-    document.querySelectorAll(".view-tabs button").forEach(function(btn){
-      btn.addEventListener("click", function(){ setView(btn.getAttribute("data-view")); });
-    });
-    setView(state.view);
-
-    document.getElementById("filterToggle").addEventListener("click", function(){
-      document.getElementById("filterPanel").classList.toggle("hidden");
-    });
-
-    document.getElementById("favToggle").addEventListener("click", function(){
-      state.favOnly = !state.favOnly;
-      onFilterChange();
-    });
-
-    document.getElementById("clearFilters").addEventListener("click", function(){
-      state.q = ""; state.buildings.clear(); state.floors.clear();
-      state.types.clear(); state.payments.clear(); state.favOnly = false;
-      document.getElementById("searchInput").value = "";
-      onFilterChange();
-    });
-
-    document.getElementById("themeToggle").addEventListener("click", function(){
-      var current = document.documentElement.getAttribute("data-theme");
-      var next = current === "dark" ? "light" : "dark";
-      applyTheme(next);
-      try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
-    });
-
-    document.getElementById("shareBtn").addEventListener("click", copyShareUrl);
-
-    renderFilters();
-    renderAll();
-  }
-
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
 })();
 </script>
 </body>
