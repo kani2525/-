@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>じぶん手帳｜プロフィール記録アプリ</title>
+<title>じぶん手帳</title>
 <style>
   :root{
     --bg: #f6f5fb;
@@ -23,6 +23,24 @@
     --radius-sm: 999px;
     --danger: #d0466a;
     --ok: #2f9e6e;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #1a1824;
+      --bg-elevated: #242232;
+      --text: #f1efe7;
+      --text-muted: #a6a2b8;
+      --border: #38354a;
+      --accent: #9d8ff7;
+      --accent-2: #b9adf9;
+      --accent-text: #1c1a2a;
+      --chip-bg: #2d2a3f;
+      --chip-bg-active: #9d8ff7;
+      --chip-text-active: #1c1a2a;
+      --shadow: 0 2px 14px rgba(0,0,0,0.4);
+      --danger: #f28ba3;
+      --ok: #79d6ac;
+    }
   }
   html[data-theme="dark"]{
     --bg: #1a1824;
@@ -400,17 +418,23 @@
 
   function applyTheme(t){
     if(t === "dark"){ document.documentElement.setAttribute("data-theme","dark"); }
-    else{ document.documentElement.removeAttribute("data-theme"); }
-    document.getElementById("themeToggle").textContent = t === "dark" ? "☀️" : "🌙";
+    else if(t === "light"){ document.documentElement.setAttribute("data-theme","light"); }
+    document.getElementById("themeToggle").textContent = effectiveIsDark() ? "☀️" : "🌙";
+  }
+  function effectiveIsDark(){
+    var attr = document.documentElement.getAttribute("data-theme");
+    if(attr === "dark") return true;
+    if(attr === "light") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
   }
   function initTheme(){
+    // 保存済みの手動設定がある場合のみ上書きする。未設定なら表示側のテーマ（system/明示指定）に委ねる。
     var saved = localStorage.getItem(THEME_KEY);
-    var t = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    applyTheme(t);
+    if(saved === "dark" || saved === "light"){ applyTheme(saved); }
+    else{ document.getElementById("themeToggle").textContent = effectiveIsDark() ? "☀️" : "🌙"; }
   }
   document.getElementById("themeToggle").addEventListener("click", function(){
-    var cur = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
-    var next = cur === "dark" ? "light" : "dark";
+    var next = effectiveIsDark() ? "light" : "dark";
     localStorage.setItem(THEME_KEY, next);
     applyTheme(next);
   });
@@ -990,13 +1014,36 @@
     document.body.removeChild(ta);
   }
 
-  function exportData(){
-    var blob = new Blob([JSON.stringify(data,null,2)], { type:"application/json" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
+  function exportFilename(){
     var d = new Date();
     var stamp = d.getFullYear()+""+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");
-    a.href = url; a.download = "jibun-techo-"+stamp+".json";
+    return "jibun-techo-"+stamp+".json";
+  }
+
+  function exportData(){
+    var json = JSON.stringify(data,null,2);
+    // Claude Artifact上ではサンドボックスの制約で通常のダウンロードリンクが動作しないため、
+    // 提供されていればdownloads機能を使い、なければブラウザの通常ダウンロードにフォールバックする。
+    if(window.claude && typeof window.claude.use === "function"){
+      window.claude.use("downloads").then(function(downloads){
+        if(!downloads){ exportDataFallback(json); return; }
+        downloads.save({ filename: exportFilename(), data: json }).then(function(){
+          toast("エクスポートしました");
+        }, function(err){
+          if(err && err.code === "declined") return;
+          exportDataFallback(json);
+        });
+      }, function(){ exportDataFallback(json); });
+      return;
+    }
+    exportDataFallback(json);
+  }
+
+  function exportDataFallback(json){
+    var blob = new Blob([json], { type:"application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = exportFilename();
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
     toast("エクスポートしました");
