@@ -426,6 +426,10 @@
   .onboarding-dots{ display:flex; gap:6px; justify-content:center; margin: 6px 0 18px; }
   .onboarding-dots span{ width:7px; height:7px; border-radius:50%; background: var(--chip-bg); transition: width .25s ease, background .25s ease; }
   .onboarding-dots span.active{ background: var(--accent); width:20px; border-radius:4px; }
+  .onboarding-progress-text{ text-align:center; font-size:.75rem; color: var(--text-muted); margin: 6px 0 18px; font-variant-numeric: tabular-nums; }
+  .onboarding-input-wrap{ width:100%; max-width:300px; margin-top:8px; }
+  .onboarding-input-wrap .field input[type="text"]{ text-align:center; font-size:1.05rem; padding:14px; }
+  .onboarding-swipe-link{ width:100%; max-width:300px; }
   .onboarding-nav{ display:flex; gap:10px; padding: 0 20px calc(20px + env(safe-area-inset-bottom)); }
   @media (prefers-reduced-motion: reduce){ .onboarding-icon{ animation:none; } }
 
@@ -667,6 +671,8 @@
     { icon:"🔀", title:"スワイプで発見", desc:"長所や座右の銘が思いつかないときは、候補カードをスワイプして選ぶだけで登録できます。" },
     { icon:"🧠", title:"自分を知り、伝える", desc:"答えるほど結果が収束していく性格診断や、自己紹介文・カードの自動生成で、自分をもっと深く知って伝えられます。" }
   ];
+  // チュートリアルに続けて、そのままの雰囲気で聞いていく基本情報（STEPSの先頭7件）
+  var BASIC_STEPS = STEPS.slice(0, 7);
 
   /* =========================================================
      2. 状態管理・永続化
@@ -913,44 +919,84 @@
      6b. オンボーディング（初回チュートリアル）
   ========================================================= */
 
+  // オンボーディングは「4枚のチュートリアルスライド」→「基本情報7項目」を
+  // ひとつながりの流れとして扱う（合計 ONBOARDING_TOTAL ページ）
+  function onboardingTotal(){ return ONBOARDING_SLIDES.length + BASIC_STEPS.length; }
+
   function renderOnboarding(){
-    var idx = Math.max(0, Math.min(onboardingState.index, ONBOARDING_SLIDES.length-1));
+    var total = onboardingTotal();
+    var idx = Math.max(0, Math.min(onboardingState.index, total-1));
     onboardingState.index = idx;
-    var slide = ONBOARDING_SLIDES[idx];
-    var isLast = idx === ONBOARDING_SLIDES.length - 1;
+    var isIntro = idx < ONBOARDING_SLIDES.length;
     var html = '<div class="onboarding-wrap">';
-    html += '<button class="onboarding-skip" id="obSkip">スキップ</button>';
-    html += '<div class="onboarding-body"><div class="onboarding-icon">'+slide.icon+'</div>';
-    html += '<div class="onboarding-title">'+escapeHtml(slide.title)+'</div>';
-    html += '<div class="onboarding-desc">'+escapeHtml(slide.desc)+'</div></div>';
-    html += '<div class="onboarding-dots">' + ONBOARDING_SLIDES.map(function(_,i){ return '<span class="'+(i===idx?"active":"")+'"></span>'; }).join("") + '</div>';
+
+    if(isIntro){
+      html += '<button class="onboarding-skip" id="obSkip">スキップ</button>';
+      var slide = ONBOARDING_SLIDES[idx];
+      html += '<div class="onboarding-body"><div class="onboarding-icon">'+slide.icon+'</div>';
+      html += '<div class="onboarding-title">'+escapeHtml(slide.title)+'</div>';
+      html += '<div class="onboarding-desc">'+escapeHtml(slide.desc)+'</div></div>';
+      html += '<div class="onboarding-dots">' + ONBOARDING_SLIDES.map(function(_,i){ return '<span class="'+(i===idx?"active":"")+'"></span>'; }).join("") + '</div>';
+    }else{
+      var step = BASIC_STEPS[idx - ONBOARDING_SLIDES.length];
+      html += '<div class="onboarding-body"><div class="onboarding-icon">'+step.icon+'</div>';
+      html += '<div class="onboarding-title">'+escapeHtml(step.label)+'</div>';
+      if(step.desc) html += '<div class="onboarding-desc">'+escapeHtml(step.desc)+'</div>';
+      html += '<div class="onboarding-input-wrap">'+renderStepBody(step)+'</div>';
+      if(step.swipeCat) html += '<button class="swipe-link onboarding-swipe-link" data-goto-swipe="'+step.swipeCat+'">🔀 スワイプして探す</button>';
+      html += '</div>';
+      html += '<div class="onboarding-progress-text">'+(idx - ONBOARDING_SLIDES.length + 1)+' / '+BASIC_STEPS.length+'</div>';
+    }
+
     html += '<div class="onboarding-nav">';
     if(idx > 0) html += '<button class="wz-btn ghost" id="obBack">戻る</button>';
-    html += '<button class="wz-btn primary" id="obNext">'+(isLast ? "はじめる" : "次へ")+'</button>';
+    var isLastIntro = idx === ONBOARDING_SLIDES.length - 1;
+    html += '<button class="wz-btn primary" id="obNext">'+(isLastIntro ? "はじめる" : "次へ")+'</button>';
     html += '</div></div>';
     return html;
   }
 
   function bindOnboardingEvents(){
+    var idx = onboardingState.index;
+    var isIntro = idx < ONBOARDING_SLIDES.length;
+
     var skip = document.getElementById("obSkip");
-    if(skip) skip.addEventListener("click", finishOnboarding);
+    if(skip) skip.addEventListener("click", function(){ onboardingState.index = ONBOARDING_SLIDES.length; render(); });
     var back = document.getElementById("obBack");
     if(back) back.addEventListener("click", function(){ onboardingState.index--; render(); });
     var next = document.getElementById("obNext");
-    if(next) next.addEventListener("click", function(){
-      if(onboardingState.index >= ONBOARDING_SLIDES.length - 1) finishOnboarding();
-      else{ onboardingState.index++; render(); }
-    });
+    if(next) next.addEventListener("click", advanceOnboarding);
+
+    if(!isIntro){
+      var step = BASIC_STEPS[idx - ONBOARDING_SLIDES.length];
+      bindBasicFieldInputs(step, advanceOnboarding);
+      var swipeLinkBtn = document.querySelector("[data-goto-swipe]");
+      if(swipeLinkBtn){
+        swipeLinkBtn.addEventListener("click", function(){
+          state.swipeCat = swipeLinkBtn.dataset.gotoSwipe;
+          state.swipeQueue = null;
+          switchView("swipe");
+        });
+      }
+    }
+  }
+
+  function advanceOnboarding(){
+    if(onboardingState.index >= onboardingTotal() - 1) finishOnboarding();
+    else{ onboardingState.index++; render(); }
   }
 
   function finishOnboarding(){
     data.meta.onboardingSeen = true;
     data.meta.wizardStarted = true;
-    data.meta.wizardStep = 0;
+    var skillsIdx = 0;
+    for(var i=0;i<STEPS.length;i++){ if(STEPS[i].id === "skills"){ skillsIdx = i; break; } }
+    data.meta.wizardStep = skillsIdx;
     saveData();
-    wizardState.stepIndex = 0;
+    wizardState.stepIndex = skillsIdx;
     state.wizardReturnView = "home";
     switchView("wizard");
+    toast("基本情報の入力、お疲れさまでした！");
   }
 
   /* =========================================================
@@ -1120,6 +1166,48 @@
     }
   }
 
+  // 基本情報（text / date / blood）の入力欄を、通常のウィザードとオンボーディングの
+  // どちらからでも共通で扱うためのバインド処理。advanceFn には「次へ進む」処理を渡す。
+  function bindBasicFieldInputs(step, advanceFn){
+    // テキスト系の項目は自動でフォーカスし、Enterキーでも次へ進めるようにする（より直感的な入力のため）
+    var wzInput = document.getElementById("wzInput");
+    if(wzInput){
+      wzInput.addEventListener("change", function(){
+        if(step.basicKey) data.basic[step.basicKey] = wzInput.value;
+        else if(step.key) data[step.key] = wzInput.value;
+        saveData(); renderProgress();
+      });
+      if(step.type === "text" || step.type === "textarea"){
+        setTimeout(function(){ wzInput.focus(); }, 30);
+      }
+      if(step.type === "text"){
+        wzInput.addEventListener("keydown", function(e){
+          if(e.key === "Enter"){ e.preventDefault(); wzInput.dispatchEvent(new Event("change")); advanceFn(); }
+        });
+      }
+    }
+
+    // 血液型：選んだらすぐ次へ進む
+    document.querySelectorAll("[data-blood]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        data.basic.bloodType = btn.dataset.blood;
+        saveData(); render();
+        setTimeout(advanceFn, 220);
+      });
+    });
+
+    // 誕生日：年・月・日をそれぞれ選ぶドラム式ピッカー
+    var yearSel = document.getElementById("wzYear"), monthSel = document.getElementById("wzMonth"), daySel = document.getElementById("wzDay");
+    if(yearSel && monthSel && daySel){
+      var updateBirthday = function(){
+        if(yearSel.value && monthSel.value && daySel.value) data.basic.birthday = yearSel.value + "-" + monthSel.value + "-" + daySel.value;
+        else data.basic.birthday = "";
+        saveData(); renderProgress();
+      };
+      [yearSel, monthSel, daySel].forEach(function(sel){ sel.addEventListener("change", updateBirthday); });
+    }
+  }
+
   function bindWizardEvents(step){
     var app = document.getElementById("app");
 
@@ -1136,43 +1224,7 @@
     var wzNext = document.getElementById("wzNext");
     if(wzNext) wzNext.addEventListener("click", wizardAdvance);
 
-    // テキスト系の項目は自動でフォーカスし、Enterキーでも次へ進めるようにする（より直感的な入力のため）
-    var wzInput = document.getElementById("wzInput");
-    if(wzInput){
-      wzInput.addEventListener("change", function(){
-        if(step.basicKey) data.basic[step.basicKey] = wzInput.value;
-        else if(step.key) data[step.key] = wzInput.value;
-        saveData(); renderProgress();
-      });
-      if(step.type === "text" || step.type === "textarea"){
-        setTimeout(function(){ wzInput.focus(); }, 30);
-      }
-      if(step.type === "text"){
-        wzInput.addEventListener("keydown", function(e){
-          if(e.key === "Enter"){ e.preventDefault(); wzInput.dispatchEvent(new Event("change")); wizardAdvance(); }
-        });
-      }
-    }
-
-    // 血液型：選んだらすぐ次へ進む
-    app.querySelectorAll("[data-blood]").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        data.basic.bloodType = btn.dataset.blood;
-        saveData(); render();
-        setTimeout(wizardAdvance, 220);
-      });
-    });
-
-    // 誕生日：年・月・日をそれぞれ選ぶドラム式ピッカー
-    var yearSel = document.getElementById("wzYear"), monthSel = document.getElementById("wzMonth"), daySel = document.getElementById("wzDay");
-    if(yearSel && monthSel && daySel){
-      var updateBirthday = function(){
-        if(yearSel.value && monthSel.value && daySel.value) data.basic.birthday = yearSel.value + "-" + monthSel.value + "-" + daySel.value;
-        else data.basic.birthday = "";
-        saveData(); renderProgress();
-      };
-      [yearSel, monthSel, daySel].forEach(function(sel){ sel.addEventListener("change", updateBirthday); });
-    }
+    bindBasicFieldInputs(step, wizardAdvance);
 
     var swipeLinkBtn = app.querySelector("[data-goto-swipe]");
     if(swipeLinkBtn){
