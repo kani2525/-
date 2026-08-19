@@ -218,6 +218,21 @@
   .wz-btn.ghost{ background: var(--bg-elevated); color: var(--text); border:1px solid var(--border); }
   .wz-btn[disabled]{ opacity:.4; cursor:not-allowed; }
 
+  .date-picker-row{ display:flex; gap:8px; }
+  .date-picker-row select{
+    flex:1; min-width:0; padding: 13px 4px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:1rem; text-align:center;
+  }
+  .date-picker-row select:focus{ outline: 2px solid var(--accent); }
+
+  .blood-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; }
+  .blood-btn{
+    border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 18px 10px; border-radius: var(--radius-md); font-size:1.05rem; font-weight:800; cursor:pointer;
+  }
+  .blood-btn.active{ background: var(--accent); color: var(--accent-text); border-color:transparent; }
+  .blood-btn.full{ width:100%; margin-top:10px; font-size:.85rem; font-weight:700; padding:12px; }
+
   /* ---------- home ---------- */
   .home-hero h2{ margin-bottom:6px; }
   .shortcut-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; }
@@ -392,6 +407,27 @@
   .splash-tagline{ font-size:.8rem; opacity:.85; }
   @keyframes splash-pop{ 0%{ transform:scale(.6); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
   @media (prefers-reduced-motion: reduce){ .splash-icon{ animation:none; } .splash{ transition:none; } }
+
+  /* ---------- onboarding (first-launch tutorial) ---------- */
+  .phone-screen.chrome-hidden > header.topbar,
+  .phone-screen.chrome-hidden > nav.bottom-nav{ display:none; }
+  .onboarding-wrap{ height:100%; display:flex; flex-direction:column; padding-top: env(safe-area-inset-top); }
+  .onboarding-skip{
+    align-self:flex-end; border:none; background:transparent; color: var(--text-muted);
+    font-size:.8rem; font-weight:700; padding:14px 16px 4px; cursor:pointer;
+  }
+  .onboarding-body{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:14px; padding: 10px 26px 20px;
+  }
+  .onboarding-icon{ font-size:4rem; animation: splash-pop .5s cubic-bezier(.2,.9,.3,1.2); }
+  .onboarding-title{ font-size:1.25rem; font-weight:800; }
+  .onboarding-desc{ font-size:.88rem; color: var(--text-muted); max-width:280px; line-height:1.75; }
+  .onboarding-dots{ display:flex; gap:6px; justify-content:center; margin: 6px 0 18px; }
+  .onboarding-dots span{ width:7px; height:7px; border-radius:50%; background: var(--chip-bg); transition: width .25s ease, background .25s ease; }
+  .onboarding-dots span.active{ background: var(--accent); width:20px; border-radius:4px; }
+  .onboarding-nav{ display:flex; gap:10px; padding: 0 20px calc(20px + env(safe-area-inset-bottom)); }
+  @media (prefers-reduced-motion: reduce){ .onboarding-icon{ animation:none; } }
 
   /* ---------- in-app modal (confirm / alert) ---------- */
   .modal-overlay{
@@ -621,8 +657,16 @@
     customSections: [],
     qa: {},
     personality: { responses: {} },
-    meta: { createdAt:null, updatedAt:null, wizardStarted:false, wizardStep:0, wizardDone:false }
+    meta: { createdAt:null, updatedAt:null, onboardingSeen:false, wizardStarted:false, wizardStep:0, wizardDone:false }
   };
+
+  // 初回起動時に表示するチュートリアル（オンボーディング）のスライド
+  var ONBOARDING_SLIDES = [
+    { icon:"📔", title:"じぶん手帳へようこそ", desc:"自己紹介でいつも何を話すか困ってしまう…その悩みを解決する、自分だけのプロフィール帳です。" },
+    { icon:"✍️", title:"ひとつずつ記入", desc:"名前や趣味などの質問に、ひとつずつ答えるだけ。途中でやめても大丈夫、いつでも続きから再開できます。" },
+    { icon:"🔀", title:"スワイプで発見", desc:"長所や座右の銘が思いつかないときは、候補カードをスワイプして選ぶだけで登録できます。" },
+    { icon:"🧠", title:"自分を知り、伝える", desc:"答えるほど結果が収束していく性格診断や、自己紹介文・カードの自動生成で、自分をもっと深く知って伝えられます。" }
+  ];
 
   /* =========================================================
      2. 状態管理・永続化
@@ -632,6 +676,7 @@
   var cardColorId = localStorage.getItem(CARD_COLOR_KEY) || "violet";
   var state = { view:"home", diagSub:"personality", introSub:"text", swipeCat:"motto", swipeQueue:null, wizardReturnView:"home" };
   var wizardState = { stepIndex: 0 };
+  var onboardingState = { index: 0 };
 
   function loadData(){
     try{
@@ -841,8 +886,11 @@
 
   function render(){
     renderProgress();
+    var screenEl = document.querySelector(".phone-screen");
+    if(screenEl) screenEl.classList.toggle("chrome-hidden", state.view === "onboarding");
     var app = document.getElementById("app");
-    if(state.view === "wizard") app.innerHTML = renderWizard();
+    if(state.view === "onboarding") app.innerHTML = renderOnboarding();
+    else if(state.view === "wizard") app.innerHTML = renderWizard();
     else if(state.view === "swipe") app.innerHTML = renderSwipeView();
     else if(state.view === "quiz") app.innerHTML = renderQuizView();
     else if(state.view === "intro") app.innerHTML = renderIntroTabView();
@@ -852,12 +900,57 @@
   }
 
   function bindViewEvents(){
-    if(state.view === "wizard") bindWizardEvents(STEPS[wizardState.stepIndex]);
+    if(state.view === "onboarding") bindOnboardingEvents();
+    else if(state.view === "wizard") bindWizardEvents(STEPS[wizardState.stepIndex]);
     else if(state.view === "swipe") bindSwipeEvents();
     else if(state.view === "quiz") bindQuizEvents();
     else if(state.view === "intro") bindIntroEvents();
     else if(state.view === "settings") bindSettingsEvents();
     else bindHomeEvents();
+  }
+
+  /* =========================================================
+     6b. オンボーディング（初回チュートリアル）
+  ========================================================= */
+
+  function renderOnboarding(){
+    var idx = Math.max(0, Math.min(onboardingState.index, ONBOARDING_SLIDES.length-1));
+    onboardingState.index = idx;
+    var slide = ONBOARDING_SLIDES[idx];
+    var isLast = idx === ONBOARDING_SLIDES.length - 1;
+    var html = '<div class="onboarding-wrap">';
+    html += '<button class="onboarding-skip" id="obSkip">スキップ</button>';
+    html += '<div class="onboarding-body"><div class="onboarding-icon">'+slide.icon+'</div>';
+    html += '<div class="onboarding-title">'+escapeHtml(slide.title)+'</div>';
+    html += '<div class="onboarding-desc">'+escapeHtml(slide.desc)+'</div></div>';
+    html += '<div class="onboarding-dots">' + ONBOARDING_SLIDES.map(function(_,i){ return '<span class="'+(i===idx?"active":"")+'"></span>'; }).join("") + '</div>';
+    html += '<div class="onboarding-nav">';
+    if(idx > 0) html += '<button class="wz-btn ghost" id="obBack">戻る</button>';
+    html += '<button class="wz-btn primary" id="obNext">'+(isLast ? "はじめる" : "次へ")+'</button>';
+    html += '</div></div>';
+    return html;
+  }
+
+  function bindOnboardingEvents(){
+    var skip = document.getElementById("obSkip");
+    if(skip) skip.addEventListener("click", finishOnboarding);
+    var back = document.getElementById("obBack");
+    if(back) back.addEventListener("click", function(){ onboardingState.index--; render(); });
+    var next = document.getElementById("obNext");
+    if(next) next.addEventListener("click", function(){
+      if(onboardingState.index >= ONBOARDING_SLIDES.length - 1) finishOnboarding();
+      else{ onboardingState.index++; render(); }
+    });
+  }
+
+  function finishOnboarding(){
+    data.meta.onboardingSeen = true;
+    data.meta.wizardStarted = true;
+    data.meta.wizardStep = 0;
+    saveData();
+    wizardState.stepIndex = 0;
+    state.wizardReturnView = "home";
+    switchView("wizard");
   }
 
   /* =========================================================
@@ -956,14 +1049,30 @@
       return '<div class="field"><input type="text" id="wzInput" placeholder="' + escapeHtml(step.ph||"") + '" value="' + escapeHtml(data.basic[step.basicKey]||"") + '"></div>';
     }
     if(step.type === "date"){
-      return '<div class="field"><input type="date" id="wzInput" value="' + escapeHtml(data.basic[step.basicKey]||"") + '"></div>';
+      var val = data.basic[step.basicKey] || "";
+      var dparts = val.split("-");
+      var yy = dparts[0] || "", mm = dparts[1] || "", dd = dparts[2] || "";
+      var nowY = new Date().getFullYear();
+      var hd = '<div class="date-picker-row">';
+      hd += '<select id="wzYear"><option value="">年</option>';
+      for(var y1=nowY; y1>=nowY-100; y1--){ hd += '<option value="'+y1+'"'+(String(y1)===yy?" selected":"")+'>'+y1+'</option>'; }
+      hd += '</select>';
+      hd += '<select id="wzMonth"><option value="">月</option>';
+      for(var m1=1; m1<=12; m1++){ var mv=String(m1).padStart(2,"0"); hd += '<option value="'+mv+'"'+(mv===mm?" selected":"")+'>'+m1+'</option>'; }
+      hd += '</select>';
+      hd += '<select id="wzDay"><option value="">日</option>';
+      for(var d1=1; d1<=31; d1++){ var dv=String(d1).padStart(2,"0"); hd += '<option value="'+dv+'"'+(dv===dd?" selected":"")+'>'+d1+'</option>'; }
+      hd += '</select>';
+      hd += '</div>';
+      return hd;
     }
     if(step.type === "blood"){
-      var opts = ["","A","B","O","AB"];
-      var h = '<div class="field"><select id="wzInput">';
-      opts.forEach(function(o){ h += '<option value="'+o+'"'+(data.basic.bloodType===o?" selected":"")+'>'+(o ? o+"型" : "未設定")+'</option>'; });
-      h += '</select></div>';
-      return h;
+      var opts = ["A","B","O","AB"];
+      var hb = '<div class="blood-grid">';
+      opts.forEach(function(o){ hb += '<button class="blood-btn'+(data.basic.bloodType===o?" active":"")+'" data-blood="'+o+'">'+o+'型</button>'; });
+      hb += '</div>';
+      hb += '<button class="blood-btn full'+(!data.basic.bloodType?" active":"")+'" data-blood="">わからない・未設定</button>';
+      return hb;
     }
     if(step.type === "textarea"){
       return '<div class="field"><textarea id="wzInput" placeholder="' + escapeHtml(step.ph||"") + '">' + escapeHtml(data[step.key]||"") + '</textarea></div>';
@@ -1001,6 +1110,16 @@
     return "";
   }
 
+  function wizardAdvance(){
+    if(wizardState.stepIndex >= STEPS.length - 1){
+      data.meta.wizardDone = true; saveData();
+      toast("プロフィールの入力、お疲れさまでした！");
+      switchView(state.wizardReturnView || "home");
+    }else{
+      wizardState.stepIndex++; data.meta.wizardStep = wizardState.stepIndex; saveData(); render();
+    }
+  }
+
   function bindWizardEvents(step){
     var app = document.getElementById("app");
 
@@ -1015,16 +1134,9 @@
     });
 
     var wzNext = document.getElementById("wzNext");
-    if(wzNext) wzNext.addEventListener("click", function(){
-      if(wizardState.stepIndex >= STEPS.length - 1){
-        data.meta.wizardDone = true; saveData();
-        toast("プロフィールの入力、お疲れさまでした！");
-        switchView(state.wizardReturnView || "home");
-      }else{
-        wizardState.stepIndex++; data.meta.wizardStep = wizardState.stepIndex; saveData(); render();
-      }
-    });
+    if(wzNext) wzNext.addEventListener("click", wizardAdvance);
 
+    // テキスト系の項目は自動でフォーカスし、Enterキーでも次へ進めるようにする（より直感的な入力のため）
     var wzInput = document.getElementById("wzInput");
     if(wzInput){
       wzInput.addEventListener("change", function(){
@@ -1032,6 +1144,34 @@
         else if(step.key) data[step.key] = wzInput.value;
         saveData(); renderProgress();
       });
+      if(step.type === "text" || step.type === "textarea"){
+        setTimeout(function(){ wzInput.focus(); }, 30);
+      }
+      if(step.type === "text"){
+        wzInput.addEventListener("keydown", function(e){
+          if(e.key === "Enter"){ e.preventDefault(); wzInput.dispatchEvent(new Event("change")); wizardAdvance(); }
+        });
+      }
+    }
+
+    // 血液型：選んだらすぐ次へ進む
+    app.querySelectorAll("[data-blood]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        data.basic.bloodType = btn.dataset.blood;
+        saveData(); render();
+        setTimeout(wizardAdvance, 220);
+      });
+    });
+
+    // 誕生日：年・月・日をそれぞれ選ぶドラム式ピッカー
+    var yearSel = document.getElementById("wzYear"), monthSel = document.getElementById("wzMonth"), daySel = document.getElementById("wzDay");
+    if(yearSel && monthSel && daySel){
+      var updateBirthday = function(){
+        if(yearSel.value && monthSel.value && daySel.value) data.basic.birthday = yearSel.value + "-" + monthSel.value + "-" + daySel.value;
+        else data.basic.birthday = "";
+        saveData(); renderProgress();
+      };
+      [yearSel, monthSel, daySel].forEach(function(sel){ sel.addEventListener("change", updateBirthday); });
     }
 
     var swipeLinkBtn = app.querySelector("[data-goto-swipe]");
@@ -1769,8 +1909,9 @@
         try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
         saveData();
         wizardState.stepIndex = 0;
+        onboardingState.index = 0;
         state.wizardReturnView = "home";
-        switchView("home");
+        switchView("onboarding");
         toast("データを削除しました");
       }, { danger:true, confirmLabel:"完全に削除する" });
     }, { danger:true, confirmLabel:"削除する" });
@@ -1782,7 +1923,10 @@
 
   initTheme();
 
-  if(!data.meta.wizardStarted){
+  if(!data.meta.onboardingSeen){
+    onboardingState.index = 0;
+    state.view = "onboarding";
+  }else if(!data.meta.wizardStarted){
     data.meta.wizardStarted = true;
     data.meta.wizardStep = 0;
     saveData();
