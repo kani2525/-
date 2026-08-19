@@ -377,6 +377,37 @@
     max-width: 88%; text-align:center;
   }
   .toast.show{ opacity:1; }
+
+  /* ---------- splash screen ---------- */
+  .splash{
+    position:absolute; inset:0; z-index:200;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    background: linear-gradient(160deg, var(--accent), var(--accent-2));
+    color:#fff; text-align:center; padding:0 24px;
+    transition: opacity .4s ease, visibility .4s ease;
+  }
+  .splash.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  .splash-icon{ font-size:3.6rem; animation: splash-pop .6s cubic-bezier(.2,.9,.3,1.2); }
+  .splash-title{ font-size:1.5rem; font-weight:800; letter-spacing:.03em; }
+  .splash-tagline{ font-size:.8rem; opacity:.85; }
+  @keyframes splash-pop{ 0%{ transform:scale(.6); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+  @media (prefers-reduced-motion: reduce){ .splash-icon{ animation:none; } .splash{ transition:none; } }
+
+  /* ---------- in-app modal (confirm / alert) ---------- */
+  .modal-overlay{
+    position:absolute; inset:0; z-index:90; background: rgba(10,8,16,.5);
+    display:flex; align-items:center; justify-content:center; padding: 24px;
+  }
+  .modal-box{
+    background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 22px 20px;
+    max-width: 300px; width:100%; box-shadow: var(--shadow); text-align:center;
+  }
+  .modal-box p{ font-size:.88rem; margin:0 0 18px; color: var(--text); line-height:1.6; }
+  .modal-actions{ display:flex; gap:8px; }
+  .modal-actions button{ flex:1; border:none; padding:11px; border-radius: var(--radius-md); font-size:.85rem; font-weight:700; cursor:pointer; }
+  .modal-actions .btn-cancel{ background: var(--chip-bg); color: var(--text); }
+  .modal-actions .btn-confirm{ background: var(--accent); color: var(--accent-text); }
+  .modal-actions .btn-confirm.danger{ background: var(--danger); color:#fff; }
 </style>
 </head>
 <body>
@@ -384,6 +415,12 @@
 <div class="phone-frame">
   <div class="phone-notch"></div>
   <div class="phone-screen">
+
+    <div class="splash" id="splash">
+      <div class="splash-icon">📔</div>
+      <div class="splash-title">じぶん手帳</div>
+      <div class="splash-tagline">自己紹介にもう困らない、わたしのプロフィール帳</div>
+    </div>
 
     <header class="topbar">
       <div class="topbar-row">
@@ -686,6 +723,33 @@
     toastEl.classList.add("show");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
+  }
+
+  // 画面内モーダル（確認・通知）。Claude Artifactのサンドボックス内ではブラウザ標準の
+  // confirm()/alert() がブロックされ何も起きないことがあるため、自前で実装している。
+  function closeModal(overlay){ if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay); }
+  function showConfirm(message, onConfirm, opts){
+    opts = opts || {};
+    var overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    var confirmClass = "btn-confirm" + (opts.danger ? " danger" : "");
+    overlay.innerHTML =
+      '<div class="modal-box"><p>' + escapeHtml(message) + '</p><div class="modal-actions">' +
+      '<button class="btn-cancel" id="modalCancelBtn">' + escapeHtml(opts.cancelLabel || "キャンセル") + '</button>' +
+      '<button class="' + confirmClass + '" id="modalConfirmBtn">' + escapeHtml(opts.confirmLabel || "OK") + '</button>' +
+      '</div></div>';
+    document.querySelector(".phone-screen").appendChild(overlay);
+    overlay.querySelector("#modalCancelBtn").addEventListener("click", function(){ closeModal(overlay); });
+    overlay.querySelector("#modalConfirmBtn").addEventListener("click", function(){ closeModal(overlay); onConfirm(); });
+  }
+  function showAlert(message){
+    var overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.innerHTML =
+      '<div class="modal-box"><p>' + escapeHtml(message) + '</p><div class="modal-actions">' +
+      '<button class="btn-confirm" id="modalOkBtn">OK</button></div></div>';
+    document.querySelector(".phone-screen").appendChild(overlay);
+    overlay.querySelector("#modalOkBtn").addEventListener("click", function(){ closeModal(overlay); });
   }
 
   function copyText(text){
@@ -1676,9 +1740,14 @@
   function importData(file){
     var reader = new FileReader();
     reader.onload = function(){
+      var parsed;
       try{
-        var parsed = JSON.parse(reader.result);
-        if(!confirm("現在のデータを上書きしてインポートしますか？")) return;
+        parsed = JSON.parse(reader.result);
+      }catch(e){
+        showAlert("ファイルの読み込みに失敗しました。正しいJSONファイルか確認してください。");
+        return;
+      }
+      showConfirm("現在のデータを上書きしてインポートしますか？", function(){
         data = Object.assign(deepClone(DEFAULT_DATA), parsed, {
           basic: Object.assign({}, DEFAULT_DATA.basic, parsed.basic),
           lists: Object.assign({}, DEFAULT_DATA.lists, parsed.lists),
@@ -1688,20 +1757,23 @@
         saveData();
         switchView("home");
         toast("インポートしました");
-      }catch(e){
-        alert("ファイルの読み込みに失敗しました。正しいJSONファイルか確認してください。");
-      }
+      });
     };
     reader.readAsText(file);
   }
 
   function resetData(){
-    if(!confirm("すべてのプロフィールデータを削除します。この操作は取り消せません。よろしいですか？")) return;
-    if(!confirm("本当に削除してよろしいですか？")) return;
-    data = deepClone(DEFAULT_DATA);
-    saveData();
-    switchView("home");
-    toast("データを削除しました");
+    showConfirm("すべてのプロフィールデータを削除します。この操作は取り消せません。よろしいですか？", function(){
+      showConfirm("本当に削除してよろしいですか？", function(){
+        data = deepClone(DEFAULT_DATA);
+        try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+        saveData();
+        wizardState.stepIndex = 0;
+        state.wizardReturnView = "home";
+        switchView("home");
+        toast("データを削除しました");
+      }, { danger:true, confirmLabel:"完全に削除する" });
+    }, { danger:true, confirmLabel:"削除する" });
   }
 
   /* =========================================================
@@ -1722,6 +1794,15 @@
   }
   document.querySelectorAll(".bn-buttons button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === state.view); });
   render();
+
+  // 起動画面（スプラッシュ）を少し見せてからアプリ本体を表示する
+  var splashEl = document.getElementById("splash");
+  if(splashEl){
+    setTimeout(function(){
+      splashEl.classList.add("hide");
+      setTimeout(function(){ if(splashEl.parentNode) splashEl.parentNode.removeChild(splashEl); }, 450);
+    }, 1000);
+  }
 
 })();
 </script>
