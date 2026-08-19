@@ -85,7 +85,7 @@
   }
   .topbar-inner{ max-width: 720px; margin:0 auto; }
   .topbar-row{ display:flex; align-items:flex-start; justify-content:space-between; gap: 8px; }
-  header.topbar h1{ margin:0; font-size: 1.3rem; font-weight: 800; letter-spacing: .02em; }
+  header.topbar h1{ margin:0; font-size: 1.3rem; font-weight: 800; letter-spacing: .02em; cursor:pointer; }
   header.topbar .subtitle{ margin: 4px 0 0; font-size: .8rem; opacity:.9; }
   .header-actions{ display:flex; gap:6px; flex-shrink:0; }
   .icon-btn{
@@ -111,7 +111,7 @@
   }
   .view-tabs button{
     flex:1; border:none; background:transparent; color: var(--text-muted);
-    padding: 9px 8px; border-radius: var(--radius-sm); font-size:.78rem; font-weight:700; cursor:pointer;
+    padding: 9px 6px; border-radius: var(--radius-sm); font-size:.76rem; font-weight:700; cursor:pointer;
     white-space: nowrap;
   }
   .view-tabs button.active{ background: var(--accent); color: var(--accent-text); }
@@ -125,34 +125,30 @@
   .card h2{ margin: 0 0 4px; font-size: 1rem; font-weight:800; display:flex; align-items:center; gap:6px; }
   .card .card-desc{ margin: 0 0 12px; font-size:.78rem; color: var(--text-muted); }
 
-  .field{ margin-bottom: 12px; }
-  .field:last-child{ margin-bottom: 0; }
-  .field label{ display:block; font-size:.75rem; font-weight:700; color: var(--text-muted); margin-bottom:5px; }
+  .field{ margin-bottom: 0; }
   .field input[type="text"], .field input[type="date"], .field select, .field textarea{
-    width:100%; padding: 10px 12px; border-radius: var(--radius-md);
-    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:.9rem;
+    width:100%; padding: 12px 14px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:1rem;
   }
   .field input:focus, .field select:focus, .field textarea:focus{ outline: 2px solid var(--accent); }
-  .field textarea{ resize: vertical; min-height: 64px; }
-  .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  @media (max-width: 420px){ .two-col{ grid-template-columns: 1fr; } }
+  .field textarea{ resize: vertical; min-height: 90px; }
 
   /* ---------- chip tag editor ---------- */
-  .chip-list{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:8px; }
+  .chip-list{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px; }
   .chip{
     display:inline-flex; align-items:center; gap:6px;
     border:1px solid var(--border); background: var(--chip-bg); color: var(--text);
-    padding: 6px 6px 6px 12px; border-radius: var(--radius-sm); font-size: .82rem;
+    padding: 6px 6px 6px 12px; border-radius: var(--radius-sm); font-size: .85rem;
   }
   .chip button{
     border:none; background: rgba(0,0,0,.08); color: inherit; width:18px; height:18px; border-radius:50%;
     cursor:pointer; font-size:.7rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
   html[data-theme="dark"] .chip button{ background: rgba(255,255,255,.12); }
-  .chip-empty{ font-size:.8rem; color: var(--text-muted); padding: 2px 0 8px; }
+  .chip-empty{ font-size:.82rem; color: var(--text-muted); padding: 2px 0 10px; }
   .add-row{ display:flex; gap:8px; }
   .add-row input{ flex:1; }
-  .add-row select{ flex: 0 0 auto; max-width: 40%; }
+  .add-row select{ flex: 0 0 auto; max-width: 42%; }
   .add-btn{
     border:none; background: var(--accent); color: var(--accent-text); padding: 0 16px; border-radius: var(--radius-md);
     font-size:.85rem; font-weight:700; cursor:pointer; flex-shrink:0;
@@ -167,14 +163,92 @@
 
   .custom-section{ border:1px dashed var(--border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 10px; }
   .custom-section .cs-head{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-  .custom-section .cs-head input{ flex:1; font-weight:700; }
+  .custom-section .cs-head input{ flex:1; font-weight:700; padding:9px 11px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg); color:var(--text); }
   .cs-del{ border:none; background:transparent; color: var(--danger); cursor:pointer; font-size:1rem; padding:4px; }
   .add-section-btn{
     width:100%; border:1px dashed var(--border); background:transparent; color: var(--accent);
-    padding: 12px; border-radius: var(--radius-md); font-weight:700; font-size:.85rem; cursor:pointer;
+    padding: 12px; border-radius: var(--radius-md); font-weight:700; font-size:.85rem; cursor:pointer; margin-top:4px;
   }
 
-  /* ---------- self-discovery Q&A ---------- */
+  /* ---------- wizard (one-at-a-time entry) ---------- */
+  .wizard-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .wz-home-btn{ border:none; background:transparent; color: var(--accent); font-weight:700; font-size:.85rem; cursor:pointer; padding:6px 0; }
+  .wz-progress{ font-size:.78rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .wizard-card{ text-align:left; }
+  .wz-icon{ font-size:2rem; margin-bottom:2px; }
+  .wz-body{ margin-top:14px; }
+  .swipe-link{
+    margin-top:14px; width:100%; border:1px dashed var(--border); background:transparent; color: var(--accent);
+    padding: 10px; border-radius: var(--radius-md); font-size:.8rem; font-weight:700; cursor:pointer;
+  }
+  .wizard-nav{ display:flex; gap:10px; }
+  .wz-btn{ flex:1; border:none; padding:14px; border-radius: var(--radius-md); font-size:.92rem; font-weight:800; cursor:pointer; }
+  .wz-btn.primary{ background: var(--accent); color: var(--accent-text); }
+  .wz-btn.ghost{ background: var(--bg-elevated); color: var(--text); border:1px solid var(--border); }
+  .wz-btn[disabled]{ opacity:.4; cursor:not-allowed; }
+
+  /* ---------- home ---------- */
+  .home-hero h2{ margin-bottom:6px; }
+  .shortcut-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; }
+  @media (min-width:480px){ .shortcut-grid{ grid-template-columns: repeat(3,1fr); } }
+  .shortcut-item{
+    display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left;
+    border:1px solid var(--border); background: var(--bg); border-radius: var(--radius-md);
+    padding: 12px; cursor:pointer; color: var(--text); min-width:0;
+  }
+  .shortcut-item .si-icon{ font-size:1.25rem; }
+  .shortcut-item .si-label{ font-size:.8rem; font-weight:700; margin-top:2px; }
+  .shortcut-item .si-preview{
+    font-size:.72rem; color: var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;
+  }
+  .quick-links{ display:flex; gap:10px; flex-wrap:wrap; }
+  .quick-link{
+    flex:1; min-width:100px; display:flex; flex-direction:column; align-items:center; gap:6px;
+    border:1px solid var(--border); background: var(--bg); border-radius: var(--radius-md);
+    padding: 14px 8px; cursor:pointer; font-size:.78rem; font-weight:700; color: var(--text);
+  }
+  .quick-link .ql-icon{ font-size:1.5rem; }
+
+  /* ---------- sub-view toggle ---------- */
+  .toggle-row{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .toggle-row button{
+    border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    padding: 8px 14px; border-radius: var(--radius-sm); font-size:.82rem; cursor:pointer; box-shadow: var(--shadow);
+  }
+  .toggle-row button.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
+
+  /* ---------- swipe deck ---------- */
+  .cat-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .cat-chip{
+    border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    padding: 6px 12px; border-radius: var(--radius-sm); font-size:.78rem; cursor:pointer;
+  }
+  .cat-chip.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
+
+  .swipe-wrap{ display:flex; flex-direction:column; align-items:center; gap:16px; padding: 4px 0 14px; }
+  .swipe-stage{ position:relative; width:100%; max-width:340px; height:300px; }
+  .swipe-card{
+    position:absolute; inset:0; border-radius:22px; padding:22px; color:#fff;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    box-shadow: var(--shadow); cursor:grab; user-select:none; touch-action:none;
+  }
+  .swipe-card:active{ cursor:grabbing; }
+  .swipe-card .sc-cat{ font-size:.68rem; font-weight:800; letter-spacing:.04em; opacity:.85; margin-bottom:10px; }
+  .swipe-card .sc-text{ font-size:1.2rem; font-weight:800; line-height:1.45; }
+  .swipe-card.top{ z-index:3; }
+  .swipe-card.behind-1{ transform: scale(.95) translateY(10px); opacity:.75; z-index:2; }
+  .swipe-card.behind-2{ transform: scale(.9) translateY(18px); opacity:.45; z-index:1; }
+  .swipe-actions{ display:flex; gap:22px; }
+  .swipe-btn{
+    width:58px; height:58px; border-radius:50%; border:none; font-size:1.5rem; cursor:pointer;
+    box-shadow: var(--shadow); background: var(--bg-elevated);
+  }
+  .swipe-btn.reject{ color: var(--danger); }
+  .swipe-btn.accept{ color: var(--ok); }
+  .swipe-empty{ text-align:center; color: var(--text-muted); padding: 30px 10px; font-size:.85rem; }
+  .swipe-count{ font-size:.78rem; color: var(--text-muted); }
+
+  /* ---------- self-discovery Q&A (journal) ---------- */
   .today-q{
     background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; border-radius: var(--radius-lg);
     padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow);
@@ -191,13 +265,6 @@
     padding: 7px 16px; border-radius: var(--radius-sm); font-size:.82rem; cursor:pointer;
   }
 
-  .cat-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
-  .cat-chip{
-    border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
-    padding: 6px 12px; border-radius: var(--radius-sm); font-size:.78rem; cursor:pointer;
-  }
-  .cat-chip.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
-
   .qa-item{ background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-md); padding: 13px 14px; margin-bottom: 10px; box-shadow: var(--shadow); }
   .qa-item .qa-cat{ font-size:.68rem; color: var(--accent); font-weight:700; }
   .qa-item .qa-text{ font-size:.9rem; font-weight:700; margin: 4px 0 8px; }
@@ -211,16 +278,23 @@
   .qa-history .hist-entry{ font-size:.78rem; color: var(--text-muted); margin-bottom:6px; }
   .qa-history .hist-entry .hd{ font-size:.68rem; }
 
-  /* ---------- intro generator ---------- */
-  .toggle-row{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
-  .toggle-row button{
-    border:1px solid var(--border); background: var(--bg); color: var(--text);
-    padding: 7px 13px; border-radius: var(--radius-sm); font-size:.8rem; cursor:pointer;
+  /* ---------- personality quiz ---------- */
+  .convergence-badge{ display:inline-block; font-size:.72rem; font-weight:700; padding:5px 12px; border-radius: var(--radius-sm); background: var(--chip-bg); color: var(--accent); margin-bottom:12px; }
+  .trait-bar-row{ margin-bottom:12px; }
+  .trait-bar-row:last-child{ margin-bottom:0; }
+  .trait-bar-row .tb-head{ display:flex; justify-content:space-between; font-size:.82rem; font-weight:700; margin-bottom:5px; gap:8px; }
+  .trait-bar-row .tb-head .tb-count{ font-weight:500; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .trait-bar-row .tb-track{ height:10px; border-radius:999px; background: var(--chip-bg); overflow:hidden; }
+  .trait-bar-row .tb-fill{ height:100%; border-radius:999px; background: linear-gradient(90deg,var(--accent),var(--accent-2)); transition: width .4s ease; }
+  .trait-bar-row .tb-desc{ font-size:.76rem; color: var(--text-muted); margin-top:5px; }
+  .quiz-likert{ display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+  .quiz-likert button{
+    flex:1; min-width:58px; border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 11px 4px; border-radius: var(--radius-md); font-size:.74rem; cursor:pointer; font-weight:600;
   }
-  .toggle-row button.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
-  .check-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 12px; }
-  .check-pill{ display:flex; align-items:center; gap:6px; border:1px solid var(--border); background: var(--bg); padding:6px 12px; border-radius: var(--radius-sm); font-size:.8rem; cursor:pointer; }
-  .check-pill input{ margin:0; }
+  .quiz-likert button:hover{ border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- intro text / card ---------- */
   .gen-btn{ width:100%; border:none; background: var(--accent); color: var(--accent-text); padding: 12px; border-radius: var(--radius-md); font-size:.92rem; font-weight:800; cursor:pointer; }
   .gen-output{
     margin-top: 12px; background: var(--chip-bg); border-radius: var(--radius-md); padding: 14px; font-size:.92rem;
@@ -232,6 +306,21 @@
     flex:1; border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
     padding: 9px; border-radius: var(--radius-sm); font-size:.82rem; font-weight:700; cursor:pointer;
   }
+
+  .card-color-row{ display:flex; gap:8px; margin: 4px 0 14px; }
+  .card-color-swatch{ width:32px; height:32px; border-radius:50%; border:2px solid transparent; cursor:pointer; padding:0; }
+  .card-color-swatch.active{ border-color: var(--text); }
+
+  .intro-card-preview{
+    border-radius:24px; padding:26px 24px; color:#fff; box-shadow: var(--shadow); position:relative; overflow:hidden;
+  }
+  .intro-card-preview .ic-name{ font-size:1.5rem; font-weight:800; }
+  .intro-card-preview .ic-sub{ font-size:.8rem; opacity:.85; margin-top:2px; }
+  .intro-card-preview .ic-motto{ margin:14px 0 0; font-size:.95rem; font-style:italic; opacity:.95; }
+  .intro-card-preview .ic-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .intro-card-preview .ic-chip{ background: rgba(255,255,255,.22); padding:4px 11px; border-radius:999px; font-size:.72rem; font-weight:600; }
+  .intro-card-preview .ic-footer{ margin-top:18px; font-size:.66rem; opacity:.7; text-align:right; }
+  .intro-card-preview .ic-empty{ font-size:.85rem; opacity:.85; }
 
   /* ---------- settings ---------- */
   .stat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-bottom: 4px; }
@@ -258,8 +347,6 @@
     max-width: 90%; text-align:center;
   }
   .toast.show{ opacity:1; }
-
-  .empty-state{ text-align:center; padding: 24px 10px; color: var(--text-muted); font-size:.85rem; }
 </style>
 </head>
 <body>
@@ -268,7 +355,7 @@
   <div class="topbar-inner">
     <div class="topbar-row">
       <div>
-        <h1>📔 じぶん手帳</h1>
+        <h1 id="titleHome">📔 じぶん手帳</h1>
         <p class="subtitle">自己紹介にもう困らない、わたしのプロフィール帳</p>
       </div>
       <div class="header-actions">
@@ -287,9 +374,10 @@
 
 <div class="controls">
   <div class="view-tabs">
-    <button data-view="profile" class="active">📇 プロフィール</button>
-    <button data-view="discover">🔍 じぶんを知る</button>
-    <button data-view="intro">💬 自己紹介文</button>
+    <button data-view="home">🏠 ホーム</button>
+    <button data-view="swipe">🔀 発見</button>
+    <button data-view="quiz">🧭 診断</button>
+    <button data-view="intro">💬 自己紹介</button>
     <button data-view="settings">⚙️ データ</button>
   </div>
 </div>
@@ -313,8 +401,28 @@
 
   var STORAGE_KEY = "jibun-techo-data-v1";
   var THEME_KEY = "jibun-techo-theme";
+  var CARD_COLOR_KEY = "jibun-techo-card-color";
 
   var FAV_CATEGORIES = ["食べ物","飲み物","音楽・アーティスト","映画・アニメ","本・漫画","スポーツ","場所・旅先","言葉・座右の銘","その他"];
+
+  // 入力ウィザードのステップ定義（ホームのショートカット一覧にも使う）
+  var STEPS = [
+    { id:"name", icon:"🪪", label:"名前", desc:"下の名前でもフルネームでもOK。呼ばれたい名前で大丈夫です。", type:"text", basicKey:"name", ph:"例：山田 太郎" },
+    { id:"nickname", icon:"😊", label:"ニックネーム", desc:"友達から呼ばれたい呼び方があれば。", type:"text", basicKey:"nickname", ph:"例：たろちゃん" },
+    { id:"birthday", icon:"🎂", label:"誕生日", desc:"", type:"date", basicKey:"birthday" },
+    { id:"bloodType", icon:"🩸", label:"血液型", desc:"", type:"blood", basicKey:"bloodType" },
+    { id:"hometown", icon:"🏡", label:"出身地", desc:"", type:"text", basicKey:"hometown", ph:"例：東京都" },
+    { id:"occupation", icon:"🎓", label:"所属・職業", desc:"学校名や職業など。", type:"text", basicKey:"occupation", ph:"例：大学生／◯◯部" },
+    { id:"motto", icon:"📜", label:"座右の銘", desc:"大切にしている言葉。思い浮かばなければ、名言をスワイプして探せます。", type:"text", basicKey:"motto", ph:"例：一期一会", swipeCat:"motto" },
+    { id:"skills", icon:"🛠️", label:"特技", desc:"できること・得意なことをいくつでも登録できます。", type:"taglist", listKey:"skills", ph:"例：ピアノ、料理、Excel" },
+    { id:"hobbies", icon:"🎨", label:"趣味", desc:"好きでよくやっていることを登録しましょう。", type:"taglist", listKey:"hobbies", ph:"例：読書、映画鑑賞、キャンプ" },
+    { id:"strengths", icon:"💪", label:"長所", desc:"自分の強みだと思うところ。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"strengths", ph:"例：計画的、聞き上手", swipeCat:"strength" },
+    { id:"weaknesses", icon:"🌱", label:"短所", desc:"直したい・課題だと感じているところ。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"weaknesses", ph:"例：心配性、飽きっぽい", swipeCat:"weakness" },
+    { id:"dislikes", icon:"🙅", label:"苦手なもの", desc:"苦手なこと・避けたいこと。", type:"taglist", listKey:"dislikes", ph:"例：早起き、虫" },
+    { id:"favorites", icon:"❤️", label:"好きなもの", desc:"カテゴリ別に好きなものを登録できます。思い浮かばなければスワイプで探せます。", type:"favorites", swipeCat:"favorite" },
+    { id:"goals", icon:"🎯", label:"将来の夢・目標", desc:"今後やりたいこと、目指していることを自由に書いてください。", type:"textarea", key:"goals", ph:"例：◯◯の資格を取りたい／◯◯の仕事に就きたい" },
+    { id:"custom", icon:"✨", label:"じぶんだけの項目", desc:"用意された項目以外にも、自分について記録したいことを自由に追加できます。", type:"custom" }
+  ];
 
   var QUESTION_BANK = [
     { id:"q1",  cat:"価値観", text:"仕事や勉強で、いちばん大事にしていることは何ですか？" },
@@ -345,6 +453,99 @@
     { id:"q26", cat:"自分らしさ", text:"もし自分にキャッチコピーをつけるなら？" }
   ];
 
+  // ---- 性格診断（無限に答えるほど収束していく簡易ビッグファイブ診断） ----
+  var PERSONALITY_TRAITS = {
+    O: { label:"開放性" },
+    C: { label:"誠実性" },
+    E: { label:"外向性" },
+    A: { label:"協調性" },
+    N: { label:"情緒安定性" }
+  };
+  var LEVEL_DESC = {
+    O: { low:"じっくり型。慣れた方法を大事にしながら着実に取り組むタイプ。", mid:"新しいことにも慣れたことにもバランスよく対応できるタイプ。", high:"好奇心旺盛型。新しい発想や体験を積極的に楽しむタイプ。" },
+    C: { low:"自由奔放型。計画より直感やその場のノリを大事にするタイプ。", mid:"状況に応じて計画的にも柔軟にも動けるタイプ。", high:"コツコツ型。計画を立てて着実にやり遂げるタイプ。" },
+    E: { low:"内省型。ひとりの時間でエネルギーを充電するタイプ。", mid:"ひとりの時間も人との時間もどちらも楽しめるタイプ。", high:"社交型。人と関わることで元気になるタイプ。" },
+    A: { low:"自分軸型。自分の考えをはっきり伝えることを大事にするタイプ。", mid:"自分の意見と周りへの配慮のバランスを取れるタイプ。", high:"協調型。周りの気持ちを大切に、協力を大事にするタイプ。" },
+    N: { low:"繊細型。物事を敏感に感じ取り、深く考えるタイプ。", mid:"状況に応じて冷静さと繊細さのバランスを取れるタイプ。", high:"安定型。プレッシャーの中でも落ち着いていられるタイプ。" }
+  };
+  var PERSONALITY_STATEMENTS = [
+    { id:"p1",  trait:"O", text:"新しい場所やお店に行ってみるのが好きだ" },
+    { id:"p2",  trait:"O", text:"アイデアを考えたり、創造的なことをするのが楽しい" },
+    { id:"p3",  trait:"O", text:"抽象的な話や哲学的な話に興味がある" },
+    { id:"p4",  trait:"O", text:"普段と違うやり方をあえて試すのが好きだ" },
+    { id:"p5",  trait:"O", text:"芸術や音楽、デザインに関心がある" },
+    { id:"p6",  trait:"O", text:"知らないジャンルの本や映画にも挑戦する方だ" },
+    { id:"p7",  trait:"O", text:"ルーティンよりも変化がある方が好きだ" },
+    { id:"p8",  trait:"O", text:"慣れたやり方を変えるのは苦手だ", reverse:true },
+    { id:"p9",  trait:"O", text:"新しいことより、慣れたことをする方が落ち着く", reverse:true },
+    { id:"p10", trait:"C", text:"締め切りは余裕を持って守る方だ" },
+    { id:"p11", trait:"C", text:"物事を計画的に進めるのが得意だ" },
+    { id:"p12", trait:"C", text:"部屋や持ち物はきちんと整理整頓されている" },
+    { id:"p13", trait:"C", text:"一度決めたことは最後までやり遂げる" },
+    { id:"p14", trait:"C", text:"細かい作業でも丁寧に取り組む方だ" },
+    { id:"p15", trait:"C", text:"目標を立てたら、それに向けてコツコツ努力できる" },
+    { id:"p16", trait:"C", text:"やるべきことを後回しにしてしまいがちだ", reverse:true },
+    { id:"p17", trait:"C", text:"計画を立てるより、思いついたら動くタイプだ", reverse:true },
+    { id:"p18", trait:"C", text:"片付けや整理は苦手な方だ", reverse:true },
+    { id:"p19", trait:"E", text:"大勢の人が集まる場が好きだ" },
+    { id:"p20", trait:"E", text:"初対面の人ともすぐに打ち解けられる" },
+    { id:"p21", trait:"E", text:"人と話していると元気が出てくる" },
+    { id:"p22", trait:"E", text:"自分から話しかけることが多い" },
+    { id:"p23", trait:"E", text:"目立つことや注目されることに抵抗がない" },
+    { id:"p24", trait:"E", text:"パーティーやイベントに誘われるとうれしい" },
+    { id:"p25", trait:"E", text:"ひとりで過ごす時間の方が落ち着く", reverse:true },
+    { id:"p26", trait:"E", text:"大人数の場は疲れてしまう方だ", reverse:true },
+    { id:"p27", trait:"E", text:"静かな環境の方が集中できる", reverse:true },
+    { id:"p28", trait:"A", text:"人の気持ちに共感しやすい方だ" },
+    { id:"p29", trait:"A", text:"困っている人を見ると放っておけない" },
+    { id:"p30", trait:"A", text:"争いごとはできるだけ避けたい" },
+    { id:"p31", trait:"A", text:"相手の意見をまず尊重するようにしている" },
+    { id:"p32", trait:"A", text:"チームで協力して物事を進めるのが好きだ" },
+    { id:"p33", trait:"A", text:"人に優しくすることを大切にしている" },
+    { id:"p34", trait:"A", text:"自分の意見をはっきり主張する方だ", reverse:true },
+    { id:"p35", trait:"A", text:"人に合わせるより、自分のペースを優先する", reverse:true },
+    { id:"p36", trait:"A", text:"遠慮せずズバズバ言うタイプだ", reverse:true },
+    { id:"p37", trait:"N", text:"プレッシャーがかかる場面でも冷静でいられる" },
+    { id:"p38", trait:"N", text:"気持ちの浮き沈みは少ない方だ" },
+    { id:"p39", trait:"N", text:"失敗してもすぐに切り替えられる" },
+    { id:"p40", trait:"N", text:"予定外のことが起きても慌てにくい" },
+    { id:"p41", trait:"N", text:"大きな決断でも落ち着いて考えられる" },
+    { id:"p42", trait:"N", text:"ちょっとしたことで不安になりやすい", reverse:true },
+    { id:"p43", trait:"N", text:"些細なことでもくよくよ悩んでしまう", reverse:true },
+    { id:"p44", trait:"N", text:"緊張するとうまく力を発揮できないことがある", reverse:true },
+    { id:"p45", trait:"N", text:"気分が変わりやすいと言われる", reverse:true }
+  ];
+  var CONVERGE_TARGET = 8; // このくらい答えると「安定度100%」表示になる
+
+  // ---- スワイプ発見のカードバンク ----
+  var SWIPE_CAT_META = {
+    motto:    { label:"座右の銘・名言", icon:"📜", grad:["#7c6fe0","#a695f2"] },
+    strength: { label:"長所のヒント",   icon:"💪", grad:["#0d9488","#5eead4"] },
+    weakness: { label:"短所のヒント",   icon:"🌱", grad:["#c2760f","#f2b06e"] },
+    favorite: { label:"好きなものかも", icon:"❤️", grad:["#d0466a","#f2a3b4"] }
+  };
+  var MOTTO_BANK = ["一期一会","七転び八起き","継続は力なり","初心忘るべからず","笑う門には福来る","石の上にも三年","有言実行","臨機応変","日々是好日","終わりよければ全てよし","塞翁が馬","為せば成る","人事を尽くして天命を待つ","備えあれば憂いなし","急がば回れ","千里の道も一歩から","失敗は成功のもと","縁の下の力持ち","不撓不屈","自分らしく生きる","感謝を忘れない","挑戦し続ける","マイペースが一番","今を大切に","小さな一歩を積み重ねる","楽あれば苦あり"];
+  var STRENGTH_BANK = ["誰とでもすぐ仲良くなれる","約束をきちんと守る","困っている人を放っておけない","コツコツ努力できる","気持ちの切り替えが早い","聞き上手だと言われる","行動力がある","冷静に物事を判断できる","新しいことに挑戦するのが好き","計画を立てるのが得意","細かいところによく気がつく","ポジティブに考えられる","責任感が強い","柔軟に対応できる","好奇心が旺盛","人の話を最後まで聞ける","約束の時間を守る","周りをよく観察している","粘り強く続けられる","素直に人の意見を聞ける"];
+  var WEAKNESS_BANK = ["心配性なところがある","人に頼るのが少し苦手","飽きっぽいところがある","頼まれごとを断るのが苦手","完璧を求めすぎることがある","朝がとにかく弱い","考えすぎてしまう","人前で緊張しやすい","マイペースすぎると言われる","片付けがやや苦手","せっかちなところがある","落ち込みやすい","優柔不断なところがある","人と比べてしまいがち","スケジュールを詰め込みすぎる","初対面だと緊張してしまう","つい後回しにしてしまう","夜更かししがち","感情が顔に出やすい","甘いものがやめられない"];
+  var FAVORITE_BANK = [
+    {c:"食べ物", v:"ラーメン"},{c:"食べ物", v:"寿司"},{c:"食べ物", v:"カレー"},{c:"食べ物", v:"焼肉"},
+    {c:"飲み物", v:"コーヒー"},{c:"飲み物", v:"紅茶"},{c:"飲み物", v:"タピオカ"},
+    {c:"音楽・アーティスト", v:"邦ロック"},{c:"音楽・アーティスト", v:"J-POP"},{c:"音楽・アーティスト", v:"洋楽"},
+    {c:"映画・アニメ", v:"ジブリ作品"},{c:"映画・アニメ", v:"ディズニー映画"},{c:"映画・アニメ", v:"アクション映画"},
+    {c:"本・漫画", v:"ミステリー小説"},{c:"本・漫画", v:"少年漫画"},
+    {c:"スポーツ", v:"野球観戦"},{c:"スポーツ", v:"サッカー"},{c:"スポーツ", v:"ランニング"},
+    {c:"場所・旅先", v:"温泉"},{c:"場所・旅先", v:"海"},{c:"場所・旅先", v:"カフェ巡り"},
+    {c:"その他", v:"猫"},{c:"その他", v:"ゲーム"},{c:"その他", v:"写真を撮ること"}
+  ];
+
+  var CARD_THEMES = [
+    { id:"violet", grad:["#7c6fe0","#a695f2"] },
+    { id:"teal",   grad:["#0d9488","#5eead4"] },
+    { id:"coral",  grad:["#d0466a","#f2a3b4"] },
+    { id:"navy",   grad:["#2b3a67","#5c73b8"] },
+    { id:"amber",  grad:["#c2760f","#f2b06e"] }
+  ];
+
   var DEFAULT_DATA = {
     basic: { name:"", furigana:"", nickname:"", birthday:"", bloodType:"", hometown:"", occupation:"", motto:"" },
     lists: { skills:[], hobbies:[], strengths:[], weaknesses:[], dislikes:[] },
@@ -352,15 +553,8 @@
     goals: "",
     customSections: [],
     qa: {},
-    meta: { createdAt: null, updatedAt: null }
-  };
-
-  var LIST_META = {
-    skills:     { label:"特技",     desc:"できること・得意なことを登録しましょう", ph:"例：ピアノ、料理、Excel" },
-    hobbies:    { label:"趣味",     desc:"好きでよくやっていることを登録しましょう", ph:"例：読書、映画鑑賞、キャンプ" },
-    strengths:  { label:"長所",     desc:"自分の強みだと思うところ", ph:"例：計画的、聞き上手" },
-    weaknesses: { label:"短所",     desc:"直したい・課題だと感じているところ", ph:"例：心配性、飽きっぽい" },
-    dislikes:   { label:"苦手なもの", desc:"苦手なこと・避けたいこと", ph:"例：早起き、虫" }
+    personality: { responses: {} },
+    meta: { createdAt:null, updatedAt:null, wizardStarted:false, wizardStep:0, wizardDone:false }
   };
 
   /* =========================================================
@@ -368,7 +562,9 @@
   ========================================================= */
 
   var data = loadData();
-  var state = { view:"profile", discoverCat:"すべて", todayQId: pickTodayQuestionId() };
+  var cardColorId = localStorage.getItem(CARD_COLOR_KEY) || "violet";
+  var state = { view:"home", diagSub:"personality", introSub:"text", swipeCat:"motto", swipeQueue:null, wizardReturnView:"home" };
+  var wizardState = { stepIndex: 0 };
 
   function loadData(){
     try{
@@ -378,6 +574,7 @@
       return Object.assign(deepClone(DEFAULT_DATA), parsed, {
         basic: Object.assign({}, DEFAULT_DATA.basic, parsed.basic),
         lists: Object.assign({}, DEFAULT_DATA.lists, parsed.lists),
+        personality: Object.assign({ responses:{} }, parsed.personality),
         meta: Object.assign({}, DEFAULT_DATA.meta, parsed.meta)
       });
     }catch(e){ return deepClone(DEFAULT_DATA); }
@@ -412,6 +609,15 @@
     return d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate();
   }
 
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function shuffle(arr){
+    for(var i=arr.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var tmp = arr[i]; arr[i]=arr[j]; arr[j]=tmp;
+    }
+    return arr;
+  }
+
   /* =========================================================
      3. テーマ
   ========================================================= */
@@ -428,7 +634,6 @@
     return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
   }
   function initTheme(){
-    // 保存済みの手動設定がある場合のみ上書きする。未設定なら表示側のテーマ（system/明示指定）に委ねる。
     var saved = localStorage.getItem(THEME_KEY);
     if(saved === "dark" || saved === "light"){ applyTheme(saved); }
     else{ document.getElementById("themeToggle").textContent = effectiveIsDark() ? "☀️" : "🌙"; }
@@ -438,9 +643,10 @@
     localStorage.setItem(THEME_KEY, next);
     applyTheme(next);
   });
+  document.getElementById("titleHome").addEventListener("click", function(){ switchView("home"); });
 
   /* =========================================================
-     4. トースト
+     4. トースト・ファイル保存
   ========================================================= */
 
   var toastEl = document.getElementById("toast");
@@ -450,6 +656,46 @@
     toastEl.classList.add("show");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
+  }
+
+  function copyText(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast("コピーしました"); }, function(){ fallbackCopy(text); });
+    }else{ fallbackCopy(text); }
+  }
+  function fallbackCopy(text){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); toast("コピーしました"); }catch(e){ toast("コピーできませんでした"); }
+    document.body.removeChild(ta);
+  }
+
+  // Claude Artifact上ではサンドボックスの制約で通常のダウンロードリンクが動作しないため、
+  // downloads機能が使えればそちらを使い、なければブラウザの通常ダウンロードにフォールバックする。
+  function offerFileDownload(filename, dataVal, mime){
+    if(window.claude && typeof window.claude.use === "function"){
+      window.claude.use("downloads").then(function(downloads){
+        if(!downloads){ fallbackDownload(filename, dataVal, mime); return; }
+        downloads.save({ filename: filename, data: dataVal }).then(function(){
+          toast("保存しました");
+        }, function(err){
+          if(err && err.code === "declined") return;
+          fallbackDownload(filename, dataVal, mime);
+        });
+      }, function(){ fallbackDownload(filename, dataVal, mime); });
+      return;
+    }
+    fallbackDownload(filename, dataVal, mime);
+  }
+  function fallbackDownload(filename, dataVal, mime){
+    var blob = (dataVal instanceof Blob) ? dataVal : new Blob([dataVal], { type: mime || "application/octet-stream" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast("保存しました");
   }
 
   /* =========================================================
@@ -464,6 +710,7 @@
     total++; if(data.favorites.length) filled++;
     total++; if(data.goals) filled++;
     total++; if(Object.keys(data.qa).length) filled++;
+    total++; if(Object.keys(data.personality.responses).length) filled++;
     return Math.round((filled/total)*100);
   }
 
@@ -474,379 +721,254 @@
   }
 
   /* =========================================================
-     6. タブ切り替え
+     6. 画面切り替え・描画
   ========================================================= */
 
   document.querySelectorAll(".view-tabs button").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      document.querySelectorAll(".view-tabs button").forEach(function(b){ b.classList.remove("active"); });
-      btn.classList.add("active");
-      state.view = btn.dataset.view;
-      render();
-    });
+    btn.addEventListener("click", function(){ switchView(btn.dataset.view); });
   });
+
+  function switchView(view){
+    state.view = view;
+    document.querySelectorAll(".view-tabs button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === view); });
+    render();
+  }
+
+  function goToStep(id, returnView){
+    var idx = -1;
+    for(var i=0;i<STEPS.length;i++){ if(STEPS[i].id === id){ idx = i; break; } }
+    if(idx < 0) idx = 0;
+    wizardState.stepIndex = idx;
+    state.wizardReturnView = returnView || "home";
+    state.view = "wizard";
+    document.querySelectorAll(".view-tabs button").forEach(function(b){ b.classList.remove("active"); });
+    render();
+  }
 
   function render(){
     renderProgress();
     var app = document.getElementById("app");
-    if(state.view === "profile") app.innerHTML = renderProfileView();
-    else if(state.view === "discover") app.innerHTML = renderDiscoverView();
-    else if(state.view === "intro") app.innerHTML = renderIntroView();
-    else app.innerHTML = renderSettingsView();
+    if(state.view === "wizard") app.innerHTML = renderWizard();
+    else if(state.view === "swipe") app.innerHTML = renderSwipeView();
+    else if(state.view === "quiz") app.innerHTML = renderQuizView();
+    else if(state.view === "intro") app.innerHTML = renderIntroTabView();
+    else if(state.view === "settings") app.innerHTML = renderSettingsView();
+    else app.innerHTML = renderHome();
     bindViewEvents();
   }
 
+  function bindViewEvents(){
+    if(state.view === "wizard") bindWizardEvents(STEPS[wizardState.stepIndex]);
+    else if(state.view === "swipe") bindSwipeEvents();
+    else if(state.view === "quiz") bindQuizEvents();
+    else if(state.view === "intro") bindIntroEvents();
+    else if(state.view === "settings") bindSettingsEvents();
+    else bindHomeEvents();
+  }
+
   /* =========================================================
-     7. プロフィールタブ
+     7. ホーム
   ========================================================= */
 
-  function renderProfileView(){
+  function stepPreview(step){
+    if(step.type === "text" || step.type === "date"){
+      var v = data.basic[step.basicKey];
+      if(!v) return "";
+      return step.type === "date" ? fmtDate(v) : v;
+    }
+    if(step.type === "blood") return data.basic.bloodType ? data.basic.bloodType + "型" : "";
+    if(step.type === "taglist"){
+      var items = data.lists[step.listKey];
+      if(!items.length) return "";
+      return items.slice(0,3).join("、") + (items.length > 3 ? " 他" : "");
+    }
+    if(step.type === "favorites") return data.favorites.length ? data.favorites.length + "件登録済み" : "";
+    if(step.type === "textarea") return data[step.key] ? (data[step.key].slice(0,20) + (data[step.key].length > 20 ? "…" : "")) : "";
+    if(step.type === "custom") return data.customSections.length ? data.customSections.length + "個の項目" : "";
+    return "";
+  }
+
+  function renderHome(){
+    var name = data.basic.nickname || data.basic.name;
     var html = "";
-
-    html += '<div class="card"><h2>🪪 基本情報</h2><p class="card-desc">自己紹介の土台になる情報です</p>';
-    html += '<div class="two-col">';
-    html += field("name","text","名前","お名前", data.basic.name);
-    html += field("nickname","text","呼ばれたい名前","ニックネーム", data.basic.nickname);
-    html += '</div>';
-    html += '<div class="two-col">';
-    html += field("birthday","date","誕生日","", data.basic.birthday);
-    html += bloodTypeField();
-    html += '</div>';
-    html += '<div class="two-col">';
-    html += field("hometown","text","出身地","例：東京都", data.basic.hometown);
-    html += field("occupation","text","所属・職業","例：大学生／◯◯部所属", data.basic.occupation);
-    html += '</div>';
-    html += field("motto","text","座右の銘・大切にしている言葉","例：一期一会", data.basic.motto);
+    html += '<div class="card home-hero"><h2>' + (name ? ("👋 " + escapeHtml(name) + "さん") : "👋 ようこそ") + '</h2>';
+    if(!data.meta.wizardDone){
+      html += '<p class="card-desc">まだ入力の途中です。ひとつずつ、気が向いたときに埋めていきましょう。途中でやめても、続きから再開できます。</p>';
+      html += '<button class="wz-btn primary" id="continueWizard">入力を続ける（' + ((data.meta.wizardStep||0) + 1) + ' / ' + STEPS.length + '）</button>';
+    }else{
+      html += '<p class="card-desc">プロフィールは一通り入力済みです。いつでも見直せます。</p>';
+      html += '<button class="wz-btn ghost" id="continueWizard">最初から見直す</button>';
+    }
     html += '</div>';
 
-    Object.keys(LIST_META).forEach(function(key){
-      html += renderTagCard(key);
+    html += '<div class="card"><h2>📚 プロフィール項目</h2><p class="card-desc">タップすると、その項目だけ編集できます。好きな順番でどうぞ。</p><div class="shortcut-grid">';
+    STEPS.forEach(function(step){
+      var preview = stepPreview(step);
+      html += '<button class="shortcut-item" data-jump-step="' + step.id + '"><span class="si-icon">' + step.icon + '</span><span class="si-label">' + escapeHtml(step.label) + '</span><span class="si-preview">' + (preview ? escapeHtml(preview) : "未入力") + '</span></button>';
     });
-
-    html += '<div class="card"><h2>❤️ 好きなもの</h2><p class="card-desc">カテゴリ別に好きなものを登録できます</p>';
-    html += renderFavorites();
-    html += '<div class="add-row">';
-    html += '<select id="favCatSelect">' + FAV_CATEGORIES.map(function(c){ return '<option value="'+escapeHtml(c)+'">'+escapeHtml(c)+'</option>'; }).join("") + '</select>';
-    html += '<input type="text" id="favValInput" placeholder="好きなものを入力">';
-    html += '<button class="add-btn" id="favAddBtn">追加</button>';
     html += '</div></div>';
 
-    html += '<div class="card"><h2>🎯 将来の夢・目標</h2><p class="card-desc">今後やりたいこと、目指していることを自由に書いてください</p>';
-    html += '<div class="field"><textarea id="goalsInput" placeholder="例：◯◯の資格を取りたい／◯◯の仕事に就きたい">'+escapeHtml(data.goals)+'</textarea></div>';
-    html += '</div>';
-
-    html += '<div class="card"><h2>✨ じぶんだけの項目</h2><p class="card-desc">用意された項目以外にも、自分について記録したいことを自由に追加できます</p>';
-    html += renderCustomSections();
-    html += '<button class="add-section-btn" id="addSectionBtn">＋ 新しい項目を追加</button>';
-    html += '</div>';
-
+    html += '<div class="card"><h2>🧭 もっと自分を知る・伝える</h2><div class="quick-links">';
+    html += '<button class="quick-link" data-goto-tab="swipe"><span class="ql-icon">🔀</span><span>スワイプ発見</span></button>';
+    html += '<button class="quick-link" data-goto-tab="quiz"><span class="ql-icon">🧠</span><span>性格診断</span></button>';
+    html += '<button class="quick-link" data-goto-tab="intro"><span class="ql-icon">💬</span><span>自己紹介文・カード</span></button>';
+    html += '</div></div>';
     return html;
   }
 
-  function field(key,type,label,ph,val){
-    return '<div class="field"><label>'+escapeHtml(label)+'</label>'+
-      '<input type="'+type+'" data-basic="'+key+'" placeholder="'+escapeHtml(ph)+'" value="'+escapeHtml(val)+'"></div>';
-  }
-
-  function bloodTypeField(){
-    var opts = ["","A","B","O","AB"];
-    var html = '<div class="field"><label>血液型</label><select data-basic="bloodType">';
-    opts.forEach(function(o){
-      html += '<option value="'+o+'"'+(data.basic.bloodType===o?" selected":"")+'>'+(o||"未設定")+(o?"型":"")+'</option>';
-    });
-    html += '</select></div>';
-    return html;
-  }
-
-  function renderTagCard(key){
-    var meta = LIST_META[key];
-    var items = data.lists[key];
-    var html = '<div class="card"><h2>'+tagIcon(key)+' '+escapeHtml(meta.label)+'</h2><p class="card-desc">'+escapeHtml(meta.desc)+'</p>';
-    html += '<div class="chip-list" data-tag-list="'+key+'">';
-    if(!items.length){ html += '<div class="chip-empty">まだ登録がありません</div>'; }
-    items.forEach(function(v,i){
-      html += '<span class="chip">'+escapeHtml(v)+'<button data-remove-tag="'+key+'" data-idx="'+i+'">×</button></span>';
-    });
-    html += '</div>';
-    html += '<div class="add-row"><input type="text" data-tag-input="'+key+'" placeholder="'+escapeHtml(meta.ph)+'">'+
-      '<button class="add-btn" data-tag-add="'+key+'">追加</button></div></div>';
-    return html;
-  }
-  function tagIcon(key){
-    return { skills:"🛠️", hobbies:"🎨", strengths:"💪", weaknesses:"🌱", dislikes:"🙅" }[key] || "•";
-  }
-
-  function renderFavorites(){
-    if(!data.favorites.length) return '<div class="chip-empty">まだ登録がありません</div>';
-    var html = "";
-    data.favorites.forEach(function(f,i){
-      html += '<div class="fav-item"><span class="fav-cat">'+escapeHtml(f.category)+'</span>'+
-        '<span class="fav-val">'+escapeHtml(f.value)+'</span>'+
-        '<button class="del-btn" data-del-fav="'+i+'">🗑️</button></div>';
-    });
-    return html;
-  }
-
-  function renderCustomSections(){
-    if(!data.customSections.length) return '';
-    var html = "";
-    data.customSections.forEach(function(sec){
-      html += '<div class="custom-section" data-cs-id="'+sec.id+'">';
-      html += '<div class="cs-head"><input type="text" data-cs-title="'+sec.id+'" placeholder="項目名（例：休日の過ごし方）" value="'+escapeHtml(sec.title)+'">'+
-        '<button class="cs-del" data-cs-del="'+sec.id+'">🗑️</button></div>';
-      html += '<div class="chip-list">';
-      if(!sec.items.length){ html += '<div class="chip-empty">まだ登録がありません</div>'; }
-      sec.items.forEach(function(v,i){
-        html += '<span class="chip">'+escapeHtml(v)+'<button data-cs-remove="'+sec.id+'" data-idx="'+i+'">×</button></span>';
+  function bindHomeEvents(){
+    var app = document.getElementById("app");
+    var cont = document.getElementById("continueWizard");
+    if(cont){
+      cont.addEventListener("click", function(){
+        var idx = Math.min(data.meta.wizardStep || 0, STEPS.length - 1);
+        goToStep(STEPS[idx].id, "home");
       });
-      html += '</div>';
-      html += '<div class="add-row"><input type="text" data-cs-input="'+sec.id+'" placeholder="内容を入力">'+
-        '<button class="add-btn" data-cs-add="'+sec.id+'">追加</button></div>';
-      html += '</div>';
+    }
+    app.querySelectorAll("[data-jump-step]").forEach(function(btn){
+      btn.addEventListener("click", function(){ goToStep(btn.dataset.jumpStep, "home"); });
     });
-    return html;
+    app.querySelectorAll("[data-goto-tab]").forEach(function(btn){
+      btn.addEventListener("click", function(){ switchView(btn.dataset.gotoTab); });
+    });
   }
 
   /* =========================================================
-     8. じぶんを知る（Q&A）タブ
+     8. 入力ウィザード（ひとつずつ記入）
   ========================================================= */
 
-  function renderDiscoverView(){
-    var answeredCount = Object.keys(data.qa).length;
-    var total = QUESTION_BANK.length;
-    var cats = ["すべて"].concat(uniq(QUESTION_BANK.map(function(q){ return q.cat; })));
-
+  function renderWizard(){
+    var idx = Math.max(0, Math.min(wizardState.stepIndex, STEPS.length - 1));
+    wizardState.stepIndex = idx;
+    var step = STEPS[idx];
     var html = "";
-    var todayQ = QUESTION_BANK.find(function(q){ return q.id === state.todayQId; });
-    if(todayQ){
-      var already = data.qa[todayQ.id];
-      html += '<div class="today-q">';
-      html += '<div class="tq-label">📅 今日の質問</div>';
-      html += '<div class="tq-text">'+escapeHtml(todayQ.text)+'</div>';
-      html += '<textarea id="todayQInput" placeholder="思いつくまま書いてみましょう">'+(already ? escapeHtml(already[already.length-1].text) : '')+'</textarea>';
-      html += '<div class="tq-actions"><button id="todayQSave">記録する</button></div>';
-      html += '</div>';
-    }
-
-    html += '<p class="card-desc" style="margin:0 0 10px;">回答した質問：'+answeredCount+' / '+total+'　自分について書き溜めるほど、自己紹介文の材料が増えていきます。</p>';
-
-    html += '<div class="cat-chips">';
-    cats.forEach(function(c){
-      html += '<button class="cat-chip'+(state.discoverCat===c?" active":"")+'" data-cat="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>';
-    });
+    html += '<div class="wizard-top"><button class="wz-home-btn" id="wzHome">← ホームに戻る</button><div class="wz-progress">' + (idx+1) + ' / ' + STEPS.length + '</div></div>';
+    html += '<div class="card wizard-card">';
+    html += '<div class="wz-icon">' + step.icon + '</div>';
+    html += '<h2>' + escapeHtml(step.label) + '</h2>';
+    if(step.desc) html += '<p class="card-desc">' + escapeHtml(step.desc) + '</p>';
+    html += '<div class="wz-body">' + renderStepBody(step) + '</div>';
+    if(step.swipeCat) html += '<button class="swipe-link" data-goto-swipe="' + step.swipeCat + '">🔀 スワイプして探す</button>';
     html += '</div>';
-
-    var list = QUESTION_BANK.filter(function(q){ return state.discoverCat === "すべて" || q.cat === state.discoverCat; });
-    list.forEach(function(q){
-      html += renderQaItem(q);
-    });
-
-    return html;
-  }
-
-  function uniq(arr){ return arr.filter(function(v,i){ return arr.indexOf(v) === i; }); }
-
-  function renderQaItem(q){
-    var hist = data.qa[q.id] || [];
-    var latest = hist[hist.length-1];
-    var html = '<div class="qa-item" data-qid="'+q.id+'">';
-    html += '<div class="qa-cat">'+escapeHtml(q.cat)+'</div>';
-    html += '<div class="qa-text">'+escapeHtml(q.text)+'</div>';
-
-    if(latest && !state["editing_"+q.id]){
-      html += '<div class="qa-answer">'+escapeHtml(latest.text)+'<div class="qa-date">'+fmtDate(latest.date)+' に記録</div></div>';
-      html += '<div class="qa-item-actions"><button data-qa-edit="'+q.id+'">✏️ 書き直す</button>';
-      if(hist.length > 1){ html += '<button data-qa-hist="'+q.id+'">🕰️ 過去の回答（'+(hist.length-1)+'件）</button>'; }
-      html += '</div>';
-      if(state["hist_"+q.id] && hist.length > 1){
-        html += '<div class="qa-history">';
-        for(var i=hist.length-2;i>=0;i--){
-          html += '<div class="hist-entry">'+escapeHtml(hist[i].text)+'<div class="hd">'+fmtDate(hist[i].date)+'</div></div>';
-        }
-        html += '</div>';
-      }
-    }else{
-      html += '<textarea data-qa-input="'+q.id+'" placeholder="回答を入力">'+(latest ? escapeHtml(latest.text) : '')+'</textarea>';
-      html += '<button class="qa-save" data-qa-save="'+q.id+'">保存する</button>';
-    }
+    html += '<div class="wizard-nav">';
+    html += '<button id="wzBack" class="wz-btn ghost"' + (idx===0 ? " disabled" : "") + '>戻る</button>';
+    html += '<button id="wzNext" class="wz-btn primary">' + (idx === STEPS.length-1 ? "完了 🎉" : "次へ") + '</button>';
     html += '</div>';
     return html;
   }
 
-  /* =========================================================
-     9. 自己紹介文タブ
-  ========================================================= */
-
-  var introState = { length:"standard", tone:"formal", lastText:"" };
-
-  var PHRASES = {
-    formal: {
-      opening: ["はじめまして、{name}です。","{name}と申します。","こんにちは、{name}です。"],
-      closing: ["よろしくお願いいたします。","本日はよろしくお願いいたします。","これからよろしくお願いします。"]
-    },
-    casual: {
-      opening: ["はじめまして、{name}です！","{name}です！よろしく！","こんにちは、{name}です。"],
-      closing: ["よろしくお願いします！","仲良くしてください！","よろしくね！"]
+  function renderStepBody(step){
+    if(step.type === "text"){
+      return '<div class="field"><input type="text" id="wzInput" placeholder="' + escapeHtml(step.ph||"") + '" value="' + escapeHtml(data.basic[step.basicKey]||"") + '"></div>';
     }
-  };
-
-  function renderIntroView(){
-    var html = "";
-    html += '<div class="card"><h2>💬 自己紹介文ジェネレーター</h2>';
-    html += '<p class="card-desc">プロフィールタブに登録した内容から、話す内容を自動で組み立てます。項目を増やすほど自然な文章になります。</p>';
-
-    html += '<label style="display:block;font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">長さ</label>';
-    html += '<div class="toggle-row">';
-    [["compact","短め（30秒）"],["standard","標準"],["detailed","しっかり"]].forEach(function(o){
-      html += '<button data-len="'+o[0]+'" class="'+(introState.length===o[0]?"active":"")+'">'+o[1]+'</button>';
-    });
-    html += '</div>';
-
-    html += '<label style="display:block;font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">トーン</label>';
-    html += '<div class="toggle-row">';
-    [["formal","丁寧"],["casual","カジュアル"]].forEach(function(o){
-      html += '<button data-tone="'+o[0]+'" class="'+(introState.tone===o[0]?"active":"")+'">'+o[1]+'</button>';
-    });
-    html += '</div>';
-
-    html += '<button class="gen-btn" id="genBtn">✨ 自己紹介文をつくる</button>';
-
-    html += '<div class="gen-output'+(introState.lastText?'':' empty')+'" id="genOutput">'+
-      (introState.lastText ? escapeHtml(introState.lastText) : 'ボタンを押すと、ここに自己紹介文が表示されます。') + '</div>';
-
-    if(introState.lastText){
-      html += '<div class="gen-actions"><button id="copyBtn">📋 コピー</button><button id="regenBtn">🔁 表現を変える</button></div>';
+    if(step.type === "date"){
+      return '<div class="field"><input type="date" id="wzInput" value="' + escapeHtml(data.basic[step.basicKey]||"") + '"></div>';
     }
-    html += '</div>';
-
-    return html;
+    if(step.type === "blood"){
+      var opts = ["","A","B","O","AB"];
+      var h = '<div class="field"><select id="wzInput">';
+      opts.forEach(function(o){ h += '<option value="'+o+'"'+(data.basic.bloodType===o?" selected":"")+'>'+(o ? o+"型" : "未設定")+'</option>'; });
+      h += '</select></div>';
+      return h;
+    }
+    if(step.type === "textarea"){
+      return '<div class="field"><textarea id="wzInput" placeholder="' + escapeHtml(step.ph||"") + '">' + escapeHtml(data[step.key]||"") + '</textarea></div>';
+    }
+    if(step.type === "taglist"){
+      var items = data.lists[step.listKey];
+      var h2 = '<div class="chip-list">';
+      if(!items.length) h2 += '<div class="chip-empty">まだ登録がありません</div>';
+      items.forEach(function(v,i){ h2 += '<span class="chip">'+escapeHtml(v)+'<button data-remove-tag="'+step.listKey+'" data-idx="'+i+'">×</button></span>'; });
+      h2 += '</div><div class="add-row"><input type="text" id="wzTagInput" placeholder="'+escapeHtml(step.ph||"")+'"><button class="add-btn" id="wzTagAdd">追加</button></div>';
+      return h2;
+    }
+    if(step.type === "favorites"){
+      var h3 = data.favorites.length ? "" : '<div class="chip-empty">まだ登録がありません</div>';
+      data.favorites.forEach(function(f,i){
+        h3 += '<div class="fav-item"><span class="fav-cat">'+escapeHtml(f.category)+'</span><span class="fav-val">'+escapeHtml(f.value)+'</span><button class="del-btn" data-del-fav="'+i+'">🗑️</button></div>';
+      });
+      h3 += '<div class="add-row"><select id="wzFavCat">' + FAV_CATEGORIES.map(function(c){ return '<option value="'+escapeHtml(c)+'">'+escapeHtml(c)+'</option>'; }).join("") + '</select><input type="text" id="wzFavVal" placeholder="好きなものを入力"><button class="add-btn" id="wzFavAdd">追加</button></div>';
+      return h3;
+    }
+    if(step.type === "custom"){
+      var h4 = "";
+      data.customSections.forEach(function(sec){
+        h4 += '<div class="custom-section" data-cs-id="'+sec.id+'">';
+        h4 += '<div class="cs-head"><input type="text" data-cs-title="'+sec.id+'" placeholder="項目名（例：休日の過ごし方）" value="'+escapeHtml(sec.title)+'"><button class="cs-del" data-cs-del="'+sec.id+'">🗑️</button></div>';
+        h4 += '<div class="chip-list">';
+        if(!sec.items.length) h4 += '<div class="chip-empty">まだ登録がありません</div>';
+        sec.items.forEach(function(v,i){ h4 += '<span class="chip">'+escapeHtml(v)+'<button data-cs-remove="'+sec.id+'" data-idx="'+i+'">×</button></span>'; });
+        h4 += '</div><div class="add-row"><input type="text" data-cs-input="'+sec.id+'" placeholder="内容を入力"><button class="add-btn" data-cs-add="'+sec.id+'">追加</button></div>';
+        h4 += '</div>';
+      });
+      h4 += '<button class="add-section-btn" id="addSectionBtn">＋ 新しい項目を追加</button>';
+      return h4;
+    }
+    return "";
   }
 
-  function buildIntro(){
-    var b = data.basic;
-    var name = b.nickname || b.name || "（名前未登録）";
-    var tone = introState.tone;
-    var p = PHRASES[tone];
-    var parts = [];
-    parts.push(pick(p.opening).replace("{name}", name));
-
-    if(b.occupation && introState.length !== "compact"){
-      parts.push(b.occupation + "です。");
-    }
-    if(b.hometown && introState.length === "detailed"){
-      parts.push("出身は" + b.hometown + "です。");
-    }
-
-    var hobbySrc = data.lists.hobbies;
-    var skillSrc = data.lists.skills;
-    if(introState.length === "compact"){
-      if(hobbySrc.length){ parts.push("趣味は" + joinList(hobbySrc,2) + "です。"); }
-      else if(skillSrc.length){ parts.push("特技は" + joinList(skillSrc,2) + "です。"); }
-    }else{
-      if(hobbySrc.length){ parts.push("趣味は" + joinList(hobbySrc,3) + "です。"); }
-      if(skillSrc.length){ parts.push("特技は" + joinList(skillSrc,3) + "です。"); }
-    }
-
-    if(introState.length !== "compact" && data.favorites.length){
-      var fav = pick(data.favorites);
-      parts.push("最近は" + fav.value + "（" + fav.category + "）にはまっています。");
-    }
-
-    if(introState.length === "detailed"){
-      if(data.lists.strengths.length){ parts.push("長所は" + joinList(data.lists.strengths,2) + "なところです。"); }
-      if(b.motto){ parts.push("大切にしている言葉は「" + b.motto + "」です。"); }
-      if(data.goals){ parts.push("今後は" + data.goals.replace(/\n/g," ") + "と思っています。"); }
-    }
-
-    parts.push(pick(p.closing));
-    return parts.join("");
-  }
-
-  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  function joinList(arr,max){
-    var picked = arr.length <= max ? arr.slice() : shuffle(arr.slice()).slice(0,max);
-    return picked.join("、");
-  }
-  function shuffle(arr){
-    for(var i=arr.length-1;i>0;i--){
-      var j = Math.floor(Math.random()*(i+1));
-      var tmp = arr[i]; arr[i]=arr[j]; arr[j]=tmp;
-    }
-    return arr;
-  }
-
-  /* =========================================================
-     10. データ・設定タブ
-  ========================================================= */
-
-  function renderSettingsView(){
-    var qaCount = Object.keys(data.qa).length;
-    var favCount = data.favorites.length;
-    var tagCount = Object.keys(data.lists).reduce(function(s,k){ return s + data.lists[k].length; },0);
-
-    var html = "";
-    html += '<div class="card"><h2>📊 記録の状況</h2>';
-    html += '<div class="stat-grid">';
-    html += '<div class="stat-box"><div class="num">'+tagCount+'</div><div class="lbl">登録タグ数</div></div>';
-    html += '<div class="stat-box"><div class="num">'+favCount+'</div><div class="lbl">好きなもの</div></div>';
-    html += '<div class="stat-box"><div class="num">'+qaCount+'</div><div class="lbl">回答した質問</div></div>';
-    html += '</div>';
-    if(data.meta.updatedAt){
-      html += '<p class="card-desc" style="margin-top:10px;">最終更新：'+fmtDate(data.meta.updatedAt)+'</p>';
-    }
-    html += '</div>';
-
-    html += '<div class="card"><h2>💾 データの管理</h2><p class="card-desc">この端末のブラウザだけに保存されています。機種変更やブラウザの変更前にバックアップしましょう。</p>';
-    html += '<button class="settings-btn" id="exportBtn">⬇️ エクスポート（JSONで保存）</button>';
-    html += '<button class="settings-btn" id="importBtn">⬆️ インポート（JSONを読み込む）</button>';
-    html += '<input type="file" id="importFile" accept="application/json">';
-    html += '<button class="settings-btn danger" id="resetBtn">🗑️ すべてのデータを削除</button>';
-    html += '</div>';
-
-    return html;
-  }
-
-  /* =========================================================
-     11. イベントバインド
-  ========================================================= */
-
-  function bindViewEvents(){
+  function bindWizardEvents(step){
     var app = document.getElementById("app");
 
-    // --- 基本情報 ---
-    app.querySelectorAll("[data-basic]").forEach(function(el){
-      el.addEventListener("change", function(){
-        data.basic[el.dataset.basic] = el.value;
-        saveData();
-        renderProgress();
-      });
+    var wzHome = document.getElementById("wzHome");
+    if(wzHome) wzHome.addEventListener("click", function(){ switchView(state.wizardReturnView || "home"); });
+
+    var wzBack = document.getElementById("wzBack");
+    if(wzBack) wzBack.addEventListener("click", function(){
+      if(wizardState.stepIndex > 0){
+        wizardState.stepIndex--; data.meta.wizardStep = wizardState.stepIndex; saveData(); render();
+      }
     });
 
-    // --- タグリスト（特技・趣味・長所・短所・苦手） ---
-    Object.keys(LIST_META).forEach(function(key){
-      var addBtn = app.querySelector('[data-tag-add="'+key+'"]');
-      var input = app.querySelector('[data-tag-input="'+key+'"]');
-      if(addBtn){
-        addBtn.addEventListener("click", function(){ addTag(key, input); });
-      }
-      if(input){
-        input.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); addTag(key, input); } });
+    var wzNext = document.getElementById("wzNext");
+    if(wzNext) wzNext.addEventListener("click", function(){
+      if(wizardState.stepIndex >= STEPS.length - 1){
+        data.meta.wizardDone = true; saveData();
+        toast("プロフィールの入力、お疲れさまでした！");
+        switchView(state.wizardReturnView || "home");
+      }else{
+        wizardState.stepIndex++; data.meta.wizardStep = wizardState.stepIndex; saveData(); render();
       }
     });
+
+    var wzInput = document.getElementById("wzInput");
+    if(wzInput){
+      wzInput.addEventListener("change", function(){
+        if(step.basicKey) data.basic[step.basicKey] = wzInput.value;
+        else if(step.key) data[step.key] = wzInput.value;
+        saveData(); renderProgress();
+      });
+    }
+
+    var swipeLinkBtn = app.querySelector("[data-goto-swipe]");
+    if(swipeLinkBtn){
+      swipeLinkBtn.addEventListener("click", function(){
+        state.swipeCat = swipeLinkBtn.dataset.gotoSwipe;
+        state.swipeQueue = null;
+        switchView("swipe");
+      });
+    }
+
+    // タグリスト
+    var tagAdd = document.getElementById("wzTagAdd");
+    var tagInput = document.getElementById("wzTagInput");
+    if(tagAdd && tagInput){
+      tagAdd.addEventListener("click", function(){ addTag(step.listKey, tagInput); });
+      tagInput.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); addTag(step.listKey, tagInput); } });
+    }
     app.querySelectorAll("[data-remove-tag]").forEach(function(btn){
       btn.addEventListener("click", function(){
-        var key = btn.dataset.removeTag, idx = Number(btn.dataset.idx);
-        data.lists[key].splice(idx,1);
+        data.lists[btn.dataset.removeTag].splice(Number(btn.dataset.idx),1);
         saveData(); render();
       });
     });
 
-    // --- 好きなもの ---
-    var favAddBtn = app.querySelector("#favAddBtn");
-    if(favAddBtn){
-      favAddBtn.addEventListener("click", function(){
-        var cat = app.querySelector("#favCatSelect").value;
-        var input = app.querySelector("#favValInput");
+    // 好きなもの
+    var favAdd = document.getElementById("wzFavAdd");
+    if(favAdd){
+      favAdd.addEventListener("click", function(){
+        var cat = document.getElementById("wzFavCat").value;
+        var input = document.getElementById("wzFavVal");
         var val = input.value.trim();
         if(!val) return;
         data.favorites.push({ category: cat, value: val });
@@ -855,20 +977,11 @@
       });
     }
     app.querySelectorAll("[data-del-fav]").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        data.favorites.splice(Number(btn.dataset.delFav),1);
-        saveData(); render();
-      });
+      btn.addEventListener("click", function(){ data.favorites.splice(Number(btn.dataset.delFav),1); saveData(); render(); });
     });
 
-    // --- 目標 ---
-    var goalsInput = app.querySelector("#goalsInput");
-    if(goalsInput){
-      goalsInput.addEventListener("change", function(){ data.goals = goalsInput.value; saveData(); renderProgress(); });
-    }
-
-    // --- カスタムセクション ---
-    var addSectionBtn = app.querySelector("#addSectionBtn");
+    // じぶんだけの項目
+    var addSectionBtn = document.getElementById("addSectionBtn");
     if(addSectionBtn){
       addSectionBtn.addEventListener("click", function(){
         data.customSections.push({ id: uid(), title:"", items:[] });
@@ -890,8 +1003,7 @@
     app.querySelectorAll("[data-cs-add]").forEach(function(btn){
       btn.addEventListener("click", function(){
         var id = btn.dataset.csAdd;
-        var input = app.querySelector('[data-cs-input="'+id+'"]');
-        addCustomItem(id, input);
+        addCustomItem(id, app.querySelector('[data-cs-input="'+id+'"]'));
       });
     });
     app.querySelectorAll("[data-cs-input]").forEach(function(input){
@@ -905,79 +1017,6 @@
         if(sec){ sec.items.splice(Number(btn.dataset.idx),1); saveData(); render(); }
       });
     });
-
-    // --- じぶんを知る ---
-    var todaySave = app.querySelector("#todayQSave");
-    if(todaySave){
-      todaySave.addEventListener("click", function(){
-        var val = app.querySelector("#todayQInput").value.trim();
-        if(!val) return;
-        saveAnswer(state.todayQId, val);
-        toast("記録しました");
-        render();
-      });
-    }
-    app.querySelectorAll("[data-cat]").forEach(function(btn){
-      btn.addEventListener("click", function(){ state.discoverCat = btn.dataset.cat; render(); });
-    });
-    app.querySelectorAll("[data-qa-edit]").forEach(function(btn){
-      btn.addEventListener("click", function(){ state["editing_"+btn.dataset.qaEdit] = true; render(); });
-    });
-    app.querySelectorAll("[data-qa-hist]").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var id = btn.dataset.qaHist;
-        state["hist_"+id] = !state["hist_"+id];
-        render();
-      });
-    });
-    app.querySelectorAll("[data-qa-save]").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var id = btn.dataset.qaSave;
-        var val = app.querySelector('[data-qa-input="'+id+'"]').value.trim();
-        if(!val) return;
-        saveAnswer(id, val);
-        state["editing_"+id] = false;
-        toast("保存しました");
-        render();
-      });
-    });
-
-    // --- 自己紹介文 ---
-    app.querySelectorAll("[data-len]").forEach(function(btn){
-      btn.addEventListener("click", function(){ introState.length = btn.dataset.len; render(); });
-    });
-    app.querySelectorAll("[data-tone]").forEach(function(btn){
-      btn.addEventListener("click", function(){ introState.tone = btn.dataset.tone; render(); });
-    });
-    var genBtn = app.querySelector("#genBtn");
-    if(genBtn){
-      genBtn.addEventListener("click", function(){ introState.lastText = buildIntro(); render(); });
-    }
-    var regenBtn = app.querySelector("#regenBtn");
-    if(regenBtn){
-      regenBtn.addEventListener("click", function(){ introState.lastText = buildIntro(); render(); });
-    }
-    var copyBtn = app.querySelector("#copyBtn");
-    if(copyBtn){
-      copyBtn.addEventListener("click", function(){
-        copyText(introState.lastText);
-      });
-    }
-
-    // --- 設定・データ ---
-    var exportBtn = app.querySelector("#exportBtn");
-    if(exportBtn){ exportBtn.addEventListener("click", exportData); }
-    var importBtn = app.querySelector("#importBtn");
-    var importFile = app.querySelector("#importFile");
-    if(importBtn && importFile){
-      importBtn.addEventListener("click", function(){ importFile.click(); });
-      importFile.addEventListener("change", function(){
-        var file = importFile.files[0];
-        if(file) importData(file);
-      });
-    }
-    var resetBtn = app.querySelector("#resetBtn");
-    if(resetBtn){ resetBtn.addEventListener("click", resetData); }
   }
 
   function addTag(key, input){
@@ -995,58 +1034,612 @@
     if(sec){ sec.items.push(val); saveData(); render(); }
   }
 
+  /* =========================================================
+     9. スワイプ発見
+  ========================================================= */
+
+  function swipeBank(cat){
+    if(cat === "motto") return MOTTO_BANK;
+    if(cat === "strength") return STRENGTH_BANK;
+    if(cat === "weakness") return WEAKNESS_BANK;
+    return FAVORITE_BANK.map(function(f){ return { category:f.c, value:f.v }; });
+  }
+  function swipeAlreadyHas(cat, item){
+    if(cat === "motto") return data.basic.motto === item;
+    if(cat === "strength") return data.lists.strengths.indexOf(item) !== -1;
+    if(cat === "weakness") return data.lists.weaknesses.indexOf(item) !== -1;
+    if(cat === "favorite") return data.favorites.some(function(f){ return f.category===item.category && f.value===item.value; });
+    return false;
+  }
+  function buildSwipeQueue(cat){
+    var bank = swipeBank(cat);
+    var avail = bank.filter(function(item){ return !swipeAlreadyHas(cat,item); });
+    if(!avail.length) avail = bank.slice();
+    state.swipeCat = cat;
+    state.swipeQueue = shuffle(avail.slice());
+  }
+  function countAdded(cat){
+    if(cat === "motto") return data.basic.motto ? 1 : 0;
+    if(cat === "strength") return data.lists.strengths.length;
+    if(cat === "weakness") return data.lists.weaknesses.length;
+    return data.favorites.length;
+  }
+  function applySwipeAccept(cat, item){
+    if(cat === "motto"){ data.basic.motto = item; toast("座右の銘に設定しました"); }
+    else if(cat === "strength"){ if(data.lists.strengths.indexOf(item)===-1){ data.lists.strengths.push(item); } toast("長所に追加しました"); }
+    else if(cat === "weakness"){ if(data.lists.weaknesses.indexOf(item)===-1){ data.lists.weaknesses.push(item); } toast("短所に追加しました"); }
+    else if(cat === "favorite"){ if(!data.favorites.some(function(f){return f.category===item.category&&f.value===item.value;})){ data.favorites.push({category:item.category, value:item.value}); } toast("好きなものに追加しました"); }
+  }
+
+  function renderSwipeView(){
+    if(!state.swipeQueue || !state.swipeQueue.length) buildSwipeQueue(state.swipeCat);
+    var meta = SWIPE_CAT_META[state.swipeCat];
+    var html = '<div class="cat-chips">';
+    Object.keys(SWIPE_CAT_META).forEach(function(k){
+      html += '<button class="cat-chip'+(state.swipeCat===k?" active":"")+'" data-swipecat="'+k+'">'+SWIPE_CAT_META[k].icon+' '+SWIPE_CAT_META[k].label+'</button>';
+    });
+    html += '</div>';
+    html += '<div class="swipe-wrap"><div class="swipe-stage" id="swipeStage">';
+    var queue = state.swipeQueue;
+    if(!queue.length){
+      html += '<div class="swipe-empty">候補がありません</div>';
+    }else{
+      var count = Math.min(3, queue.length);
+      for(var i=count-1;i>=0;i--){
+        var item = queue[i];
+        var text = state.swipeCat === "favorite" ? item.value : item;
+        var cls = "swipe-card" + (i===0 ? " top" : " behind-"+i);
+        html += '<div class="'+cls+'"'+(i===0?' id="swipeTopCard"':'')+' style="background:linear-gradient(135deg,'+meta.grad[0]+','+meta.grad[1]+')">';
+        if(state.swipeCat === "favorite") html += '<div class="sc-cat">'+escapeHtml(item.category)+'</div>';
+        html += '<div class="sc-text">'+escapeHtml(text)+'</div></div>';
+      }
+    }
+    html += '</div>';
+    html += '<div class="swipe-actions"><button class="swipe-btn reject" id="swipeRejectBtn" title="スキップ">✕</button><button class="swipe-btn accept" id="swipeAcceptBtn" title="追加する">♥</button></div>';
+    html += '<div class="swipe-count">これまでに ' + countAdded(state.swipeCat) + ' 個 追加済み</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function bindSwipeEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-swipecat]").forEach(function(btn){
+      btn.addEventListener("click", function(){ buildSwipeQueue(btn.dataset.swipecat); render(); });
+    });
+    var acceptBtn = document.getElementById("swipeAcceptBtn");
+    if(acceptBtn) acceptBtn.addEventListener("click", function(){ commitSwipe(true); });
+    var rejectBtn = document.getElementById("swipeRejectBtn");
+    if(rejectBtn) rejectBtn.addEventListener("click", function(){ commitSwipe(false); });
+    var topCard = document.getElementById("swipeTopCard");
+    if(topCard) bindDrag(topCard);
+  }
+
+  function commitSwipe(accepted){
+    var queue = state.swipeQueue;
+    if(!queue || !queue.length) return;
+    var item = queue[0];
+    if(accepted) applySwipeAccept(state.swipeCat, item);
+    queue.shift();
+    if(!queue.length) buildSwipeQueue(state.swipeCat);
+    saveData(); render();
+  }
+
+  function bindDrag(el){
+    var startX=0, startY=0, dx=0, dragging=false;
+    el.addEventListener("pointerdown", function(e){
+      dragging = true; startX = e.clientX; startY = e.clientY;
+      try{ el.setPointerCapture(e.pointerId); }catch(err){}
+      el.style.transition = "none";
+    });
+    el.addEventListener("pointermove", function(e){
+      if(!dragging) return;
+      dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+      el.style.transform = "translate("+dx+"px,"+dy+"px) rotate("+(dx/18)+"deg)";
+    });
+    function release(){
+      if(!dragging) return;
+      dragging = false;
+      if(Math.abs(dx) > 90){ commitSwipe(dx > 0); }
+      else{ el.style.transition = "transform .25s ease"; el.style.transform = ""; }
+      dx = 0;
+    }
+    el.addEventListener("pointerup", release);
+    el.addEventListener("pointercancel", release);
+  }
+
+  /* =========================================================
+     10. 診断（性格診断 / じぶんを知る質問）
+  ========================================================= */
+
+  function renderQuizView(){
+    var html = '<div class="toggle-row">';
+    html += '<button data-diagsub="personality" class="'+(state.diagSub==="personality"?"active":"")+'">🧠 性格診断</button>';
+    html += '<button data-diagsub="reflect" class="'+(state.diagSub==="reflect"?"active":"")+'">🔍 じぶんを知る質問</button>';
+    html += '</div>';
+    html += state.diagSub === "reflect" ? renderReflectView() : renderPersonalityQuiz();
+    return html;
+  }
+
+  function bindQuizEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-diagsub]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state.diagSub = btn.dataset.diagsub; render(); });
+    });
+    if(state.diagSub === "reflect") bindReflectEvents();
+    else{
+      app.querySelectorAll("[data-likert]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          data.personality.responses[btn.dataset.stid] = { value: Number(btn.dataset.likert), updatedAt: new Date().toISOString() };
+          saveData(); render();
+        });
+      });
+    }
+  }
+
+  // ---- 性格診断 ----
+  function computeTraitStats(){
+    var sums = {}; Object.keys(PERSONALITY_TRAITS).forEach(function(k){ sums[k] = { sum:0, count:0 }; });
+    PERSONALITY_STATEMENTS.forEach(function(s){
+      var r = data.personality.responses[s.id];
+      if(!r) return;
+      var val = s.reverse ? (6 - r.value) : r.value;
+      sums[s.trait].sum += val; sums[s.trait].count++;
+    });
+    var out = {};
+    Object.keys(sums).forEach(function(k){
+      var st = sums[k];
+      var avg = st.count ? st.sum/st.count : 3;
+      var pct = Math.round(((avg-1)/4)*100);
+      out[k] = { pct: pct, count: st.count, level: pct<40?"low":(pct<65?"mid":"high") };
+    });
+    return out;
+  }
+  function getTopPersonalityTrait(){
+    var totalAnswered = Object.keys(data.personality.responses).length;
+    if(totalAnswered < 5) return null;
+    var stats = computeTraitStats();
+    var topKey = null;
+    Object.keys(stats).forEach(function(k){ if(!topKey || stats[k].pct > stats[topKey].pct) topKey = k; });
+    return topKey ? (PERSONALITY_TRAITS[topKey].label + "高め") : null;
+  }
+  function pickNextStatement(){
+    var unanswered = PERSONALITY_STATEMENTS.filter(function(s){ return !data.personality.responses[s.id]; });
+    return unanswered.length ? pick(unanswered) : pick(PERSONALITY_STATEMENTS);
+  }
+
+  function renderPersonalityQuiz(){
+    var stats = computeTraitStats();
+    var confSum = 0;
+    Object.keys(stats).forEach(function(k){ confSum += Math.min(1, stats[k].count / CONVERGE_TARGET); });
+    var confPct = Math.round(confSum/5*100);
+
+    var html = '<div class="card"><h2>🧠 性格診断</h2><p class="card-desc">直感で答えてください。何度でも答えられ、答えるほど結果がはっきり収束していきます。</p>';
+    html += '<div class="convergence-badge">診断の安定度：' + confPct + '%</div>';
+    Object.keys(PERSONALITY_TRAITS).forEach(function(k){
+      var t = PERSONALITY_TRAITS[k], st = stats[k];
+      html += '<div class="trait-bar-row"><div class="tb-head"><span>'+t.label+'</span><span class="tb-count">'+st.pct+'%・'+st.count+'回回答</span></div>';
+      html += '<div class="tb-track"><div class="tb-fill" style="width:'+st.pct+'%"></div></div>';
+      html += '<div class="tb-desc">'+escapeHtml(LEVEL_DESC[k][st.level])+'</div></div>';
+    });
+    html += '</div>';
+
+    var stmt = pickNextStatement();
+    var reinforcement = !!data.personality.responses[stmt.id];
+    html += '<div class="card">';
+    html += '<h2>'+(reinforcement ? "🔁 もう一度答えてみましょう" : "❓ 質問")+'</h2>';
+    if(reinforcement) html += '<p class="card-desc">回答済みの質問です。同じでも違ってもOK、答えるたびに精度が上がります。</p>';
+    html += '<p style="font-size:1rem;font-weight:700;margin:6px 0 0;">'+escapeHtml(stmt.text)+'</p>';
+    html += '<div class="quiz-likert">';
+    [[1,"全く違う"],[2,"やや違う"],[3,"どちらとも"],[4,"ややそう"],[5,"まさにそう"]].forEach(function(o){
+      html += '<button data-likert="'+o[0]+'" data-stid="'+stmt.id+'">'+o[1]+'</button>';
+    });
+    html += '</div></div>';
+    return html;
+  }
+
+  // ---- じぶんを知る質問（内省ジャーナル） ----
+  function renderReflectView(){
+    var answeredCount = Object.keys(data.qa).length;
+    var total = QUESTION_BANK.length;
+    var cats = ["すべて"].concat(uniq(QUESTION_BANK.map(function(q){ return q.cat; })));
+    if(!state.reflectCat) state.reflectCat = "すべて";
+    if(!state.todayQId) state.todayQId = pickTodayQuestionId();
+
+    var html = "";
+    var todayQ = QUESTION_BANK.find(function(q){ return q.id === state.todayQId; });
+    if(todayQ){
+      var already = data.qa[todayQ.id];
+      html += '<div class="today-q"><div class="tq-label">📅 今日の質問</div><div class="tq-text">'+escapeHtml(todayQ.text)+'</div>';
+      html += '<textarea id="todayQInput" placeholder="思いつくまま書いてみましょう">'+(already ? escapeHtml(already[already.length-1].text) : "")+'</textarea>';
+      html += '<div class="tq-actions"><button id="todayQSave">記録する</button></div></div>';
+    }
+
+    html += '<p class="card-desc" style="margin:0 0 10px;">回答した質問：'+answeredCount+' / '+total+'　自分について書き溜めるほど、自己紹介文の材料が増えていきます。</p>';
+    html += '<div class="cat-chips">';
+    cats.forEach(function(c){ html += '<button class="cat-chip'+(state.reflectCat===c?" active":"")+'" data-cat="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>'; });
+    html += '</div>';
+
+    var list = QUESTION_BANK.filter(function(q){ return state.reflectCat === "すべて" || q.cat === state.reflectCat; });
+    list.forEach(function(q){ html += renderQaItem(q); });
+    return html;
+  }
+  function uniq(arr){ return arr.filter(function(v,i){ return arr.indexOf(v) === i; }); }
+
+  function renderQaItem(q){
+    var hist = data.qa[q.id] || [];
+    var latest = hist[hist.length-1];
+    var html = '<div class="qa-item" data-qid="'+q.id+'"><div class="qa-cat">'+escapeHtml(q.cat)+'</div><div class="qa-text">'+escapeHtml(q.text)+'</div>';
+    if(latest && !state["editing_"+q.id]){
+      html += '<div class="qa-answer">'+escapeHtml(latest.text)+'<div class="qa-date">'+fmtDate(latest.date)+' に記録</div></div>';
+      html += '<div class="qa-item-actions"><button data-qa-edit="'+q.id+'">✏️ 書き直す</button>';
+      if(hist.length > 1) html += '<button data-qa-hist="'+q.id+'">🕰️ 過去の回答（'+(hist.length-1)+'件）</button>';
+      html += '</div>';
+      if(state["hist_"+q.id] && hist.length > 1){
+        html += '<div class="qa-history">';
+        for(var i=hist.length-2;i>=0;i--){ html += '<div class="hist-entry">'+escapeHtml(hist[i].text)+'<div class="hd">'+fmtDate(hist[i].date)+'</div></div>'; }
+        html += '</div>';
+      }
+    }else{
+      html += '<textarea data-qa-input="'+q.id+'" placeholder="回答を入力">'+(latest ? escapeHtml(latest.text) : "")+'</textarea>';
+      html += '<button class="qa-save" data-qa-save="'+q.id+'">保存する</button>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function bindReflectEvents(){
+    var app = document.getElementById("app");
+    var todaySave = document.getElementById("todayQSave");
+    if(todaySave){
+      todaySave.addEventListener("click", function(){
+        var val = document.getElementById("todayQInput").value.trim();
+        if(!val) return;
+        saveAnswer(state.todayQId, val);
+        toast("記録しました");
+        render();
+      });
+    }
+    app.querySelectorAll("[data-cat]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state.reflectCat = btn.dataset.cat; render(); });
+    });
+    app.querySelectorAll("[data-qa-edit]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state["editing_"+btn.dataset.qaEdit] = true; render(); });
+    });
+    app.querySelectorAll("[data-qa-hist]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state["hist_"+btn.dataset.qaHist] = !state["hist_"+btn.dataset.qaHist]; render(); });
+    });
+    app.querySelectorAll("[data-qa-save]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.dataset.qaSave;
+        var val = app.querySelector('[data-qa-input="'+id+'"]').value.trim();
+        if(!val) return;
+        saveAnswer(id, val);
+        state["editing_"+id] = false;
+        toast("保存しました");
+        render();
+      });
+    });
+  }
+
   function saveAnswer(qid, text){
     if(!data.qa[qid]) data.qa[qid] = [];
     data.qa[qid].push({ text: text, date: new Date().toISOString() });
     saveData();
   }
 
-  function copyText(text){
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(function(){ toast("コピーしました"); }, function(){ fallbackCopy(text); });
-    }else{ fallbackCopy(text); }
+  /* =========================================================
+     11. 自己紹介（文章 / カード）
+  ========================================================= */
+
+  function renderIntroTabView(){
+    var html = '<div class="toggle-row">';
+    html += '<button data-introsub="text" class="'+(state.introSub==="text"?"active":"")+'">💬 文章</button>';
+    html += '<button data-introsub="card" class="'+(state.introSub==="card"?"active":"")+'">🪪 カード</button>';
+    html += '</div>';
+    html += state.introSub === "card" ? renderIntroCardView() : renderIntroTextView();
+    return html;
   }
-  function fallbackCopy(text){
-    var ta = document.createElement("textarea");
-    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
-    document.body.appendChild(ta); ta.select();
-    try{ document.execCommand("copy"); toast("コピーしました"); }catch(e){ toast("コピーできませんでした"); }
-    document.body.removeChild(ta);
+
+  function bindIntroEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-introsub]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state.introSub = btn.dataset.introsub; render(); });
+    });
+    if(state.introSub === "card") bindIntroCardEvents();
+    else bindIntroTextEvents();
+  }
+
+  // ---- 文章ジェネレーター ----
+  var introState = { length:"standard", tone:"formal", lastText:"" };
+  var PHRASES = {
+    formal: { opening:["はじめまして、{name}です。","{name}と申します。","こんにちは、{name}です。"], closing:["よろしくお願いいたします。","本日はよろしくお願いいたします。","これからよろしくお願いします。"] },
+    casual: { opening:["はじめまして、{name}です！","{name}です！よろしく！","こんにちは、{name}です。"], closing:["よろしくお願いします！","仲良くしてください！","よろしくね！"] }
+  };
+
+  function renderIntroTextView(){
+    var html = '<div class="card"><h2>💬 自己紹介文ジェネレーター</h2>';
+    html += '<p class="card-desc">プロフィールタブに登録した内容から、話す内容を自動で組み立てます。項目を増やすほど自然な文章になります。</p>';
+    html += '<label style="display:block;font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">長さ</label><div class="toggle-row">';
+    [["compact","短め（30秒）"],["standard","標準"],["detailed","しっかり"]].forEach(function(o){
+      html += '<button data-len="'+o[0]+'" class="'+(introState.length===o[0]?"active":"")+'">'+o[1]+'</button>';
+    });
+    html += '</div>';
+    html += '<label style="display:block;font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">トーン</label><div class="toggle-row">';
+    [["formal","丁寧"],["casual","カジュアル"]].forEach(function(o){
+      html += '<button data-tone="'+o[0]+'" class="'+(introState.tone===o[0]?"active":"")+'">'+o[1]+'</button>';
+    });
+    html += '</div>';
+    html += '<button class="gen-btn" id="genBtn">✨ 自己紹介文をつくる</button>';
+    html += '<div class="gen-output'+(introState.lastText?"":" empty")+'" id="genOutput">'+(introState.lastText ? escapeHtml(introState.lastText) : "ボタンを押すと、ここに自己紹介文が表示されます。")+'</div>';
+    if(introState.lastText) html += '<div class="gen-actions"><button id="copyBtn">📋 コピー</button><button id="regenBtn">🔁 表現を変える</button></div>';
+    html += '</div>';
+    return html;
+  }
+
+  function buildIntro(){
+    var b = data.basic;
+    var name = b.nickname || b.name || "（名前未登録）";
+    var p = PHRASES[introState.tone];
+    var parts = [pick(p.opening).replace("{name}", name)];
+
+    if(b.occupation && introState.length !== "compact") parts.push(b.occupation + "です。");
+    if(b.hometown && introState.length === "detailed") parts.push("出身は" + b.hometown + "です。");
+
+    var hobbySrc = data.lists.hobbies, skillSrc = data.lists.skills;
+    if(introState.length === "compact"){
+      if(hobbySrc.length) parts.push("趣味は" + joinList(hobbySrc,2) + "です。");
+      else if(skillSrc.length) parts.push("特技は" + joinList(skillSrc,2) + "です。");
+    }else{
+      if(hobbySrc.length) parts.push("趣味は" + joinList(hobbySrc,3) + "です。");
+      if(skillSrc.length) parts.push("特技は" + joinList(skillSrc,3) + "です。");
+    }
+
+    if(introState.length !== "compact" && data.favorites.length){
+      var fav = pick(data.favorites);
+      parts.push("最近は" + fav.value + "（" + fav.category + "）にはまっています。");
+    }
+
+    if(introState.length === "detailed"){
+      if(data.lists.strengths.length) parts.push("長所は" + joinList(data.lists.strengths,2) + "なところです。");
+      if(b.motto) parts.push("大切にしている言葉は「" + b.motto + "」です。");
+      if(data.goals) parts.push("今後は" + data.goals.replace(/\n/g," ") + "と思っています。");
+      var topTrait = getTopPersonalityTrait();
+      if(topTrait) parts.push("性格診断では" + topTrait.replace("高め","") + "が高めという結果が出ています。");
+    }
+
+    parts.push(pick(p.closing));
+    return parts.join("");
+  }
+  function joinList(arr,max){
+    var picked = arr.length <= max ? arr.slice() : shuffle(arr.slice()).slice(0,max);
+    return picked.join("、");
+  }
+
+  function bindIntroTextEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-len]").forEach(function(btn){ btn.addEventListener("click", function(){ introState.length = btn.dataset.len; render(); }); });
+    app.querySelectorAll("[data-tone]").forEach(function(btn){ btn.addEventListener("click", function(){ introState.tone = btn.dataset.tone; render(); }); });
+    var genBtn = document.getElementById("genBtn");
+    if(genBtn) genBtn.addEventListener("click", function(){ introState.lastText = buildIntro(); render(); });
+    var regenBtn = document.getElementById("regenBtn");
+    if(regenBtn) regenBtn.addEventListener("click", function(){ introState.lastText = buildIntro(); render(); });
+    var copyBtn = document.getElementById("copyBtn");
+    if(copyBtn) copyBtn.addEventListener("click", function(){ copyText(introState.lastText); });
+  }
+
+  // ---- 自己紹介カード ----
+  function hasAnyCardContent(){
+    return !!(data.basic.name || data.basic.nickname || data.basic.motto || data.lists.skills.length || data.lists.hobbies.length || data.favorites.length);
+  }
+
+  function renderIntroCardView(){
+    var html = '<div class="card"><h2>🪪 自己紹介カード</h2><p class="card-desc">登録した内容から、見せたり保存したりできる自己紹介カードを作れます。</p>';
+    html += '<div class="card-color-row">' + CARD_THEMES.map(function(t){
+      return '<button class="card-color-swatch'+(t.id===cardColorId?" active":"")+'" data-card-color="'+t.id+'" style="background:linear-gradient(135deg,'+t.grad[0]+','+t.grad[1]+')" title="'+t.id+'"></button>';
+    }).join("") + '</div>';
+    html += renderCardPreviewHtml();
+    if(hasAnyCardContent()) html += '<div class="gen-actions" style="margin-top:14px;"><button id="cardSaveBtn">🖼️ 画像として保存</button><button id="cardCopyBtn">📋 テキストをコピー</button></div>';
+    html += '</div>';
+    return html;
+  }
+
+  function cardTheme(){ return CARD_THEMES.find(function(t){ return t.id === cardColorId; }) || CARD_THEMES[0]; }
+
+  function cardChipList(){
+    var chips = [];
+    data.lists.skills.slice(0,3).forEach(function(v){ chips.push("🛠 "+v); });
+    data.lists.hobbies.slice(0,3).forEach(function(v){ chips.push("🎨 "+v); });
+    if(data.favorites[0]) chips.push("❤ "+data.favorites[0].value);
+    var topTrait = getTopPersonalityTrait();
+    if(topTrait) chips.push("🧠 "+topTrait);
+    return chips;
+  }
+
+  function renderCardPreviewHtml(){
+    var theme = cardTheme();
+    var name = data.basic.nickname || data.basic.name;
+    var html = '<div class="intro-card-preview" style="background:linear-gradient(135deg,'+theme.grad[0]+','+theme.grad[1]+')">';
+    if(!hasAnyCardContent()){
+      html += '<div class="ic-empty">プロフィールを入力すると、ここにカードが表示されます。</div>';
+    }else{
+      html += '<div class="ic-name">'+escapeHtml(name || "じぶん手帳ユーザー")+'</div>';
+      var sub = [data.basic.occupation, data.basic.hometown].filter(Boolean).join(" ・ ");
+      if(sub) html += '<div class="ic-sub">'+escapeHtml(sub)+'</div>';
+      if(data.basic.motto) html += '<div class="ic-motto">"'+escapeHtml(data.basic.motto)+'"</div>';
+      var chips = cardChipList();
+      if(chips.length) html += '<div class="ic-chips">'+chips.map(function(c){ return '<span class="ic-chip">'+escapeHtml(c)+'</span>'; }).join("")+'</div>';
+      html += '<div class="ic-footer">📔 じぶん手帳</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function buildCardText(){
+    var lines = [];
+    var name = data.basic.nickname || data.basic.name;
+    if(name) lines.push(name);
+    var sub = [data.basic.occupation, data.basic.hometown].filter(Boolean).join(" / ");
+    if(sub) lines.push(sub);
+    if(data.basic.motto) lines.push("「"+data.basic.motto+"」");
+    if(data.lists.skills.length) lines.push("特技: "+data.lists.skills.join("、"));
+    if(data.lists.hobbies.length) lines.push("趣味: "+data.lists.hobbies.join("、"));
+    if(data.favorites.length) lines.push("好きなもの: "+data.favorites.slice(0,3).map(function(f){ return f.value; }).join("、"));
+    var topTrait = getTopPersonalityTrait();
+    if(topTrait) lines.push("性格診断: "+topTrait);
+    return lines.join("\n");
+  }
+
+  function roundRectPath(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+  function truncateToWidth(ctx,text,maxW){
+    if(ctx.measureText(text).width <= maxW) return text;
+    var t = text;
+    while(t.length > 1 && ctx.measureText(t+"…").width > maxW){ t = t.slice(0,-1); }
+    return t + "…";
+  }
+  function drawChipsWrap(ctx, chips, startX, startY, maxWidth, fontSize){
+    ctx.font = fontSize + 'px "Hiragino Sans","Yu Gothic",sans-serif';
+    var x = startX, y = startY, lineH = fontSize + 24;
+    chips.forEach(function(label){
+      var textW = ctx.measureText(label).width;
+      var chipW = textW + 30, chipH = fontSize + 18;
+      if(x + chipW > startX + maxWidth){ x = startX; y += lineH; }
+      ctx.globalAlpha = 0.24; ctx.fillStyle = "#ffffff";
+      roundRectPath(ctx,x,y,chipW,chipH,chipH/2); ctx.fill();
+      ctx.globalAlpha = 1; ctx.fillStyle = "#ffffff";
+      ctx.fillText(label, x+15, y+chipH-11);
+      x += chipW + 10;
+    });
+    return y + lineH;
+  }
+
+  function drawIntroCard(){
+    var theme = cardTheme();
+    var W = 900, H = 560, pad = 40, radius = 36;
+    var canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#f3f2f8";
+    ctx.fillRect(0,0,W,H);
+
+    var cx = pad, cy = pad, cw = W - pad*2, ch = H - pad*2;
+    var grad = ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);
+    grad.addColorStop(0, theme.grad[0]); grad.addColorStop(1, theme.grad[1]);
+    ctx.fillStyle = grad;
+    roundRectPath(ctx,cx,cy,cw,ch,radius); ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.textBaseline = "alphabetic";
+    var name = data.basic.nickname || data.basic.name || "じぶん手帳ユーザー";
+    ctx.font = 'bold 46px "Hiragino Sans","Yu Gothic",sans-serif';
+    var curY = cy + 80;
+    ctx.fillText(truncateToWidth(ctx,name,cw-80), cx+40, curY);
+
+    var sub = [data.basic.occupation, data.basic.hometown].filter(Boolean).join("　・　");
+    if(sub){
+      ctx.font = '20px "Hiragino Sans","Yu Gothic",sans-serif';
+      ctx.globalAlpha = 0.88; curY += 34;
+      ctx.fillText(truncateToWidth(ctx,sub,cw-80), cx+40, curY);
+      ctx.globalAlpha = 1;
+    }
+    if(data.basic.motto){
+      ctx.font = 'italic 26px "Hiragino Sans","Yu Gothic",sans-serif';
+      curY += 56;
+      ctx.fillText(truncateToWidth(ctx,'"'+data.basic.motto+'"', cw-80), cx+40, curY);
+    }
+    var chips = cardChipList();
+    if(chips.length){
+      curY += 50;
+      drawChipsWrap(ctx, chips, cx+40, curY, cw-80, 17);
+    }
+
+    ctx.font = '16px "Hiragino Sans","Yu Gothic",sans-serif';
+    ctx.globalAlpha = 0.75; ctx.textAlign = "right";
+    ctx.fillText("📔 じぶん手帳", cx+cw-30, cy+ch-26);
+    ctx.textAlign = "left"; ctx.globalAlpha = 1;
+
+    return canvas;
+  }
+
+  function bindIntroCardEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-card-color]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        cardColorId = btn.dataset.cardColor;
+        localStorage.setItem(CARD_COLOR_KEY, cardColorId);
+        render();
+      });
+    });
+    var saveBtn = document.getElementById("cardSaveBtn");
+    if(saveBtn){
+      saveBtn.addEventListener("click", function(){
+        var canvas = drawIntroCard();
+        canvas.toBlob(function(blob){
+          if(!blob){ toast("画像の作成に失敗しました"); return; }
+          offerFileDownload("jibun-card.png", blob);
+        }, "image/png");
+      });
+    }
+    var copyBtn = document.getElementById("cardCopyBtn");
+    if(copyBtn) copyBtn.addEventListener("click", function(){ copyText(buildCardText()); });
+  }
+
+  /* =========================================================
+     12. データ・設定
+  ========================================================= */
+
+  function renderSettingsView(){
+    var qaCount = Object.keys(data.qa).length;
+    var favCount = data.favorites.length;
+    var tagCount = Object.keys(data.lists).reduce(function(s,k){ return s + data.lists[k].length; },0);
+    var personalityCount = Object.keys(data.personality.responses).length;
+
+    var html = '<div class="card"><h2>📊 記録の状況</h2><div class="stat-grid">';
+    html += '<div class="stat-box"><div class="num">'+tagCount+'</div><div class="lbl">登録タグ数</div></div>';
+    html += '<div class="stat-box"><div class="num">'+favCount+'</div><div class="lbl">好きなもの</div></div>';
+    html += '<div class="stat-box"><div class="num">'+qaCount+'</div><div class="lbl">回答した質問</div></div>';
+    html += '</div>';
+    html += '<p class="card-desc" style="margin-top:10px;">性格診断への回答：'+personalityCount+'回';
+    if(data.meta.updatedAt) html += '　／　最終更新：'+fmtDate(data.meta.updatedAt);
+    html += '</p></div>';
+
+    html += '<div class="card"><h2>💾 データの管理</h2><p class="card-desc">この端末のブラウザだけに保存されています。機種変更やブラウザの変更前にバックアップしましょう。</p>';
+    html += '<button class="settings-btn" id="exportBtn">⬇️ エクスポート（JSONで保存）</button>';
+    html += '<button class="settings-btn" id="importBtn">⬆️ インポート（JSONを読み込む）</button>';
+    html += '<input type="file" id="importFile" accept="application/json">';
+    html += '<button class="settings-btn danger" id="resetBtn">🗑️ すべてのデータを削除</button>';
+    html += '</div>';
+    return html;
+  }
+
+  function bindSettingsEvents(){
+    var app = document.getElementById("app");
+    var exportBtn = document.getElementById("exportBtn");
+    if(exportBtn) exportBtn.addEventListener("click", exportData);
+    var importBtn = document.getElementById("importBtn");
+    var importFile = document.getElementById("importFile");
+    if(importBtn && importFile){
+      importBtn.addEventListener("click", function(){ importFile.click(); });
+      importFile.addEventListener("change", function(){ if(importFile.files[0]) importData(importFile.files[0]); });
+    }
+    var resetBtn = document.getElementById("resetBtn");
+    if(resetBtn) resetBtn.addEventListener("click", resetData);
   }
 
   function exportFilename(){
     var d = new Date();
-    var stamp = d.getFullYear()+""+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");
-    return "jibun-techo-"+stamp+".json";
+    return "jibun-techo-" + d.getFullYear() + String(d.getMonth()+1).padStart(2,"0") + String(d.getDate()).padStart(2,"0") + ".json";
   }
-
   function exportData(){
-    var json = JSON.stringify(data,null,2);
-    // Claude Artifact上ではサンドボックスの制約で通常のダウンロードリンクが動作しないため、
-    // 提供されていればdownloads機能を使い、なければブラウザの通常ダウンロードにフォールバックする。
-    if(window.claude && typeof window.claude.use === "function"){
-      window.claude.use("downloads").then(function(downloads){
-        if(!downloads){ exportDataFallback(json); return; }
-        downloads.save({ filename: exportFilename(), data: json }).then(function(){
-          toast("エクスポートしました");
-        }, function(err){
-          if(err && err.code === "declined") return;
-          exportDataFallback(json);
-        });
-      }, function(){ exportDataFallback(json); });
-      return;
-    }
-    exportDataFallback(json);
-  }
-
-  function exportDataFallback(json){
-    var blob = new Blob([json], { type:"application/json" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url; a.download = exportFilename();
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast("エクスポートしました");
+    offerFileDownload(exportFilename(), JSON.stringify(data,null,2), "application/json");
   }
 
   function importData(file){
@@ -1058,10 +1651,11 @@
         data = Object.assign(deepClone(DEFAULT_DATA), parsed, {
           basic: Object.assign({}, DEFAULT_DATA.basic, parsed.basic),
           lists: Object.assign({}, DEFAULT_DATA.lists, parsed.lists),
+          personality: Object.assign({ responses:{} }, parsed.personality),
           meta: Object.assign({}, DEFAULT_DATA.meta, parsed.meta)
         });
         saveData();
-        render();
+        switchView("home");
         toast("インポートしました");
       }catch(e){
         alert("ファイルの読み込みに失敗しました。正しいJSONファイルか確認してください。");
@@ -1075,15 +1669,27 @@
     if(!confirm("本当に削除してよろしいですか？")) return;
     data = deepClone(DEFAULT_DATA);
     saveData();
-    render();
+    switchView("home");
     toast("データを削除しました");
   }
 
   /* =========================================================
-     12. 初期化
+     13. 初期化
   ========================================================= */
 
   initTheme();
+
+  if(!data.meta.wizardStarted){
+    data.meta.wizardStarted = true;
+    data.meta.wizardStep = 0;
+    saveData();
+    wizardState.stepIndex = 0;
+    state.wizardReturnView = "home";
+    state.view = "wizard";
+  }else{
+    state.view = "home";
+  }
+  document.querySelectorAll(".view-tabs button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === state.view); });
   render();
 
 })();
