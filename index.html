@@ -61,62 +61,93 @@
 
   *{ box-sizing: border-box; }
   html,body{ margin:0; padding:0; }
+  html{ height:100%; }
   body{
-    background: var(--bg);
+    height:100%;
+    min-height:100vh; min-height:100dvh;
+    background: #100e17;
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
                  "Yu Gothic", "Segoe UI", Roboto, Meiryo, sans-serif;
     line-height: 1.55;
     -webkit-text-size-adjust: 100%;
-    padding-bottom: 72px;
+    display:flex; align-items:center; justify-content:center;
+    padding: 28px 14px;
   }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) body{ background:#0a0910; } }
+  html[data-theme="dark"] body{ background:#0a0910; }
   a{ color: inherit; }
   button{ font-family: inherit; }
   textarea{ font-family: inherit; }
   .hidden{ display:none !important; }
 
-  /* ---------- header ---------- */
+  /* ---------- phone frame (mobile app mockup) ---------- */
+  .phone-frame{
+    position:relative; width:100%; max-width:412px; height:min(890px, 100%);
+    aspect-ratio: 9 / 19.5;
+    background: linear-gradient(160deg,#2c2a38,#131019);
+    border-radius:48px; padding:14px;
+    box-shadow: 0 40px 80px rgba(0,0,0,.5), 0 0 0 2px rgba(255,255,255,.05) inset;
+  }
+  .phone-notch{
+    position:absolute; top:14px; left:50%; transform:translateX(-50%);
+    width:96px; height:24px; background:#000; border-radius:16px; z-index:30;
+  }
+  .phone-screen{
+    position:relative; width:100%; height:100%; background: var(--bg);
+    border-radius:34px; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  @media (max-width:480px), (max-height:700px){
+    body{ padding:0; background:var(--bg); display:block; }
+    html[data-theme="dark"] body{ background:var(--bg); }
+    .phone-frame{
+      max-width:none; width:100vw; height:100vh; height:100dvh; aspect-ratio:auto;
+      border-radius:0; padding:0; box-shadow:none; background:none;
+    }
+    .phone-notch{ display:none; }
+    .phone-screen{ border-radius:0; }
+  }
+
+  /* ---------- header (app top bar) ---------- */
   header.topbar{
+    flex-shrink:0;
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
     color: #fff;
-    padding: 18px 16px 22px;
-    border-radius: 0 0 24px 24px;
-    box-shadow: var(--shadow);
+    padding: max(16px, env(safe-area-inset-top)) 18px 16px;
   }
-  .topbar-inner{ max-width: 720px; margin:0 auto; }
   .topbar-row{ display:flex; align-items:flex-start; justify-content:space-between; gap: 8px; }
-  header.topbar h1{ margin:0; font-size: 1.3rem; font-weight: 800; letter-spacing: .02em; cursor:pointer; }
-  header.topbar .subtitle{ margin: 4px 0 0; font-size: .8rem; opacity:.9; }
+  header.topbar h1{ margin:0; font-size: 1.15rem; font-weight: 800; letter-spacing: .02em; cursor:pointer; }
+  header.topbar .subtitle{ margin: 3px 0 0; font-size: .74rem; opacity:.9; }
   .header-actions{ display:flex; gap:6px; flex-shrink:0; }
   .icon-btn{
     border:none; background: rgba(255,255,255,.28); color:#fff;
-    width:38px; height:38px; border-radius:50%; font-size:1rem; cursor:pointer;
+    width:34px; height:34px; border-radius:50%; font-size:.95rem; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
   }
   .icon-btn:active{ transform: scale(.94); }
 
   .progress-wrap{ margin-top: 12px; }
-  .progress-label{ display:flex; justify-content:space-between; font-size:.72rem; opacity:.9; margin-bottom:4px; }
-  .progress-track{ height:7px; background: rgba(255,255,255,.28); border-radius:999px; overflow:hidden; }
+  .progress-label{ display:flex; justify-content:space-between; font-size:.7rem; opacity:.9; margin-bottom:4px; }
+  .progress-track{ height:6px; background: rgba(255,255,255,.28); border-radius:999px; overflow:hidden; }
   .progress-fill{ height:100%; background:#fff; border-radius:999px; transition: width .3s ease; }
 
-  /* ---------- nav tabs ---------- */
-  .controls{
-    max-width: 720px; margin: -14px auto 0; padding: 0 16px;
-    position: relative; z-index: 5;
+  /* ---------- bottom tab bar (mobile app nav) ---------- */
+  nav.bottom-nav{
+    flex-shrink:0; background: var(--bg-elevated); border-top:1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom);
   }
-  .view-tabs{
-    display:flex; background: var(--bg-elevated); border-radius: var(--radius-sm);
-    padding: 4px; box-shadow: var(--shadow); gap: 4px; overflow-x:auto;
+  .bn-buttons{ display:flex; padding: 6px 2px 2px; }
+  .bn-buttons button{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+    border:none; background:transparent; color: var(--text-muted);
+    padding: 6px 2px; font-size:.62rem; font-weight:700; cursor:pointer;
   }
-  .view-tabs button{
-    flex:1; border:none; background:transparent; color: var(--text-muted);
-    padding: 9px 6px; border-radius: var(--radius-sm); font-size:.76rem; font-weight:700; cursor:pointer;
-    white-space: nowrap;
-  }
-  .view-tabs button.active{ background: var(--accent); color: var(--accent-text); }
+  .bn-buttons button .nav-icon{ font-size:1.28rem; line-height:1; }
+  .bn-buttons button.active{ color: var(--accent); }
+  .home-indicator-bar{ width:120px; height:5px; border-radius:3px; background: var(--text-muted); opacity:.35; margin: 6px auto 8px; }
 
-  main{ max-width: 720px; margin: 0 auto; padding: 14px 16px 24px; }
+  main{ flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; padding: 14px 16px 24px; }
 
   .card{
     background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-lg);
@@ -335,61 +366,60 @@
   .settings-btn.danger{ color: var(--danger); border-color: var(--danger); }
   #importFile{ display:none; }
 
-  footer.app-footer{
-    max-width: 720px; margin: 20px auto 0; padding: 0 16px; font-size: .72rem; color: var(--text-muted);
-    text-align:center;
+  .settings-footnote{
+    margin: 4px 0 0; padding: 0 2px; font-size: .72rem; color: var(--text-muted); text-align:center;
   }
 
   .toast{
-    position: fixed; left:50%; bottom: 18px; transform: translateX(-50%);
+    position: absolute; left:50%; bottom: 84px; transform: translateX(-50%);
     background: var(--text); color: var(--bg); padding: 9px 16px; border-radius: var(--radius-sm);
     font-size:.8rem; opacity:0; pointer-events:none; transition: opacity .2s ease; z-index: 50;
-    max-width: 90%; text-align:center;
+    max-width: 88%; text-align:center;
   }
   .toast.show{ opacity:1; }
 </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="topbar-row">
-      <div>
-        <h1 id="titleHome">📔 じぶん手帳</h1>
-        <p class="subtitle">自己紹介にもう困らない、わたしのプロフィール帳</p>
-      </div>
-      <div class="header-actions">
-        <button class="icon-btn" id="themeToggle" title="ダークモード切替">🌙</button>
-      </div>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-label">
-        <span>プロフィール充実度</span>
-        <span id="progressPct">0%</span>
-      </div>
-      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    </div>
-  </div>
-</header>
+<div class="phone-frame">
+  <div class="phone-notch"></div>
+  <div class="phone-screen">
 
-<div class="controls">
-  <div class="view-tabs">
-    <button data-view="home">🏠 ホーム</button>
-    <button data-view="swipe">🔀 発見</button>
-    <button data-view="quiz">🧭 診断</button>
-    <button data-view="intro">💬 自己紹介</button>
-    <button data-view="settings">⚙️ データ</button>
+    <header class="topbar">
+      <div class="topbar-row">
+        <div>
+          <h1 id="titleHome">📔 じぶん手帳</h1>
+          <p class="subtitle">自己紹介にもう困らない、わたしのプロフィール帳</p>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" id="themeToggle" title="ダークモード切替">🌙</button>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>プロフィール充実度</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+    </header>
+
+    <main id="app"></main>
+
+    <nav class="bottom-nav">
+      <div class="bn-buttons">
+        <button data-view="home"><span class="nav-icon">🏠</span><span>ホーム</span></button>
+        <button data-view="swipe"><span class="nav-icon">🔀</span><span>発見</span></button>
+        <button data-view="quiz"><span class="nav-icon">🧭</span><span>診断</span></button>
+        <button data-view="intro"><span class="nav-icon">💬</span><span>自己紹介</span></button>
+        <button data-view="settings"><span class="nav-icon">⚙️</span><span>データ</span></button>
+      </div>
+      <div class="home-indicator-bar"></div>
+    </nav>
+
+    <div class="toast" id="toast"></div>
   </div>
 </div>
-
-<main id="app"></main>
-
-<footer class="app-footer">
-  データはこの端末のブラウザ内（localStorage）だけに保存されます。サーバーには送信されません。<br>
-  機種変更の前は「データ」タブからバックアップ（エクスポート）してください。
-</footer>
-
-<div class="toast" id="toast"></div>
 
 <script>
 (function(){
@@ -724,13 +754,13 @@
      6. 画面切り替え・描画
   ========================================================= */
 
-  document.querySelectorAll(".view-tabs button").forEach(function(btn){
+  document.querySelectorAll(".bn-buttons button").forEach(function(btn){
     btn.addEventListener("click", function(){ switchView(btn.dataset.view); });
   });
 
   function switchView(view){
     state.view = view;
-    document.querySelectorAll(".view-tabs button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === view); });
+    document.querySelectorAll(".bn-buttons button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === view); });
     render();
   }
 
@@ -741,7 +771,7 @@
     wizardState.stepIndex = idx;
     state.wizardReturnView = returnView || "home";
     state.view = "wizard";
-    document.querySelectorAll(".view-tabs button").forEach(function(b){ b.classList.remove("active"); });
+    document.querySelectorAll(".bn-buttons button").forEach(function(b){ b.classList.remove("active"); });
     render();
   }
 
@@ -1616,6 +1646,7 @@
     html += '<button class="settings-btn" id="importBtn">⬆️ インポート（JSONを読み込む）</button>';
     html += '<input type="file" id="importFile" accept="application/json">';
     html += '<button class="settings-btn danger" id="resetBtn">🗑️ すべてのデータを削除</button>';
+    html += '<p class="settings-footnote">データはこの端末のブラウザ内（localStorage）だけに保存されます。サーバーには送信されません。</p>';
     html += '</div>';
     return html;
   }
@@ -1689,7 +1720,7 @@
   }else{
     state.view = "home";
   }
-  document.querySelectorAll(".view-tabs button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === state.view); });
+  document.querySelectorAll(".bn-buttons button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === state.view); });
   render();
 
 })();
