@@ -421,9 +421,15 @@
   .phone-screen.chrome-hidden > header.topbar,
   .phone-screen.chrome-hidden > nav.bottom-nav{ display:none; }
   .onboarding-wrap{ height:100%; display:flex; flex-direction:column; padding-top: env(safe-area-inset-top); }
-  .onboarding-skip{
-    align-self:flex-end; border:none; background:transparent; color: var(--text-muted);
-    font-size:.8rem; font-weight:700; padding:14px 16px 4px; cursor:pointer;
+  .onboarding-top-row{ display:flex; align-items:center; justify-content:space-between; padding: 14px 10px 4px; }
+  .onboarding-skip, .onboarding-end-link{
+    border:none; background:transparent; color: var(--text-muted);
+    font-size:.8rem; font-weight:700; padding:6px; cursor:pointer;
+  }
+  .onboarding-end-link{ margin-left:auto; text-decoration:underline; text-underline-offset:2px; }
+  .field-nudge{
+    margin-top:12px; font-size:.78rem; color: var(--text-muted); text-align:center;
+    animation: hint-fade-in .35s ease;
   }
   .onboarding-body{
     flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -441,6 +447,15 @@
   .onboarding-swipe-wrap{ max-width:300px; margin-left:auto; margin-right:auto; }
   .onboarding-nav{ display:flex; gap:10px; padding: 0 20px calc(20px + env(safe-area-inset-bottom)); }
   @media (prefers-reduced-motion: reduce){ .onboarding-icon{ animation:none; } }
+
+  /* 必須項目が埋まった瞬間、次へボタンで「進めます」を知らせる */
+  @keyframes next-ready-pulse{
+    0%{ transform:scale(1); box-shadow:none; }
+    35%{ transform:scale(1.035); box-shadow:0 0 0 6px rgba(124,111,224,.22); }
+    100%{ transform:scale(1); box-shadow:none; }
+  }
+  .wz-btn.ready-pulse{ animation: next-ready-pulse .55s ease-out; }
+  @media (prefers-reduced-motion: reduce){ .wz-btn.ready-pulse{ animation:none; } }
 
   /* ---------- iris-out spotlight（迷ったときのヒント演出） ---------- */
   .iris-overlay{ position:absolute; inset:0; z-index:85; cursor:pointer; overflow:hidden; }
@@ -464,7 +479,7 @@
     background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 22px 20px;
     max-width: 300px; width:100%; box-shadow: var(--shadow); text-align:center;
   }
-  .modal-box p{ font-size:.88rem; margin:0 0 18px; color: var(--text); line-height:1.6; }
+  .modal-box p{ font-size:.88rem; margin:0 0 18px; color: var(--text); line-height:1.6; white-space:pre-line; }
   .modal-actions{ display:flex; gap:8px; }
   .modal-actions button{ flex:1; border:none; padding:11px; border-radius: var(--radius-md); font-size:.85rem; font-weight:700; cursor:pointer; }
   .modal-actions .btn-cancel{ background: var(--chip-bg); color: var(--text); }
@@ -693,8 +708,6 @@
     { icon:"🔀", title:"スワイプで発見", desc:"長所や座右の銘が思いつかないときは、候補カードをスワイプして選ぶだけで登録できます。" },
     { icon:"🧠", title:"自分を知り、伝える", desc:"答えるほど結果が収束していく性格診断や、自己紹介文・カードの自動生成で、自分をもっと深く知って伝えられます。" }
   ];
-  // チュートリアルに続けて、そのままの雰囲気で聞いていく基本情報（STEPSの先頭7件）
-  var BASIC_STEPS = STEPS.slice(0, 7);
 
   /* =========================================================
      2. 状態管理・永続化
@@ -941,17 +954,18 @@
      6b. オンボーディング（初回チュートリアル）
   ========================================================= */
 
-  // オンボーディングは「4枚のチュートリアルスライド」→「基本情報7項目」を
-  // ひとつながりの流れとして扱う（合計 ONBOARDING_TOTAL ページ）
-  function onboardingTotal(){ return ONBOARDING_SLIDES.length + BASIC_STEPS.length; }
+  // オンボーディングは「4枚のチュートリアルスライド」→「プロフィール全15項目」を
+  // ひとつながりの流れとして扱う（合計 onboardingTotal() ページ）。こうすることで
+  // チュートリアルの途中で急に普段の画面へ切り替わって迷子になることがないようにしている。
+  function onboardingTotal(){ return ONBOARDING_SLIDES.length + STEPS.length; }
 
   function renderOnboarding(){
     var total = onboardingTotal();
     var idx = Math.max(0, Math.min(onboardingState.index, total-1));
     onboardingState.index = idx;
 
-    // 基本情報の途中で「スワイプして探す」を開いた場合は、チュートリアルの
-    // 流れを離脱させず、同じ画面の中にスワイプ発見を埋め込んで表示する
+    // 途中で「スワイプして探す」を開いた場合は、チュートリアルの流れを離脱させず、
+    // 同じ画面の中にスワイプ発見を埋め込んで表示する
     if(onboardingState.mode === "swipe"){
       return '<div class="onboarding-wrap"><button class="wz-home-btn" id="obSwipeBack">← もどる</button>' + renderSwipeView() + '</div>';
     }
@@ -959,28 +973,37 @@
     var isIntro = idx < ONBOARDING_SLIDES.length;
     var html = '<div class="onboarding-wrap">';
 
+    html += '<div class="onboarding-top-row">';
+    if(isIntro) html += '<button class="onboarding-skip" id="obSkip">スキップ</button>';
+    html += '<button class="onboarding-end-link" id="obEnd">あとで続ける</button>';
+    html += '</div>';
+
     if(isIntro){
-      html += '<button class="onboarding-skip" id="obSkip">スキップ</button>';
       var slide = ONBOARDING_SLIDES[idx];
       html += '<div class="onboarding-body"><div class="onboarding-icon">'+slide.icon+'</div>';
       html += '<div class="onboarding-title">'+escapeHtml(slide.title)+'</div>';
       html += '<div class="onboarding-desc">'+escapeHtml(slide.desc)+'</div></div>';
       html += '<div class="onboarding-dots">' + ONBOARDING_SLIDES.map(function(_,i){ return '<span class="'+(i===idx?"active":"")+'"></span>'; }).join("") + '</div>';
     }else{
-      var step = BASIC_STEPS[idx - ONBOARDING_SLIDES.length];
+      var step = STEPS[idx - ONBOARDING_SLIDES.length];
+      var required = !!step.basicKey;
       html += '<div class="onboarding-body"><div class="onboarding-icon">'+step.icon+'</div>';
       html += '<div class="onboarding-title">'+escapeHtml(step.label)+'</div>';
       if(step.desc) html += '<div class="onboarding-desc">'+escapeHtml(step.desc)+'</div>';
       html += '<div class="onboarding-input-wrap">'+renderStepBody(step)+'</div>';
+      if(required && !step.swipeCat && (step.type === "text" || step.type === "date")){
+        html += '<p class="field-nudge hidden" id="fieldNudge"></p>';
+      }
       html += renderSwipeLinkBlock(step, true);
       html += '</div>';
-      html += '<div class="onboarding-progress-text">'+(idx - ONBOARDING_SLIDES.length + 1)+' / '+BASIC_STEPS.length+'</div>';
+      html += '<div class="onboarding-progress-text">'+(idx - ONBOARDING_SLIDES.length + 1)+' / '+STEPS.length+'</div>';
     }
 
     html += '<div class="onboarding-nav">';
     if(idx > 0) html += '<button class="wz-btn ghost" id="obBack">戻る</button>';
     var isLastIntro = idx === ONBOARDING_SLIDES.length - 1;
-    html += '<button class="wz-btn primary" id="obNext">'+(isLastIntro ? "はじめる" : "次へ")+'</button>';
+    var isLastField = idx === total - 1;
+    html += '<button class="wz-btn primary" id="obNext">'+(isLastIntro ? "はじめる" : (isLastField ? "完了 🎉" : "次へ"))+'</button>';
     html += '</div></div>';
     return html;
   }
@@ -998,23 +1021,16 @@
 
     var skip = document.getElementById("obSkip");
     if(skip) skip.addEventListener("click", function(){ onboardingState.index = ONBOARDING_SLIDES.length; render(); });
+    var end = document.getElementById("obEnd");
+    if(end) end.addEventListener("click", endOnboardingEarly);
     var back = document.getElementById("obBack");
     if(back) back.addEventListener("click", function(){ onboardingState.index--; render(); });
     var next = document.getElementById("obNext");
     if(next) next.addEventListener("click", advanceOnboarding);
 
     if(!isIntro){
-      var step = BASIC_STEPS[idx - ONBOARDING_SLIDES.length];
-      bindBasicFieldInputs(step, advanceOnboarding, { required: true, nextBtnId: "obNext" });
-      var swipeLinkBtn = document.querySelector("[data-goto-swipe]");
-      if(swipeLinkBtn){
-        swipeLinkBtn.addEventListener("click", function(){
-          state.swipeCat = swipeLinkBtn.dataset.gotoSwipe;
-          state.swipeQueue = null;
-          onboardingState.mode = "swipe"; // チュートリアルを離脱せず、その場でスワイプ発見を開く
-          render();
-        });
-      }
+      var step = STEPS[idx - ONBOARDING_SLIDES.length];
+      bindStepFieldEvents(step, advanceOnboarding, { required: !!step.basicKey, nextBtnId: "obNext", swipeMode: "embedded" });
     }
   }
 
@@ -1026,14 +1042,30 @@
   function finishOnboarding(){
     data.meta.onboardingSeen = true;
     data.meta.wizardStarted = true;
-    var skillsIdx = 0;
-    for(var i=0;i<STEPS.length;i++){ if(STEPS[i].id === "skills"){ skillsIdx = i; break; } }
-    data.meta.wizardStep = skillsIdx;
+    data.meta.wizardDone = true;
+    data.meta.wizardStep = STEPS.length - 1;
     saveData();
-    wizardState.stepIndex = skillsIdx;
-    state.wizardReturnView = "home";
-    switchView("wizard");
-    toast("基本情報の入力、お疲れさまでした！");
+    switchView("home");
+    toast("プロフィールの入力、お疲れさまでした！🎉");
+  }
+
+  // チュートリアルを途中でやめて、ここまでの内容を保存したままホームへ。
+  // 押しただけで即終了させず、必ず注意書きを見せてから確定させる。
+  function endOnboardingEarly(){
+    showConfirm(
+      "ここでチュートリアルを終了しますか？\nここまで入力した内容はきちんと保存されています。続きはホーム画面の「入力を続ける」から、いつでも好きな項目に戻って再開できます。",
+      function(){
+        var idx = onboardingState.index;
+        var resumeStep = idx < ONBOARDING_SLIDES.length ? 0 : Math.min(idx - ONBOARDING_SLIDES.length, STEPS.length - 1);
+        data.meta.onboardingSeen = true;
+        data.meta.wizardStarted = true;
+        data.meta.wizardStep = resumeStep;
+        saveData();
+        switchView("home");
+        toast("ここまでの内容を保存しました");
+      },
+      { confirmLabel: "終了する", cancelLabel: "続ける" }
+    );
   }
 
   /* =========================================================
@@ -1224,6 +1256,11 @@
     var nextBtn = opts.required ? document.getElementById(opts.nextBtnId || "obNext") : null;
     var wzInput = document.getElementById("wzInput");
     var yearSel = document.getElementById("wzYear"), monthSel = document.getElementById("wzMonth"), daySel = document.getElementById("wzDay");
+    // 座右の銘（swipeCatあり）はアイリス演出、血液型はボタン操作自体が答えなので、
+    // 「入力してください」の一般的な呼びかけはそれ以外の必須テキスト/日付項目だけに出す
+    var nudgeEl = (opts.required && step.basicKey && !step.swipeCat && (step.type === "text" || step.type === "date"))
+      ? document.getElementById("fieldNudge") : null;
+    var nudgeTimer = null;
 
     function refreshNextDisabled(){
       if(!nextBtn) return;
@@ -1231,9 +1268,29 @@
       if(step.type === "text") filled = !!(wzInput && wzInput.value.trim());
       else if(step.type === "date") filled = !!(yearSel && monthSel && daySel && yearSel.value && monthSel.value && daySel.value);
       else if(step.type === "blood") filled = false; // 血液型はボタンを選ぶこと自体で進むため、次へは常に無効
+      var wasDisabled = nextBtn.disabled;
       nextBtn.disabled = !filled;
+      // 必須項目が今まさに埋まったら、次へボタンをふわっと光らせて「進めます」を伝える
+      if(wasDisabled && filled){
+        nextBtn.classList.remove("ready-pulse");
+        void nextBtn.offsetWidth;
+        nextBtn.classList.add("ready-pulse");
+      }
+      if(filled && nudgeEl) nudgeEl.classList.add("hidden");
     }
     refreshNextDisabled();
+
+    function scheduleNudge(){
+      if(!nudgeEl) return;
+      clearTimeout(nudgeTimer);
+      nudgeEl.classList.add("hidden");
+      nudgeTimer = setTimeout(function(){
+        if(nextBtn && !nextBtn.disabled) return; // 既に入力済みなら不要
+        nudgeEl.textContent = step.type === "date" ? "💬 生年月日を選ぶと次に進めます" : ("💬 " + step.label + "を入力すると次に進めます");
+        nudgeEl.classList.remove("hidden");
+      }, 4000);
+    }
+    if(nudgeEl) scheduleNudge();
 
     // テキスト系の項目は自動でフォーカスし、Enterキーでも次へ進めるようにする（より直感的な入力のため）
     if(wzInput){
@@ -1246,7 +1303,7 @@
         setTimeout(function(){ wzInput.focus(); }, 30);
       }
       if(step.type === "text"){
-        wzInput.addEventListener("input", refreshNextDisabled);
+        wzInput.addEventListener("input", function(){ refreshNextDisabled(); scheduleNudge(); });
         wzInput.addEventListener("keydown", function(e){
           if(e.key === "Enter"){
             e.preventDefault();
@@ -1274,6 +1331,7 @@
         else data.basic.birthday = "";
         saveData(); renderProgress();
         refreshNextDisabled();
+        scheduleNudge();
       };
       [yearSel, monthSel, daySel].forEach(function(sel){ sel.addEventListener("change", updateBirthday); });
     }
@@ -1380,14 +1438,23 @@
     var wzNext = document.getElementById("wzNext");
     if(wzNext) wzNext.addEventListener("click", wizardAdvance);
 
-    bindBasicFieldInputs(step, wizardAdvance);
+    bindStepFieldEvents(step, wizardAdvance, { swipeMode: "tab" });
+  }
 
-    var swipeLinkBtn = app.querySelector("[data-goto-swipe]");
+  // すべての項目タイプ（text/date/blood/taglist/favorites/textarea/custom）の
+  // 入力操作を、通常のウィザードとオンボーディングどちらからでも同じように扱う。
+  // opts.swipeMode: "tab"（スワイプタブへ切り替える） / "embedded"（オンボーディング内に埋め込む）
+  function bindStepFieldEvents(step, advanceFn, opts){
+    opts = opts || {};
+    bindBasicFieldInputs(step, advanceFn, opts);
+
+    var swipeLinkBtn = document.querySelector("[data-goto-swipe]");
     if(swipeLinkBtn){
       swipeLinkBtn.addEventListener("click", function(){
         state.swipeCat = swipeLinkBtn.dataset.gotoSwipe;
         state.swipeQueue = null;
-        switchView("swipe");
+        if(opts.swipeMode === "embedded"){ onboardingState.mode = "swipe"; render(); }
+        else{ switchView("swipe"); }
       });
     }
 
@@ -1398,7 +1465,7 @@
       tagAdd.addEventListener("click", function(){ addTag(step.listKey, tagInput); });
       tagInput.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); addTag(step.listKey, tagInput); } });
     }
-    app.querySelectorAll("[data-remove-tag]").forEach(function(btn){
+    document.querySelectorAll("[data-remove-tag]").forEach(function(btn){
       btn.addEventListener("click", function(){
         data.lists[btn.dataset.removeTag].splice(Number(btn.dataset.idx),1);
         saveData(); render();
@@ -1418,7 +1485,7 @@
         toast("追加しました");
       });
     }
-    app.querySelectorAll("[data-del-fav]").forEach(function(btn){
+    document.querySelectorAll("[data-del-fav]").forEach(function(btn){
       btn.addEventListener("click", function(){ data.favorites.splice(Number(btn.dataset.delFav),1); saveData(); render(); });
     });
 
@@ -1430,30 +1497,30 @@
         saveData(); render();
       });
     }
-    app.querySelectorAll("[data-cs-title]").forEach(function(el){
+    document.querySelectorAll("[data-cs-title]").forEach(function(el){
       el.addEventListener("change", function(){
         var sec = data.customSections.find(function(s){ return s.id === el.dataset.csTitle; });
         if(sec){ sec.title = el.value; saveData(); }
       });
     });
-    app.querySelectorAll("[data-cs-del]").forEach(function(btn){
+    document.querySelectorAll("[data-cs-del]").forEach(function(btn){
       btn.addEventListener("click", function(){
         data.customSections = data.customSections.filter(function(s){ return s.id !== btn.dataset.csDel; });
         saveData(); render();
       });
     });
-    app.querySelectorAll("[data-cs-add]").forEach(function(btn){
+    document.querySelectorAll("[data-cs-add]").forEach(function(btn){
       btn.addEventListener("click", function(){
         var id = btn.dataset.csAdd;
-        addCustomItem(id, app.querySelector('[data-cs-input="'+id+'"]'));
+        addCustomItem(id, document.querySelector('[data-cs-input="'+id+'"]'));
       });
     });
-    app.querySelectorAll("[data-cs-input]").forEach(function(input){
+    document.querySelectorAll("[data-cs-input]").forEach(function(input){
       input.addEventListener("keydown", function(e){
         if(e.key === "Enter"){ e.preventDefault(); addCustomItem(input.dataset.csInput, input); }
       });
     });
-    app.querySelectorAll("[data-cs-remove]").forEach(function(btn){
+    document.querySelectorAll("[data-cs-remove]").forEach(function(btn){
       btn.addEventListener("click", function(){
         var sec = data.customSections.find(function(s){ return s.id === btn.dataset.csRemove; });
         if(sec){ sec.items.splice(Number(btn.dataset.idx),1); saveData(); render(); }
@@ -1563,7 +1630,14 @@
     if(accepted) applySwipeAccept(state.swipeCat, item);
     queue.shift();
     if(!queue.length) buildSwipeQueue(state.swipeCat);
-    saveData(); render();
+    saveData();
+    // 座右の銘は一つに決まるものなので、チュートリアル中にひとつ選べたら
+    // すぐにチュートリアルへ戻す（長所・短所・好きなものは複数選べるので継続する）
+    if(accepted && state.swipeCat === "motto" && state.view === "onboarding" && onboardingState.mode === "swipe"){
+      onboardingState.mode = "field";
+      toast("座右の銘を選びました");
+    }
+    render();
   }
 
   function bindDrag(el){
