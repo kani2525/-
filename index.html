@@ -442,6 +442,10 @@
   .onboarding-nav{ display:flex; gap:10px; padding: 0 20px calc(20px + env(safe-area-inset-bottom)); }
   @media (prefers-reduced-motion: reduce){ .onboarding-icon{ animation:none; } }
 
+  /* ---------- iris-out spotlight（迷ったときのヒント演出） ---------- */
+  .iris-overlay{ position:absolute; inset:0; z-index:85; pointer-events:none; overflow:hidden; }
+  .iris-ring{ position:absolute; border-radius:50%; box-shadow: 0 0 0 9999px rgba(8,6,14,.62); }
+
   /* ---------- in-app modal (confirm / alert) ---------- */
   .modal-overlay{
     position:absolute; inset:0; z-index:90; background: rgba(10,8,16,.5);
@@ -1229,7 +1233,7 @@
     }
 
     // 座右の銘など、自分では思い浮かびにくい項目：数秒操作がなければ
-    // 「わからない場合は〜」というヒントを控えめに出し、スワイプ発見へ誘導する
+    // アイリスアウト風に画面を絞り込んでスワイプ発見ボタンへ視線を誘導する
     if(step.swipeCat && step.type === "text" && wzInput){
       var hintMsg = document.getElementById("swipeHintMsg");
       var hintBtn = document.getElementById("swipeHintBtn");
@@ -1238,15 +1242,63 @@
         clearTimeout(hintTimer);
         if(hintMsg) hintMsg.classList.add("hidden");
         if(hintBtn) hintBtn.classList.remove("pulse");
+        removeIrisOverlay();
         hintTimer = setTimeout(function(){
           if(wzInput.value.trim()) return; // すでに入力済みなら出さない
           if(hintMsg) hintMsg.classList.remove("hidden");
           if(hintBtn) hintBtn.classList.add("pulse");
+          triggerIrisHint(hintBtn);
         }, 4000);
       };
       wzInput.addEventListener("input", scheduleHint);
       scheduleHint();
     }
+  }
+
+  // 画面全体を暗くしながら、対象ボタンだけを丸く残して絞り込んでいく
+  // 「アイリスアウト」風の演出。画面上の要素はクリックを妨げないよう演出のみ。
+  function removeIrisOverlay(){
+    var existing = document.querySelector(".iris-overlay");
+    if(existing && existing.parentNode) existing.parentNode.removeChild(existing);
+  }
+  function triggerIrisHint(targetEl){
+    removeIrisOverlay();
+    if(!targetEl) return;
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduceMotion) return;
+    var screenEl = document.querySelector(".phone-screen");
+    if(!screenEl) return;
+
+    var screenRect = screenEl.getBoundingClientRect();
+    var btnRect = targetEl.getBoundingClientRect();
+    var cx = btnRect.left - screenRect.left + btnRect.width / 2;
+    var cy = btnRect.top - screenRect.top + btnRect.height / 2;
+    var smallR = Math.max(btnRect.width, btnRect.height) / 2 + 16;
+    var largeR = Math.hypot(Math.max(cx, screenRect.width - cx), Math.max(cy, screenRect.height - cy)) + 40;
+
+    var overlay = document.createElement("div");
+    overlay.className = "iris-overlay";
+    var ring = document.createElement("div");
+    ring.className = "iris-ring";
+    overlay.appendChild(ring);
+    screenEl.appendChild(overlay);
+
+    function setRing(r){
+      ring.style.width = (r * 2) + "px";
+      ring.style.height = (r * 2) + "px";
+      ring.style.left = (cx - r) + "px";
+      ring.style.top = (cy - r) + "px";
+    }
+    setRing(largeR);
+    ring.getBoundingClientRect(); // 強制リフローで開始状態を確定させる
+    ring.style.transition = "width .7s cubic-bezier(.3,.9,.4,1), height .7s cubic-bezier(.3,.9,.4,1), left .7s cubic-bezier(.3,.9,.4,1), top .7s cubic-bezier(.3,.9,.4,1)";
+    requestAnimationFrame(function(){ setRing(smallR); });
+
+    setTimeout(function(){
+      overlay.style.transition = "opacity .4s ease";
+      overlay.style.opacity = "0";
+      setTimeout(removeIrisOverlay, 420);
+    }, 900);
   }
 
   function bindWizardEvents(step){
