@@ -446,10 +446,10 @@
   .iris-overlay{ position:absolute; inset:0; z-index:85; cursor:pointer; overflow:hidden; }
   .iris-ring{ position:absolute; border-radius:50%; box-shadow: 0 0 0 9999px rgba(8,6,14,.62); }
   .iris-tutorial-text{
-    position:absolute; left:50%; top: max(28px, calc(env(safe-area-inset-top) + 20px));
-    transform: translateX(-50%);
-    width: calc(100% - 64px); max-width:280px;
-    color:#fff; text-align:center; font-size:.86rem; line-height:1.7;
+    position:absolute; left:50%; top:20%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 64px); max-width:290px;
+    color:#fff; text-align:center; font-size:.92rem; line-height:1.8;
     opacity:0; transition: opacity .45s ease .55s;
   }
   .iris-tutorial-text.show{ opacity:1; }
@@ -704,7 +704,7 @@
   var cardColorId = localStorage.getItem(CARD_COLOR_KEY) || "violet";
   var state = { view:"home", diagSub:"personality", introSub:"text", swipeCat:"motto", swipeQueue:null, wizardReturnView:"home" };
   var wizardState = { stepIndex: 0 };
-  var onboardingState = { index: 0 };
+  var onboardingState = { index: 0, mode: "field" };
 
   function loadData(){
     try{
@@ -949,6 +949,13 @@
     var total = onboardingTotal();
     var idx = Math.max(0, Math.min(onboardingState.index, total-1));
     onboardingState.index = idx;
+
+    // 基本情報の途中で「スワイプして探す」を開いた場合は、チュートリアルの
+    // 流れを離脱させず、同じ画面の中にスワイプ発見を埋め込んで表示する
+    if(onboardingState.mode === "swipe"){
+      return '<div class="onboarding-wrap"><button class="wz-home-btn" id="obSwipeBack">← もどる</button>' + renderSwipeView() + '</div>';
+    }
+
     var isIntro = idx < ONBOARDING_SLIDES.length;
     var html = '<div class="onboarding-wrap">';
 
@@ -979,6 +986,13 @@
   }
 
   function bindOnboardingEvents(){
+    if(onboardingState.mode === "swipe"){
+      var swipeBack = document.getElementById("obSwipeBack");
+      if(swipeBack) swipeBack.addEventListener("click", function(){ onboardingState.mode = "field"; render(); });
+      bindSwipeEvents();
+      return;
+    }
+
     var idx = onboardingState.index;
     var isIntro = idx < ONBOARDING_SLIDES.length;
 
@@ -997,7 +1011,8 @@
         swipeLinkBtn.addEventListener("click", function(){
           state.swipeCat = swipeLinkBtn.dataset.gotoSwipe;
           state.swipeQueue = null;
-          switchView("swipe");
+          onboardingState.mode = "swipe"; // チュートリアルを離脱せず、その場でスワイプ発見を開く
+          render();
         });
       }
     }
@@ -1292,12 +1307,20 @@
     var smallR = Math.max(btnRect.width, btnRect.height) / 2 + 16;
     var largeR = Math.hypot(Math.max(cx, screenRect.width - cx), Math.max(cy, screenRect.height - cy)) + 40;
 
+    // チュートリアル文は、円の外側に残る暗い余白のちょうど真ん中に来るよう動的に位置を決める
+    var circleTop = cy - smallR, circleBottom = cy + smallR;
+    var textY;
+    if(circleTop > 90) textY = circleTop / 2;
+    else if(screenRect.height - circleBottom > 90) textY = circleBottom + (screenRect.height - circleBottom) / 2;
+    else textY = Math.max(70, circleTop / 2);
+
     var overlay = document.createElement("div");
     overlay.className = "iris-overlay";
     var ring = document.createElement("div");
     ring.className = "iris-ring";
     var tutorialText = document.createElement("div");
     tutorialText.className = "iris-tutorial-text";
+    tutorialText.style.top = textY + "px";
     tutorialText.innerHTML = "💡 わからない時は、下のボタンでスワイプして探すのがおすすめです<span class=\"its-sub\">画面をタップすると閉じます</span>";
     overlay.appendChild(ring);
     overlay.appendChild(tutorialText);
