@@ -1005,7 +1005,7 @@
 
     if(!isIntro){
       var step = BASIC_STEPS[idx - ONBOARDING_SLIDES.length];
-      bindBasicFieldInputs(step, advanceOnboarding);
+      bindBasicFieldInputs(step, advanceOnboarding, { required: true, nextBtnId: "obNext" });
       var swipeLinkBtn = document.querySelector("[data-goto-swipe]");
       if(swipeLinkBtn){
         swipeLinkBtn.addEventListener("click", function(){
@@ -1217,9 +1217,25 @@
 
   // 基本情報（text / date / blood）の入力欄を、通常のウィザードとオンボーディングの
   // どちらからでも共通で扱うためのバインド処理。advanceFn には「次へ進む」処理を渡す。
-  function bindBasicFieldInputs(step, advanceFn){
-    // テキスト系の項目は自動でフォーカスし、Enterキーでも次へ進めるようにする（より直感的な入力のため）
+  // opts.required: true にすると、この項目に答えるまで次へボタンを無効化する
+  // （チュートリアル＝オンボーディングだけで使う。通常のウィザードでは常にfalse）
+  function bindBasicFieldInputs(step, advanceFn, opts){
+    opts = opts || {};
+    var nextBtn = opts.required ? document.getElementById(opts.nextBtnId || "obNext") : null;
     var wzInput = document.getElementById("wzInput");
+    var yearSel = document.getElementById("wzYear"), monthSel = document.getElementById("wzMonth"), daySel = document.getElementById("wzDay");
+
+    function refreshNextDisabled(){
+      if(!nextBtn) return;
+      var filled = true;
+      if(step.type === "text") filled = !!(wzInput && wzInput.value.trim());
+      else if(step.type === "date") filled = !!(yearSel && monthSel && daySel && yearSel.value && monthSel.value && daySel.value);
+      else if(step.type === "blood") filled = false; // 血液型はボタンを選ぶこと自体で進むため、次へは常に無効
+      nextBtn.disabled = !filled;
+    }
+    refreshNextDisabled();
+
+    // テキスト系の項目は自動でフォーカスし、Enterキーでも次へ進めるようにする（より直感的な入力のため）
     if(wzInput){
       wzInput.addEventListener("change", function(){
         if(step.basicKey) data.basic[step.basicKey] = wzInput.value;
@@ -1230,8 +1246,14 @@
         setTimeout(function(){ wzInput.focus(); }, 30);
       }
       if(step.type === "text"){
+        wzInput.addEventListener("input", refreshNextDisabled);
         wzInput.addEventListener("keydown", function(e){
-          if(e.key === "Enter"){ e.preventDefault(); wzInput.dispatchEvent(new Event("change")); advanceFn(); }
+          if(e.key === "Enter"){
+            e.preventDefault();
+            if(opts.required && !wzInput.value.trim()) return;
+            wzInput.dispatchEvent(new Event("change"));
+            advanceFn();
+          }
         });
       }
     }
@@ -1246,12 +1268,12 @@
     });
 
     // 誕生日：年・月・日をそれぞれ選ぶドラム式ピッカー
-    var yearSel = document.getElementById("wzYear"), monthSel = document.getElementById("wzMonth"), daySel = document.getElementById("wzDay");
     if(yearSel && monthSel && daySel){
       var updateBirthday = function(){
         if(yearSel.value && monthSel.value && daySel.value) data.basic.birthday = yearSel.value + "-" + monthSel.value + "-" + daySel.value;
         else data.basic.birthday = "";
         saveData(); renderProgress();
+        refreshNextDisabled();
       };
       [yearSel, monthSel, daySel].forEach(function(sel){ sel.addEventListener("change", updateBirthday); });
     }
