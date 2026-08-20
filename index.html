@@ -443,8 +443,17 @@
   @media (prefers-reduced-motion: reduce){ .onboarding-icon{ animation:none; } }
 
   /* ---------- iris-out spotlight（迷ったときのヒント演出） ---------- */
-  .iris-overlay{ position:absolute; inset:0; z-index:85; pointer-events:none; overflow:hidden; }
+  .iris-overlay{ position:absolute; inset:0; z-index:85; cursor:pointer; overflow:hidden; }
   .iris-ring{ position:absolute; border-radius:50%; box-shadow: 0 0 0 9999px rgba(8,6,14,.62); }
+  .iris-tutorial-text{
+    position:absolute; left:50%; top: max(28px, calc(env(safe-area-inset-top) + 20px));
+    transform: translateX(-50%);
+    width: calc(100% - 64px); max-width:280px;
+    color:#fff; text-align:center; font-size:.86rem; line-height:1.7;
+    opacity:0; transition: opacity .45s ease .55s;
+  }
+  .iris-tutorial-text.show{ opacity:1; }
+  .iris-tutorial-text .its-sub{ display:block; margin-top:8px; font-size:.72rem; opacity:.75; }
 
   /* ---------- in-app modal (confirm / alert) ---------- */
   .modal-overlay{
@@ -1256,10 +1265,17 @@
   }
 
   // 画面全体を暗くしながら、対象ボタンだけを丸く残して絞り込んでいく
-  // 「アイリスアウト」風の演出。画面上の要素はクリックを妨げないよう演出のみ。
+  // 「アイリスアウト」風の演出。影の部分にチュートリアル文を表示し、
+  // 画面をタップすると1回で消える。
   function removeIrisOverlay(){
     var existing = document.querySelector(".iris-overlay");
     if(existing && existing.parentNode) existing.parentNode.removeChild(existing);
+  }
+  function dismissIrisOverlay(overlay){
+    overlay.style.transition = "opacity .3s ease";
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
+    setTimeout(removeIrisOverlay, 320);
   }
   function triggerIrisHint(targetEl){
     removeIrisOverlay();
@@ -1280,7 +1296,12 @@
     overlay.className = "iris-overlay";
     var ring = document.createElement("div");
     ring.className = "iris-ring";
+    var tutorialText = document.createElement("div");
+    tutorialText.className = "iris-tutorial-text";
+    tutorialText.innerHTML = "💡 わからない時は、下のボタンでスワイプして探すのがおすすめです<span class=\"its-sub\">画面をタップすると閉じます</span>";
     overlay.appendChild(ring);
+    overlay.appendChild(tutorialText);
+    overlay.addEventListener("click", function(){ dismissIrisOverlay(overlay); });
     screenEl.appendChild(overlay);
 
     function setRing(r){
@@ -1292,13 +1313,10 @@
     setRing(largeR);
     ring.getBoundingClientRect(); // 強制リフローで開始状態を確定させる
     ring.style.transition = "width .7s cubic-bezier(.3,.9,.4,1), height .7s cubic-bezier(.3,.9,.4,1), left .7s cubic-bezier(.3,.9,.4,1), top .7s cubic-bezier(.3,.9,.4,1)";
-    requestAnimationFrame(function(){ setRing(smallR); });
-
-    setTimeout(function(){
-      overlay.style.transition = "opacity .4s ease";
-      overlay.style.opacity = "0";
-      setTimeout(removeIrisOverlay, 420);
-    }, 900);
+    requestAnimationFrame(function(){
+      setRing(smallR);
+      tutorialText.classList.add("show");
+    });
   }
 
   function bindWizardEvents(step){
