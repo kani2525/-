@@ -208,10 +208,19 @@
   .wizard-card{ text-align:left; }
   .wz-icon{ font-size:2rem; margin-bottom:2px; }
   .wz-body{ margin-top:14px; }
+  .swipe-hint-wrap{ margin-top:14px; width:100%; }
   .swipe-link{
-    margin-top:14px; width:100%; border:1px dashed var(--border); background:transparent; color: var(--accent);
+    width:100%; border:1px dashed var(--border); background:transparent; color: var(--accent);
     padding: 10px; border-radius: var(--radius-md); font-size:.8rem; font-weight:700; cursor:pointer;
   }
+  .swipe-hint-msg{
+    background: var(--chip-bg); color: var(--text); font-size:.78rem; padding:10px 12px; border-radius: var(--radius-md);
+    margin: 0 0 8px; text-align:center; line-height:1.5; animation: hint-fade-in .35s ease;
+  }
+  @keyframes hint-fade-in{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:translateY(0); } }
+  .swipe-link.pulse{ animation: swipe-pulse 1.1s ease-in-out 2; border-style:solid; border-color: var(--accent); color: var(--accent); }
+  @keyframes swipe-pulse{ 0%,100%{ transform:scale(1); box-shadow:none; } 50%{ transform:scale(1.03); box-shadow:0 0 0 5px rgba(124,111,224,.18); } }
+  @media (prefers-reduced-motion: reduce){ .swipe-hint-msg{ animation:none; } .swipe-link.pulse{ animation:none; } }
   .wizard-nav{ display:flex; gap:10px; }
   .wz-btn{ flex:1; border:none; padding:14px; border-radius: var(--radius-md); font-size:.92rem; font-weight:800; cursor:pointer; }
   .wz-btn.primary{ background: var(--accent); color: var(--accent-text); }
@@ -429,7 +438,7 @@
   .onboarding-progress-text{ text-align:center; font-size:.75rem; color: var(--text-muted); margin: 6px 0 18px; font-variant-numeric: tabular-nums; }
   .onboarding-input-wrap{ width:100%; max-width:300px; margin-top:8px; }
   .onboarding-input-wrap .field input[type="text"]{ text-align:center; font-size:1.05rem; padding:14px; }
-  .onboarding-swipe-link{ width:100%; max-width:300px; }
+  .onboarding-swipe-wrap{ max-width:300px; margin-left:auto; margin-right:auto; }
   .onboarding-nav{ display:flex; gap:10px; padding: 0 20px calc(20px + env(safe-area-inset-bottom)); }
   @media (prefers-reduced-motion: reduce){ .onboarding-icon{ animation:none; } }
 
@@ -943,7 +952,7 @@
       html += '<div class="onboarding-title">'+escapeHtml(step.label)+'</div>';
       if(step.desc) html += '<div class="onboarding-desc">'+escapeHtml(step.desc)+'</div>';
       html += '<div class="onboarding-input-wrap">'+renderStepBody(step)+'</div>';
-      if(step.swipeCat) html += '<button class="swipe-link onboarding-swipe-link" data-goto-swipe="'+step.swipeCat+'">🔀 スワイプして探す</button>';
+      html += renderSwipeLinkBlock(step, true);
       html += '</div>';
       html += '<div class="onboarding-progress-text">'+(idx - ONBOARDING_SLIDES.length + 1)+' / '+BASIC_STEPS.length+'</div>';
     }
@@ -1070,6 +1079,18 @@
      8. 入力ウィザード（ひとつずつ記入）
   ========================================================= */
 
+  // スワイプ発見への導線。座右の銘など「自分から思い浮かびにくい」項目では、
+  // 数秒操作がないと「わからない場合は〜」というヒントが控えめに浮かび上がる。
+  function renderSwipeLinkBlock(step, isOnboarding){
+    if(!step.swipeCat) return "";
+    var wrapCls = "swipe-hint-wrap" + (isOnboarding ? " onboarding-swipe-wrap" : "");
+    var html = '<div class="' + wrapCls + '">';
+    html += '<p class="swipe-hint-msg hidden" id="swipeHintMsg">💡 わからない場合は、下のボタンでスワイプして探してみましょう</p>';
+    html += '<button class="swipe-link" id="swipeHintBtn" data-goto-swipe="' + step.swipeCat + '">🔀 スワイプして探す</button>';
+    html += '</div>';
+    return html;
+  }
+
   function renderWizard(){
     var idx = Math.max(0, Math.min(wizardState.stepIndex, STEPS.length - 1));
     wizardState.stepIndex = idx;
@@ -1081,7 +1102,7 @@
     html += '<h2>' + escapeHtml(step.label) + '</h2>';
     if(step.desc) html += '<p class="card-desc">' + escapeHtml(step.desc) + '</p>';
     html += '<div class="wz-body">' + renderStepBody(step) + '</div>';
-    if(step.swipeCat) html += '<button class="swipe-link" data-goto-swipe="' + step.swipeCat + '">🔀 スワイプして探す</button>';
+    html += renderSwipeLinkBlock(step, false);
     html += '</div>';
     html += '<div class="wizard-nav">';
     html += '<button id="wzBack" class="wz-btn ghost"' + (idx===0 ? " disabled" : "") + '>戻る</button>';
@@ -1205,6 +1226,26 @@
         saveData(); renderProgress();
       };
       [yearSel, monthSel, daySel].forEach(function(sel){ sel.addEventListener("change", updateBirthday); });
+    }
+
+    // 座右の銘など、自分では思い浮かびにくい項目：数秒操作がなければ
+    // 「わからない場合は〜」というヒントを控えめに出し、スワイプ発見へ誘導する
+    if(step.swipeCat && step.type === "text" && wzInput){
+      var hintMsg = document.getElementById("swipeHintMsg");
+      var hintBtn = document.getElementById("swipeHintBtn");
+      var hintTimer = null;
+      var scheduleHint = function(){
+        clearTimeout(hintTimer);
+        if(hintMsg) hintMsg.classList.add("hidden");
+        if(hintBtn) hintBtn.classList.remove("pulse");
+        hintTimer = setTimeout(function(){
+          if(wzInput.value.trim()) return; // すでに入力済みなら出さない
+          if(hintMsg) hintMsg.classList.remove("hidden");
+          if(hintBtn) hintBtn.classList.add("pulse");
+        }, 4000);
+      };
+      wzInput.addEventListener("input", scheduleHint);
+      scheduleHint();
     }
   }
 
