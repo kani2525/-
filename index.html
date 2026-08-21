@@ -178,11 +178,14 @@
   html[data-theme="dark"] .chip button{ background: rgba(255,255,255,.12); }
   .chip-empty{ font-size:.82rem; color: var(--text-muted); padding: 2px 0 10px; }
   .add-row{ display:flex; gap:8px; }
-  .add-row input{ flex:1; }
+  .add-row input{
+    flex:1; padding: 12px 14px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:.95rem;
+  }
   .add-row select{ flex: 0 0 auto; max-width: 42%; }
   .add-btn{
-    border:none; background: var(--accent); color: var(--accent-text); padding: 0 16px; border-radius: var(--radius-md);
-    font-size:.85rem; font-weight:700; cursor:pointer; flex-shrink:0;
+    border:none; background: var(--accent); color: var(--accent-text); padding: 0 18px; border-radius: var(--radius-md);
+    font-size:.88rem; font-weight:700; cursor:pointer; flex-shrink:0;
   }
   .add-btn:active{ transform: scale(.96); }
 
@@ -191,6 +194,43 @@
   .fav-item .fav-cat{ font-size:.72rem; font-weight:700; color: var(--accent); background: var(--chip-bg); padding:3px 9px; border-radius: var(--radius-sm); flex-shrink:0; }
   .fav-item .fav-val{ flex:1; font-size:.88rem; }
   .fav-item .del-btn{ border:none; background:transparent; color: var(--text-muted); cursor:pointer; font-size:.9rem; padding:4px; }
+
+  .fav-cat-chips{ display:flex; gap:6px; overflow-x:auto; padding: 4px 2px 6px; -webkit-overflow-scrolling:touch; }
+  .fav-cat-chip{
+    flex-shrink:0; border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 7px 13px; border-radius: var(--radius-sm); font-size:.78rem; cursor:pointer; white-space:nowrap;
+  }
+  .fav-cat-chip.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
+  .fav-add-row{ display:flex; gap:8px; margin-top:8px; }
+  .fav-add-row input{
+    flex:1; padding: 12px 14px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:.95rem;
+  }
+
+  /* オンボーディング内では他の項目と統一感を持たせて中央寄せ・大きめの見た目にする */
+  .onboarding-input-wrap .chip-list{ justify-content:center; }
+  .onboarding-input-wrap .chip-empty{ text-align:center; }
+  .onboarding-input-wrap .add-row input,
+  .onboarding-input-wrap .fav-add-row input{ text-align:center; font-size:1rem; padding:13px 14px; }
+
+  .onboarding-defer-link{
+    margin-top:14px; border:none; background:transparent; color: var(--text-muted);
+    font-size:.8rem; text-decoration:underline; text-underline-offset:2px; cursor:pointer; padding:6px;
+  }
+
+  .swipe-return-hint{
+    background: var(--chip-bg); color: var(--text); font-size:.8rem; text-align:center;
+    padding:10px 14px; border-radius: var(--radius-md); margin: 0 0 6px; animation: hint-fade-in .3s ease;
+  }
+
+  .goal-help{ width:100%; max-width:300px; margin-top:14px; }
+  .goal-help-label{ font-size:.74rem; color: var(--text-muted); margin: 0 0 8px; text-align:center; }
+  .goal-help-chips{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+  .goal-example-chip{
+    border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 7px 12px; border-radius: var(--radius-sm); font-size:.76rem; cursor:pointer;
+  }
+  .goal-example-chip:active{ transform: scale(.96); }
 
   .custom-section{ border:1px dashed var(--border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 10px; }
   .custom-section .cs-head{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
@@ -558,11 +598,11 @@
     { id:"hometown", icon:"🏡", label:"出身地", desc:"", type:"text", basicKey:"hometown", ph:"例：東京都" },
     { id:"occupation", icon:"🎓", label:"所属・職業", desc:"学校名や職業など。", type:"text", basicKey:"occupation", ph:"例：大学生／◯◯部" },
     { id:"motto", icon:"📜", label:"座右の銘", desc:"大切にしている言葉。思い浮かばなければ、名言をスワイプして探せます。", type:"text", basicKey:"motto", ph:"例：一期一会", swipeCat:"motto" },
-    { id:"skills", icon:"🛠️", label:"特技", desc:"できること・得意なことをいくつでも登録できます。", type:"taglist", listKey:"skills", ph:"例：ピアノ、料理、Excel" },
-    { id:"hobbies", icon:"🎨", label:"趣味", desc:"好きでよくやっていることを登録しましょう。", type:"taglist", listKey:"hobbies", ph:"例：読書、映画鑑賞、キャンプ" },
+    { id:"skills", icon:"🛠️", label:"特技", desc:"できること・得意なことをいくつでも登録できます。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"skills", ph:"例：ピアノ、料理、Excel", swipeCat:"skill" },
+    { id:"hobbies", icon:"🎨", label:"趣味", desc:"好きでよくやっていることを登録しましょう。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"hobbies", ph:"例：読書、映画鑑賞、キャンプ", swipeCat:"hobby" },
     { id:"strengths", icon:"💪", label:"長所", desc:"自分の強みだと思うところ。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"strengths", ph:"例：計画的、聞き上手", swipeCat:"strength" },
     { id:"weaknesses", icon:"🌱", label:"短所", desc:"直したい・課題だと感じているところ。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"weaknesses", ph:"例：心配性、飽きっぽい", swipeCat:"weakness" },
-    { id:"dislikes", icon:"🙅", label:"苦手なもの", desc:"苦手なこと・避けたいこと。", type:"taglist", listKey:"dislikes", ph:"例：早起き、虫" },
+    { id:"dislikes", icon:"🙅", label:"苦手なもの", desc:"苦手なこと・避けたいこと。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"dislikes", ph:"例：早起き、虫", swipeCat:"dislike" },
     { id:"favorites", icon:"❤️", label:"好きなもの", desc:"カテゴリ別に好きなものを登録できます。思い浮かばなければスワイプで探せます。", type:"favorites", swipeCat:"favorite" },
     { id:"goals", icon:"🎯", label:"将来の夢・目標", desc:"今後やりたいこと、目指していることを自由に書いてください。", type:"textarea", key:"goals", ph:"例：◯◯の資格を取りたい／◯◯の仕事に就きたい" },
     { id:"custom", icon:"✨", label:"じぶんだけの項目", desc:"用意された項目以外にも、自分について記録したいことを自由に追加できます。", type:"custom" }
@@ -664,13 +704,21 @@
   // ---- スワイプ発見のカードバンク ----
   var SWIPE_CAT_META = {
     motto:    { label:"座右の銘・名言", icon:"📜", grad:["#7c6fe0","#a695f2"] },
+    skill:    { label:"特技のヒント",   icon:"🛠️", grad:["#2563eb","#93c5fd"] },
+    hobby:    { label:"趣味のヒント",   icon:"🎨", grad:["#16a34a","#86efac"] },
     strength: { label:"長所のヒント",   icon:"💪", grad:["#0d9488","#5eead4"] },
     weakness: { label:"短所のヒント",   icon:"🌱", grad:["#c2760f","#f2b06e"] },
+    dislike:  { label:"苦手のヒント",   icon:"🙅", grad:["#64748b","#cbd5e1"] },
     favorite: { label:"好きなものかも", icon:"❤️", grad:["#d0466a","#f2a3b4"] }
   };
+  // カテゴリ名 → data.lists のキー（taglist系のスワイプ判定・追加・件数カウントを共通化するための対応表）
+  var SWIPE_LIST_KEY = { skill:"skills", hobby:"hobbies", strength:"strengths", weakness:"weaknesses", dislike:"dislikes" };
   var MOTTO_BANK = ["一期一会","七転び八起き","継続は力なり","初心忘るべからず","笑う門には福来る","石の上にも三年","有言実行","臨機応変","日々是好日","終わりよければ全てよし","塞翁が馬","為せば成る","人事を尽くして天命を待つ","備えあれば憂いなし","急がば回れ","千里の道も一歩から","失敗は成功のもと","縁の下の力持ち","不撓不屈","自分らしく生きる","感謝を忘れない","挑戦し続ける","マイペースが一番","今を大切に","小さな一歩を積み重ねる","楽あれば苦あり"];
+  var SKILL_BANK = ["料理","写真撮影","イラスト・絵を描くこと","楽器演奏","プログラミング","文章を書くこと","英会話","人前で話すこと","データ分析","デザイン","裁縫・手芸","DIY・日曜大工","動画編集","整理整頓","暗算・計算","記憶力","方向感覚","聞き上手","段取り・計画立て","スポーツ全般","ダンス","歌うこと","語学","パソコン操作","接客・ホスピタリティ"];
+  var HOBBY_BANK = ["読書","映画鑑賞","音楽鑑賞","カフェ巡り","キャンプ","登山・ハイキング","釣り","ゲーム","写真撮影","旅行","料理・お菓子作り","筋トレ","ランニング","ヨガ","ガーデニング","美術館・博物館めぐり","ドライブ","カラオケ","楽器演奏","手芸・ハンドメイド","アニメ・漫画","スポーツ観戦","温泉巡り","ボードゲーム","ライブ・舞台観賞","プラモデル・模型","ペットと過ごすこと","日記を書くこと"];
   var STRENGTH_BANK = ["誰とでもすぐ仲良くなれる","約束をきちんと守る","困っている人を放っておけない","コツコツ努力できる","気持ちの切り替えが早い","聞き上手だと言われる","行動力がある","冷静に物事を判断できる","新しいことに挑戦するのが好き","計画を立てるのが得意","細かいところによく気がつく","ポジティブに考えられる","責任感が強い","柔軟に対応できる","好奇心が旺盛","人の話を最後まで聞ける","約束の時間を守る","周りをよく観察している","粘り強く続けられる","素直に人の意見を聞ける"];
   var WEAKNESS_BANK = ["心配性なところがある","人に頼るのが少し苦手","飽きっぽいところがある","頼まれごとを断るのが苦手","完璧を求めすぎることがある","朝がとにかく弱い","考えすぎてしまう","人前で緊張しやすい","マイペースすぎると言われる","片付けがやや苦手","せっかちなところがある","落ち込みやすい","優柔不断なところがある","人と比べてしまいがち","スケジュールを詰め込みすぎる","初対面だと緊張してしまう","つい後回しにしてしまう","夜更かししがち","感情が顔に出やすい","甘いものがやめられない"];
+  var DISLIKE_BANK = ["早起き","虫","高いところ","人前で話すこと","満員電車","運動","数字を扱うこと","辛い食べ物","寒さ","暑さ","待つこと","大人数の飲み会","急な予定変更","機械の操作","方向を覚えること","細かい作業","電話対応","初対面の人と話すこと","締め切りに追われること","長時間の移動"];
   var FAVORITE_BANK = [
     {c:"食べ物", v:"ラーメン"},{c:"食べ物", v:"寿司"},{c:"食べ物", v:"カレー"},{c:"食べ物", v:"焼肉"},
     {c:"飲み物", v:"コーヒー"},{c:"飲み物", v:"紅茶"},{c:"飲み物", v:"タピオカ"},
@@ -994,7 +1042,9 @@
       if(required && !step.swipeCat && (step.type === "text" || step.type === "date")){
         html += '<p class="field-nudge hidden" id="fieldNudge"></p>';
       }
+      if(step.type === "textarea") html += renderGoalHelpBlock();
       html += renderSwipeLinkBlock(step, true);
+      html += renderDeferLink(step);
       html += '</div>';
       html += '<div class="onboarding-progress-text">'+(idx - ONBOARDING_SLIDES.length + 1)+' / '+STEPS.length+'</div>';
     }
@@ -1151,6 +1201,28 @@
     return html;
   }
 
+  // オンボーディング中、まだ何も入力していない任意項目（特技・趣味・目標）に対して
+  // 「今は決めなくていい」ことを明示するためのリンクボタン
+  var DEFER_LABELS = { skills:"特技はあとで追加する", hobbies:"趣味はあとで追加する", goals:"これから書く" };
+  function renderDeferLink(step){
+    var label = DEFER_LABELS[step.id];
+    if(!label) return "";
+    var isEmpty = step.type === "taglist" ? data.lists[step.listKey].length === 0 : !data[step.key];
+    if(!isEmpty) return "";
+    return '<button class="onboarding-defer-link" data-defer-advance="1">'+escapeHtml(label)+'</button>';
+  }
+
+  // 将来の夢・目標に困った人向けの、タップで挿入できる例文チップ
+  var GOAL_EXAMPLES = ["◯◯の資格を取りたい","新しいスキルを身につけたい","海外で暮らしてみたい","自分のお店を持ちたい","本を出してみたい","健康的な生活を送りたい"];
+  function renderGoalHelpBlock(){
+    var html = '<div class="goal-help">';
+    html += '<p class="goal-help-label">💡 困ったらタップして挿入</p>';
+    html += '<div class="goal-help-chips">';
+    GOAL_EXAMPLES.forEach(function(ex){ html += '<button class="goal-example-chip" data-goal-example="'+escapeHtml(ex)+'">'+escapeHtml(ex)+'</button>'; });
+    html += '</div></div>';
+    return html;
+  }
+
   function renderWizard(){
     var idx = Math.max(0, Math.min(wizardState.stepIndex, STEPS.length - 1));
     wizardState.stepIndex = idx;
@@ -1213,11 +1285,15 @@
       return h2;
     }
     if(step.type === "favorites"){
+      if(!state.favSelectedCat) state.favSelectedCat = FAV_CATEGORIES[0];
       var h3 = data.favorites.length ? "" : '<div class="chip-empty">まだ登録がありません</div>';
       data.favorites.forEach(function(f,i){
         h3 += '<div class="fav-item"><span class="fav-cat">'+escapeHtml(f.category)+'</span><span class="fav-val">'+escapeHtml(f.value)+'</span><button class="del-btn" data-del-fav="'+i+'">🗑️</button></div>';
       });
-      h3 += '<div class="add-row"><select id="wzFavCat">' + FAV_CATEGORIES.map(function(c){ return '<option value="'+escapeHtml(c)+'">'+escapeHtml(c)+'</option>'; }).join("") + '</select><input type="text" id="wzFavVal" placeholder="好きなものを入力"><button class="add-btn" id="wzFavAdd">追加</button></div>';
+      h3 += '<div class="fav-cat-chips">' + FAV_CATEGORIES.map(function(c){
+        return '<button class="fav-cat-chip'+(state.favSelectedCat===c?" active":"")+'" data-fav-cat-select="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>';
+      }).join("") + '</div>';
+      h3 += '<div class="fav-add-row"><input type="text" id="wzFavVal" placeholder="'+escapeHtml(state.favSelectedCat)+'を入力"><button class="add-btn" id="wzFavAdd">追加</button></div>';
       return h3;
     }
     if(step.type === "custom"){
@@ -1338,25 +1414,34 @@
 
     // 座右の銘など、自分では思い浮かびにくい項目：数秒操作がなければ
     // アイリスアウト風に画面を絞り込んでスワイプ発見ボタンへ視線を誘導する
-    if(step.swipeCat && step.type === "text" && wzInput){
-      var hintMsg = document.getElementById("swipeHintMsg");
-      var hintBtn = document.getElementById("swipeHintBtn");
-      var hintTimer = null;
-      var scheduleHint = function(){
-        clearTimeout(hintTimer);
-        if(hintMsg) hintMsg.classList.add("hidden");
-        if(hintBtn) hintBtn.classList.remove("pulse");
-        removeIrisOverlay();
-        hintTimer = setTimeout(function(){
-          if(wzInput.value.trim()) return; // すでに入力済みなら出さない
-          if(hintMsg) hintMsg.classList.remove("hidden");
-          if(hintBtn) hintBtn.classList.add("pulse");
-          triggerIrisHint(hintBtn);
-        }, 4000);
-      };
-      wzInput.addEventListener("input", scheduleHint);
-      scheduleHint();
+    // （taglist/favoritesは追加・削除のたびに再描画されるので自然に再スケジュールされる。
+    //   テキスト項目だけは打鍵のたびに明示的に仕切り直す必要がある）
+    if(step.type === "text" && step.swipeCat && wzInput){
+      wzInput.addEventListener("input", function(){ scheduleSwipeIdleHint(step); });
     }
+  }
+
+  // どの項目タイプが「空」かを判定した上で、アイリスアウト演出をスケジュールする。
+  // text/taglist/favoritesいずれのswipeCat付き項目からも共通で呼び出す。
+  function scheduleSwipeIdleHint(step){
+    if(!step.swipeCat) return;
+    var hintMsg = document.getElementById("swipeHintMsg");
+    var hintBtn = document.getElementById("swipeHintBtn");
+    if(!hintBtn) return;
+    clearTimeout(hintBtn._idleTimer);
+    hintMsg && hintMsg.classList.add("hidden");
+    hintBtn.classList.remove("pulse");
+    removeIrisOverlay();
+    hintBtn._idleTimer = setTimeout(function(){
+      var empty = false;
+      if(step.type === "text"){ var el = document.getElementById("wzInput"); empty = !(el && el.value.trim()); }
+      else if(step.type === "taglist"){ empty = data.lists[step.listKey].length === 0; }
+      else if(step.type === "favorites"){ empty = data.favorites.length === 0; }
+      if(!empty) return;
+      hintMsg && hintMsg.classList.remove("hidden");
+      hintBtn.classList.add("pulse");
+      triggerIrisHint(hintBtn);
+    }, 4000);
   }
 
   // 画面全体を暗くしながら、対象ボタンだけを丸く残して絞り込んでいく
@@ -1473,16 +1558,24 @@
     });
 
     // 好きなもの
+    document.querySelectorAll("[data-fav-cat-select]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state.favSelectedCat = btn.dataset.favCatSelect; render(); });
+    });
     var favAdd = document.getElementById("wzFavAdd");
     if(favAdd){
       favAdd.addEventListener("click", function(){
-        var cat = document.getElementById("wzFavCat").value;
         var input = document.getElementById("wzFavVal");
         var val = input.value.trim();
         if(!val) return;
-        data.favorites.push({ category: cat, value: val });
+        data.favorites.push({ category: state.favSelectedCat, value: val });
         saveData(); render();
         toast("追加しました");
+      });
+    }
+    var favVal = document.getElementById("wzFavVal");
+    if(favVal){
+      favVal.addEventListener("keydown", function(e){
+        if(e.key === "Enter"){ e.preventDefault(); document.getElementById("wzFavAdd").click(); }
       });
     }
     document.querySelectorAll("[data-del-fav]").forEach(function(btn){
@@ -1526,6 +1619,28 @@
         if(sec){ sec.items.splice(Number(btn.dataset.idx),1); saveData(); render(); }
       });
     });
+
+    // 「あとで追加する／これから書く」リンク：入力せずそのまま次へ進む
+    var deferBtn = document.querySelector("[data-defer-advance]");
+    if(deferBtn) deferBtn.addEventListener("click", advanceFn);
+
+    // 将来の夢・目標の例文チップ：タップした例文をテキストエリアに挿入する
+    document.querySelectorAll("[data-goal-example]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var goalInput = document.getElementById("wzInput");
+        if(!goalInput) return;
+        var example = btn.dataset.goalExample;
+        goalInput.value = goalInput.value ? (goalInput.value + "\n" + example) : example;
+        goalInput.dispatchEvent(new Event("change"));
+        render(); // 「これから書く」リンクの表示・非表示を反映するため再描画する
+        var refreshed = document.getElementById("wzInput");
+        if(refreshed) refreshed.focus();
+      });
+    });
+
+    // 追加・削除のたびにこの関数ごと呼び直されるので、taglist/favoritesは自然に
+    // アイドルタイマーが仕切り直される（テキスト項目はinputイベント側でも仕切り直す）
+    scheduleSwipeIdleHint(step);
   }
 
   function addTag(key, input){
@@ -1549,15 +1664,18 @@
 
   function swipeBank(cat){
     if(cat === "motto") return MOTTO_BANK;
+    if(cat === "skill") return SKILL_BANK;
+    if(cat === "hobby") return HOBBY_BANK;
     if(cat === "strength") return STRENGTH_BANK;
     if(cat === "weakness") return WEAKNESS_BANK;
+    if(cat === "dislike") return DISLIKE_BANK;
     return FAVORITE_BANK.map(function(f){ return { category:f.c, value:f.v }; });
   }
   function swipeAlreadyHas(cat, item){
     if(cat === "motto") return data.basic.motto === item;
-    if(cat === "strength") return data.lists.strengths.indexOf(item) !== -1;
-    if(cat === "weakness") return data.lists.weaknesses.indexOf(item) !== -1;
     if(cat === "favorite") return data.favorites.some(function(f){ return f.category===item.category && f.value===item.value; });
+    var listKey = SWIPE_LIST_KEY[cat];
+    if(listKey) return data.lists[listKey].indexOf(item) !== -1;
     return false;
   }
   function buildSwipeQueue(cat){
@@ -1569,15 +1687,23 @@
   }
   function countAdded(cat){
     if(cat === "motto") return data.basic.motto ? 1 : 0;
-    if(cat === "strength") return data.lists.strengths.length;
-    if(cat === "weakness") return data.lists.weaknesses.length;
-    return data.favorites.length;
+    if(cat === "favorite") return data.favorites.length;
+    var listKey = SWIPE_LIST_KEY[cat];
+    if(listKey) return data.lists[listKey].length;
+    return 0;
   }
   function applySwipeAccept(cat, item){
-    if(cat === "motto"){ data.basic.motto = item; toast("座右の銘に設定しました"); }
-    else if(cat === "strength"){ if(data.lists.strengths.indexOf(item)===-1){ data.lists.strengths.push(item); } toast("長所に追加しました"); }
-    else if(cat === "weakness"){ if(data.lists.weaknesses.indexOf(item)===-1){ data.lists.weaknesses.push(item); } toast("短所に追加しました"); }
-    else if(cat === "favorite"){ if(!data.favorites.some(function(f){return f.category===item.category&&f.value===item.value;})){ data.favorites.push({category:item.category, value:item.value}); } toast("好きなものに追加しました"); }
+    if(cat === "motto"){ data.basic.motto = item; toast("座右の銘に設定しました"); return; }
+    if(cat === "favorite"){
+      if(!data.favorites.some(function(f){return f.category===item.category&&f.value===item.value;})){ data.favorites.push({category:item.category, value:item.value}); }
+      toast("好きなものに追加しました");
+      return;
+    }
+    var listKey = SWIPE_LIST_KEY[cat];
+    if(listKey){
+      if(data.lists[listKey].indexOf(item) === -1) data.lists[listKey].push(item);
+      toast(SWIPE_CAT_META[cat].label.replace("のヒント","") + "に追加しました");
+    }
   }
 
   function renderSwipeView(){
@@ -1588,6 +1714,14 @@
       html += '<button class="cat-chip'+(state.swipeCat===k?" active":"")+'" data-swipecat="'+k+'">'+SWIPE_CAT_META[k].icon+' '+SWIPE_CAT_META[k].label+'</button>';
     });
     html += '</div>';
+    // オンボーディング中は、1件でも見つかったら「戻り方」をその場でテキストで案内する
+    // （座右の銘は自動で戻るので不要。他の項目は複数選べるので手動の「もどる」を案内する）
+    if(state.view === "onboarding" && onboardingState.mode === "swipe" && state.swipeCat !== "motto"){
+      var found = countAdded(state.swipeCat);
+      if(found > 0){
+        html += '<div class="swipe-return-hint">✓ ' + found + '件見つかりました。戻るときは上の「← もどる」をタップしてください</div>';
+      }
+    }
     html += '<div class="swipe-wrap"><div class="swipe-stage" id="swipeStage">';
     var queue = state.swipeQueue;
     if(!queue.length){
