@@ -3,313 +3,577 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>日芸自販機まっぷ</title>
+<title>じぶん手帳</title>
 <style>
   :root{
-    --bg: #f6f7f3;
+    --bg: #f6f5fb;
     --bg-elevated: #ffffff;
-    --text: #2b2b28;
-    --text-muted: #7a7a72;
-    --border: #e3e2da;
-    --accent: #ff8a3d;
+    --text: #2b2a33;
+    --text-muted: #7a7886;
+    --border: #e5e2f0;
+    --accent: #7c6fe0;
+    --accent-2: #a695f2;
     --accent-text: #ffffff;
-    --chip-bg: #eeede4;
-    --chip-bg-active: #2b6f5c;
+    --chip-bg: #eeecf9;
+    --chip-bg-active: #7c6fe0;
     --chip-text-active: #ffffff;
-    --shadow: 0 2px 10px rgba(30,30,20,0.06);
+    --shadow: 0 2px 10px rgba(60,50,110,0.07);
     --radius-lg: 20px;
     --radius-md: 14px;
     --radius-sm: 999px;
-
-    --drink-fg:#1f6fb2; --drink-bg:#e6f2fb;
-    --food-fg:#b5651d;  --food-bg:#fdf0e2;
-    --ice-fg:#1f8f8a;   --ice-bg:#e2f7f5;
-    --noodle-fg:#c22f45;--noodle-bg:#fbe9ec;
-    --other-fg:#6a5acd; --other-bg:#ece9fb;
+    --danger: #d0466a;
+    --ok: #2f9e6e;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #1a1824;
+      --bg-elevated: #242232;
+      --text: #f1efe7;
+      --text-muted: #a6a2b8;
+      --border: #38354a;
+      --accent: #9d8ff7;
+      --accent-2: #b9adf9;
+      --accent-text: #1c1a2a;
+      --chip-bg: #2d2a3f;
+      --chip-bg-active: #9d8ff7;
+      --chip-text-active: #1c1a2a;
+      --shadow: 0 2px 14px rgba(0,0,0,0.4);
+      --danger: #f28ba3;
+      --ok: #79d6ac;
+    }
   }
   html[data-theme="dark"]{
-    --bg: #181917;
-    --bg-elevated: #232420;
+    --bg: #1a1824;
+    --bg-elevated: #242232;
     --text: #f1efe7;
-    --text-muted: #a6a49a;
-    --border: #34352f;
-    --accent: #ff9d5c;
-    --accent-text: #1c1c1a;
-    --chip-bg: #2c2d27;
-    --chip-bg-active: #57a98c;
-    --chip-text-active: #10201a;
+    --text-muted: #a6a2b8;
+    --border: #38354a;
+    --accent: #9d8ff7;
+    --accent-2: #b9adf9;
+    --accent-text: #1c1a2a;
+    --chip-bg: #2d2a3f;
+    --chip-bg-active: #9d8ff7;
+    --chip-text-active: #1c1a2a;
     --shadow: 0 2px 14px rgba(0,0,0,0.4);
-
-    --drink-fg:#7fc0f2; --drink-bg:#1c2c38;
-    --food-fg:#f2b06e;  --food-bg:#332417;
-    --ice-fg:#7fe3dc;   --ice-bg:#123330;
-    --noodle-fg:#f2909f;--noodle-bg:#361d21;
-    --other-fg:#c3b8f7; --other-bg:#26213a;
+    --danger: #f28ba3;
+    --ok: #79d6ac;
   }
 
   *{ box-sizing: border-box; }
   html,body{ margin:0; padding:0; }
+  html{ height:100%; }
   body{
-    background: var(--bg);
+    height:100%;
+    min-height:100vh; min-height:100dvh;
+    background: #100e17;
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
                  "Yu Gothic", "Segoe UI", Roboto, Meiryo, sans-serif;
-    line-height: 1.5;
+    line-height: 1.55;
     -webkit-text-size-adjust: 100%;
-    padding-bottom: 56px;
+    display:flex; align-items:center; justify-content:center;
+    padding: 28px 14px;
   }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) body{ background:#0a0910; } }
+  html[data-theme="dark"] body{ background:#0a0910; }
   a{ color: inherit; }
   button{ font-family: inherit; }
+  textarea{ font-family: inherit; }
   .hidden{ display:none !important; }
 
-  /* ---------- header ---------- */
-  header.topbar{
-    background: linear-gradient(135deg, var(--accent), #ffb26b);
-    color: #2b1a08;
-    padding: 18px 16px 22px;
-    border-radius: 0 0 24px 24px;
-    box-shadow: var(--shadow);
+  /* ---------- phone frame (mobile app mockup) ---------- */
+  .phone-frame{
+    position:relative; width:100%; max-width:412px; height:min(890px, 100%);
+    aspect-ratio: 9 / 19.5;
+    background: linear-gradient(160deg,#2c2a38,#131019);
+    border-radius:48px; padding:14px;
+    box-shadow: 0 40px 80px rgba(0,0,0,.5), 0 0 0 2px rgba(255,255,255,.05) inset;
   }
-  html[data-theme="dark"] header.topbar{ color:#1c1206; }
-  .topbar-inner{ max-width: 880px; margin:0 auto; }
+  .phone-notch{
+    position:absolute; top:14px; left:50%; transform:translateX(-50%);
+    width:96px; height:24px; background:#000; border-radius:16px; z-index:30;
+  }
+  .phone-screen{
+    position:relative; width:100%; height:100%; background: var(--bg);
+    border-radius:34px; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  @media (max-width:480px), (max-height:700px){
+    body{ padding:0; background:var(--bg); display:block; }
+    html[data-theme="dark"] body{ background:var(--bg); }
+    .phone-frame{
+      max-width:none; width:100vw; height:100vh; height:100dvh; aspect-ratio:auto;
+      border-radius:0; padding:0; box-shadow:none; background:none;
+    }
+    .phone-notch{ display:none; }
+    .phone-screen{ border-radius:0; }
+  }
+
+  /* ---------- header (app top bar) ---------- */
+  header.topbar{
+    flex-shrink:0;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    padding: max(16px, env(safe-area-inset-top)) 18px 16px;
+  }
   .topbar-row{ display:flex; align-items:flex-start; justify-content:space-between; gap: 8px; }
-  header.topbar h1{ margin:0; font-size: 1.35rem; font-weight: 800; letter-spacing: .02em; }
-  header.topbar .subtitle{ margin: 4px 0 0; font-size: .8rem; opacity:.85; }
+  header.topbar h1{ margin:0; font-size: 1.15rem; font-weight: 800; letter-spacing: .02em; cursor:pointer; }
+  header.topbar .subtitle{ margin: 3px 0 0; font-size: .74rem; opacity:.9; }
   .header-actions{ display:flex; gap:6px; flex-shrink:0; }
   .icon-btn{
-    border:none; background: rgba(255,255,255,.55); color:#2b1a08;
-    width:38px; height:38px; border-radius:50%; font-size:1rem; cursor:pointer;
+    border:none; background: rgba(255,255,255,.28); color:#fff;
+    width:34px; height:34px; border-radius:50%; font-size:.95rem; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
   }
-  html[data-theme="dark"] .icon-btn{ background: rgba(0,0,0,.35); color:#fff; }
   .icon-btn:active{ transform: scale(.94); }
 
-  /* ---------- controls ---------- */
-  .controls{
-    max-width: 880px; margin: -14px auto 0; padding: 0 16px;
-    position: relative; z-index: 5;
-  }
-  .search-row{
-    display:flex; gap:8px; margin-bottom:10px;
-  }
-  #searchInput{
-    flex:1; padding: 12px 14px; border-radius: var(--radius-md);
-    border:1px solid var(--border); background: var(--bg-elevated);
-    color: var(--text); font-size: .95rem; box-shadow: var(--shadow);
-  }
-  #searchInput:focus{ outline: 2px solid var(--accent); }
+  .progress-wrap{ margin-top: 12px; }
+  .progress-label{ display:flex; justify-content:space-between; font-size:.7rem; opacity:.9; margin-bottom:4px; }
+  .progress-track{ height:6px; background: rgba(255,255,255,.28); border-radius:999px; overflow:hidden; }
+  .progress-fill{ height:100%; background:#fff; border-radius:999px; transition: width .3s ease; }
 
-  .view-tabs{
-    display:flex; background: var(--bg-elevated); border-radius: var(--radius-sm);
-    padding: 4px; box-shadow: var(--shadow); gap: 4px;
+  /* ---------- bottom tab bar (mobile app nav) ---------- */
+  nav.bottom-nav{
+    flex-shrink:0; background: var(--bg-elevated); border-top:1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom);
   }
-  .view-tabs button{
-    flex:1; border:none; background:transparent; color: var(--text-muted);
-    padding: 8px 10px; border-radius: var(--radius-sm); font-size:.85rem; font-weight:600; cursor:pointer;
+  .bn-buttons{ display:flex; padding: 6px 2px 2px; }
+  .bn-buttons button{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+    border:none; background:transparent; color: var(--text-muted);
+    padding: 6px 2px; font-size:.62rem; font-weight:700; cursor:pointer;
   }
-  .view-tabs button.active{ background: var(--accent); color: var(--accent-text); }
+  .bn-buttons button .nav-icon{ font-size:1.28rem; line-height:1; }
+  .bn-buttons button.active{ color: var(--accent); }
+  .home-indicator-bar{ width:120px; height:5px; border-radius:3px; background: var(--text-muted); opacity:.35; margin: 6px auto 8px; }
 
-  .filter-toggle-row{ display:flex; align-items:center; gap:8px; margin: 10px 0; }
-  #filterToggle, #shareBtn2, #clearFilters{
-    border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
-    padding: 8px 14px; border-radius: var(--radius-sm); font-size:.85rem; cursor:pointer;
-  }
-  .result-count{ font-size:.8rem; color: var(--text-muted); margin-left:auto; white-space:nowrap; }
+  main{ flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; padding: 14px 16px 24px; }
 
-  .filter-panel{
-    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-md);
-    padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow);
+  .card{
+    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-lg);
+    margin-bottom: 14px; padding: 16px; box-shadow: var(--shadow);
   }
-  .filter-panel section{ margin-bottom: 12px; }
-  .filter-panel section:last-of-type{ margin-bottom: 0; }
-  .filter-panel h3{ margin: 0 0 6px; font-size: .75rem; color: var(--text-muted); font-weight:700; letter-spacing:.03em; }
-  .chip-group{ display:flex; flex-wrap:wrap; gap:6px; }
+  .card h2{ margin: 0 0 4px; font-size: 1rem; font-weight:800; display:flex; align-items:center; gap:6px; }
+  .card .card-desc{ margin: 0 0 12px; font-size:.78rem; color: var(--text-muted); }
+
+  .field{ margin-bottom: 0; }
+  .field input[type="text"], .field input[type="date"], .field select, .field textarea{
+    width:100%; padding: 12px 14px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:1rem;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline: 2px solid var(--accent); }
+  .field textarea{ resize: vertical; min-height: 90px; }
+
+  /* ---------- chip tag editor ---------- */
+  .chip-list{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px; }
   .chip{
+    display:inline-flex; align-items:center; gap:6px;
     border:1px solid var(--border); background: var(--chip-bg); color: var(--text);
-    padding: 7px 12px; border-radius: var(--radius-sm); font-size: .82rem; cursor:pointer;
-    white-space:nowrap;
+    padding: 6px 6px 6px 12px; border-radius: var(--radius-sm); font-size: .85rem;
   }
-  .chip.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color: transparent; font-weight:600; }
-  .filter-panel-footer{ display:flex; justify-content:flex-end; margin-top: 10px; }
+  .chip button{
+    border:none; background: rgba(0,0,0,.08); color: inherit; width:18px; height:18px; border-radius:50%;
+    cursor:pointer; font-size:.7rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  html[data-theme="dark"] .chip button{ background: rgba(255,255,255,.12); }
+  .chip-empty{ font-size:.82rem; color: var(--text-muted); padding: 2px 0 10px; }
+  .add-row{ display:flex; gap:8px; }
+  .add-row input{
+    flex:1; padding: 12px 14px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:.95rem;
+  }
+  .add-row select{ flex: 0 0 auto; max-width: 42%; }
+  .add-btn{
+    border:none; background: var(--accent); color: var(--accent-text); padding: 0 18px; border-radius: var(--radius-md);
+    font-size:.88rem; font-weight:700; cursor:pointer; flex-shrink:0;
+  }
+  .add-btn:active{ transform: scale(.96); }
 
-  main{ max-width: 880px; margin: 0 auto; padding: 4px 16px 24px; }
+  .fav-item{ display:flex; align-items:center; gap:8px; padding: 8px 0; border-bottom: 1px dashed var(--border); }
+  .fav-item:last-of-type{ border-bottom:none; }
+  .fav-item .fav-cat{ font-size:.72rem; font-weight:700; color: var(--accent); background: var(--chip-bg); padding:3px 9px; border-radius: var(--radius-sm); flex-shrink:0; }
+  .fav-item .fav-val{ flex:1; font-size:.88rem; }
+  .fav-item .del-btn{ border:none; background:transparent; color: var(--text-muted); cursor:pointer; font-size:.9rem; padding:4px; }
 
-  /* ---------- building accordion ---------- */
-  .building-block{
-    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-lg);
-    margin-bottom: 14px; overflow:hidden; box-shadow: var(--shadow);
+  .fav-cat-chips{ display:flex; gap:6px; overflow-x:auto; padding: 4px 2px 6px; -webkit-overflow-scrolling:touch; }
+  .fav-cat-chip{
+    flex-shrink:0; border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 7px 13px; border-radius: var(--radius-sm); font-size:.78rem; cursor:pointer; white-space:nowrap;
   }
-  .building-head{
-    width:100%; display:flex; align-items:center; justify-content:space-between;
-    background:transparent; border:none; color: var(--text); padding: 14px 16px; cursor:pointer;
-    font-size: 1rem; font-weight:800; text-align:left;
+  .fav-cat-chip.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
+  .fav-add-row{ display:flex; gap:8px; margin-top:8px; }
+  .fav-add-row input{
+    flex:1; padding: 12px 14px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:.95rem;
   }
-  .building-head .count-badge{
-    font-size:.72rem; font-weight:600; color: var(--text-muted); margin-left:8px;
-  }
-  .building-head .chevron{ transition: transform .15s ease; color: var(--text-muted); }
-  .building-block.open .chevron{ transform: rotate(180deg); }
-  .building-body{ padding: 0 14px 14px; }
-  .building-block:not(.open) .building-body{ display:none; }
 
-  .floor-group{ margin-bottom: 10px; }
-  .floor-label{ font-size:.75rem; font-weight:700; color: var(--text-muted); margin: 10px 2px 6px; }
-  .floor-empty-note{ font-size:.75rem; color: var(--text-muted); padding: 4px 2px 10px; }
+  /* オンボーディング内では他の項目と統一感を持たせて中央寄せ・大きめの見た目にする */
+  .onboarding-input-wrap .chip-list{ justify-content:center; }
+  .onboarding-input-wrap .chip-empty{ text-align:center; }
+  .onboarding-input-wrap .add-row input,
+  .onboarding-input-wrap .fav-add-row input{ text-align:center; font-size:1rem; padding:13px 14px; }
 
-  .empty-state{
-    text-align:center; padding: 26px 10px; color: var(--text-muted); font-size:.9rem;
+  .onboarding-defer-link{
+    margin-top:14px; border:none; background:transparent; color: var(--text-muted);
+    font-size:.8rem; text-decoration:underline; text-underline-offset:2px; cursor:pointer; padding:6px;
   }
-  .empty-state .emoji{ font-size:1.6rem; display:block; margin-bottom:6px; }
 
-  /* ---------- vm card ---------- */
-  .vm-card{
-    border:1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 8px;
-    background: var(--bg); overflow:hidden;
+  .swipe-return-hint{
+    background: var(--chip-bg); color: var(--text); font-size:.8rem; text-align:center;
+    padding:10px 14px; border-radius: var(--radius-md); margin: 0 0 6px; animation: hint-fade-in .3s ease;
   }
-  .vm-card.highlight{ outline: 3px solid var(--accent); }
-  .vm-card-head{
-    display:flex; align-items:center; gap:10px; padding: 12px; cursor:pointer;
-  }
-  .type-badge{
-    flex-shrink:0; width:38px; height:38px; border-radius:12px; display:flex; align-items:center;
-    justify-content:center; font-size:1.15rem;
-  }
-  .type-badge.drink{ background: var(--drink-bg); color: var(--drink-fg); }
-  .type-badge.food{ background: var(--food-bg); color: var(--food-fg); }
-  .type-badge.ice{ background: var(--ice-bg); color: var(--ice-fg); }
-  .type-badge.noodle{ background: var(--noodle-bg); color: var(--noodle-fg); }
-  .type-badge.other{ background: var(--other-bg); color: var(--other-fg); }
 
-  .vm-card-main{ flex:1; min-width:0; }
-  .vm-card-title{ font-weight:700; font-size:.92rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-  .vm-card-loc{ font-size:.78rem; color: var(--text-muted); margin-top:2px; }
-  .vm-card-meta{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
-  .mini-badge{
-    font-size:.68rem; background: var(--chip-bg); color: var(--text-muted);
-    padding: 2px 8px; border-radius: var(--radius-sm);
+  .goal-help{ width:100%; max-width:300px; margin-top:14px; }
+  .goal-help-label{ font-size:.74rem; color: var(--text-muted); margin: 0 0 8px; text-align:center; }
+  .goal-help-chips{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+  .goal-example-chip{
+    border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 7px 12px; border-radius: var(--radius-sm); font-size:.76rem; cursor:pointer;
   }
-  .star-btn{
-    border:none; background:transparent; font-size:1.2rem; cursor:pointer; flex-shrink:0; padding:4px;
-    color: var(--text-muted);
-  }
-  .star-btn.active{ color: #f0b400; }
-  .expand-caret{ color: var(--text-muted); flex-shrink:0; transition: transform .15s ease; }
-  .vm-card.expanded .expand-caret{ transform: rotate(180deg); }
+  .goal-example-chip:active{ transform: scale(.96); }
 
-  .vm-card-detail{ padding: 0 12px 14px; display:none; }
-  .vm-card.expanded .vm-card-detail{ display:block; }
-  .menu-table{ width:100%; border-collapse: collapse; margin-top: 4px; }
-  .menu-table td{ padding: 5px 4px; font-size:.85rem; border-bottom: 1px dashed var(--border); }
-  .menu-table td:last-child{ text-align:right; font-variant-numeric: tabular-nums; white-space:nowrap; }
-  .vm-note{ font-size:.78rem; color: var(--text-muted); margin-top:8px; background: var(--chip-bg); padding:8px 10px; border-radius:10px; }
-  .vm-updated{ font-size:.7rem; color: var(--text-muted); margin-top:8px; text-align:right; }
+  .custom-section{ border:1px dashed var(--border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 10px; }
+  .custom-section .cs-head{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .custom-section .cs-head input{ flex:1; font-weight:700; padding:9px 11px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg); color:var(--text); }
+  .cs-del{ border:none; background:transparent; color: var(--danger); cursor:pointer; font-size:1rem; padding:4px; }
+  .add-section-btn{
+    width:100%; border:1px dashed var(--border); background:transparent; color: var(--accent);
+    padding: 12px; border-radius: var(--radius-md); font-weight:700; font-size:.85rem; cursor:pointer; margin-top:4px;
+  }
 
-  /* ---------- map view ---------- */
-  .map-building{
-    background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-lg);
-    margin-bottom: 14px; padding: 14px; box-shadow: var(--shadow);
+  /* ---------- wizard (one-at-a-time entry) ---------- */
+  .wizard-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .wz-home-btn{ border:none; background:transparent; color: var(--accent); font-weight:700; font-size:.85rem; cursor:pointer; padding:6px 0; }
+  .wz-progress{ font-size:.78rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .wizard-card{ text-align:left; }
+  .wz-icon{ font-size:2rem; margin-bottom:2px; }
+  .wz-body{ margin-top:14px; }
+  .swipe-hint-wrap{ margin-top:14px; width:100%; }
+  .swipe-link{
+    width:100%; border:1px dashed var(--border); background:transparent; color: var(--accent);
+    padding: 10px; border-radius: var(--radius-md); font-size:.8rem; font-weight:700; cursor:pointer;
   }
-  .map-building h2{ margin: 0 0 10px; font-size:.98rem; font-weight:800; }
-  .map-nodata{ font-size:.8rem; color: var(--text-muted); padding: 8px 0; }
-  .floor-row{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
-  .floor-row .floor-tag{
-    width:44px; flex-shrink:0; font-size:.68rem; color: var(--text-muted); text-align:right; font-weight:700;
+  .swipe-hint-msg{
+    background: var(--chip-bg); color: var(--text); font-size:.78rem; padding:10px 12px; border-radius: var(--radius-md);
+    margin: 0 0 8px; text-align:center; line-height:1.5; animation: hint-fade-in .35s ease;
   }
-  .floor-track{
-    position:relative; flex:1; height: 34px; background: var(--chip-bg); border-radius: 10px;
-  }
-  .pin{
-    position:absolute; top:50%; transform: translate(-50%,-50%); width:26px; height:26px;
-    border-radius:50%; border:none; display:flex; align-items:center; justify-content:center;
-    font-size:.85rem; cursor:pointer; box-shadow: 0 1px 4px rgba(0,0,0,.25);
-  }
-  .pin.drink{ background: var(--drink-fg); }
-  .pin.food{ background: var(--food-fg); }
-  .pin.ice{ background: var(--ice-fg); }
-  .pin.noodle{ background: var(--noodle-fg); }
-  .pin.other{ background: var(--other-fg); }
+  @keyframes hint-fade-in{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:translateY(0); } }
+  .swipe-link.pulse{ animation: swipe-pulse 1.1s ease-in-out 2; border-style:solid; border-color: var(--accent); color: var(--accent); }
+  @keyframes swipe-pulse{ 0%,100%{ transform:scale(1); box-shadow:none; } 50%{ transform:scale(1.03); box-shadow:0 0 0 5px rgba(124,111,224,.18); } }
+  @media (prefers-reduced-motion: reduce){ .swipe-hint-msg{ animation:none; } .swipe-link.pulse{ animation:none; } }
+  .wizard-nav{ display:flex; gap:10px; }
+  .wz-btn{ flex:1; border:none; padding:14px; border-radius: var(--radius-md); font-size:.92rem; font-weight:800; cursor:pointer; }
+  .wz-btn.primary{ background: var(--accent); color: var(--accent-text); }
+  .wz-btn.ghost{ background: var(--bg-elevated); color: var(--text); border:1px solid var(--border); }
+  .wz-btn[disabled]{ opacity:.4; cursor:not-allowed; }
 
-  footer.app-footer{
-    max-width: 880px; margin: 20px auto 0; padding: 0 16px; font-size: .72rem; color: var(--text-muted);
-    text-align:center;
+  .date-picker-row{ display:flex; gap:8px; }
+  .date-picker-row select{
+    flex:1; min-width:0; padding: 13px 4px; border-radius: var(--radius-md);
+    border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:1rem; text-align:center;
+  }
+  .date-picker-row select:focus{ outline: 2px solid var(--accent); }
+
+  .blood-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; }
+  .blood-btn{
+    border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 18px 10px; border-radius: var(--radius-md); font-size:1.05rem; font-weight:800; cursor:pointer;
+  }
+  .blood-btn.active{ background: var(--accent); color: var(--accent-text); border-color:transparent; }
+  .blood-btn.full{ width:100%; margin-top:10px; font-size:.85rem; font-weight:700; padding:12px; }
+
+  /* ---------- home ---------- */
+  .home-hero h2{ margin-bottom:6px; }
+  .shortcut-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; }
+  @media (min-width:480px){ .shortcut-grid{ grid-template-columns: repeat(3,1fr); } }
+  .shortcut-item{
+    display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left;
+    border:1px solid var(--border); background: var(--bg); border-radius: var(--radius-md);
+    padding: 12px; cursor:pointer; color: var(--text); min-width:0;
+  }
+  .shortcut-item .si-icon{ font-size:1.25rem; }
+  .shortcut-item .si-label{ font-size:.8rem; font-weight:700; margin-top:2px; }
+  .shortcut-item .si-preview{
+    font-size:.72rem; color: var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;
+  }
+  .quick-links{ display:flex; gap:10px; flex-wrap:wrap; }
+  .quick-link{
+    flex:1; min-width:100px; display:flex; flex-direction:column; align-items:center; gap:6px;
+    border:1px solid var(--border); background: var(--bg); border-radius: var(--radius-md);
+    padding: 14px 8px; cursor:pointer; font-size:.78rem; font-weight:700; color: var(--text);
+  }
+  .quick-link .ql-icon{ font-size:1.5rem; }
+
+  /* ---------- sub-view toggle ---------- */
+  .toggle-row{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .toggle-row button{
+    border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    padding: 8px 14px; border-radius: var(--radius-sm); font-size:.82rem; cursor:pointer; box-shadow: var(--shadow);
+  }
+  .toggle-row button.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
+
+  /* ---------- swipe deck ---------- */
+  .cat-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .cat-chip{
+    border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    padding: 6px 12px; border-radius: var(--radius-sm); font-size:.78rem; cursor:pointer;
+  }
+  .cat-chip.active{ background: var(--chip-bg-active); color: var(--chip-text-active); border-color:transparent; font-weight:700; }
+
+  .swipe-wrap{ display:flex; flex-direction:column; align-items:center; gap:16px; padding: 4px 0 14px; }
+  .swipe-stage{ position:relative; width:100%; max-width:340px; height:300px; }
+  .swipe-card{
+    position:absolute; inset:0; border-radius:22px; padding:22px; color:#fff;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    box-shadow: var(--shadow); cursor:grab; user-select:none; touch-action:none;
+  }
+  .swipe-card:active{ cursor:grabbing; }
+  .swipe-card .sc-cat{ font-size:.68rem; font-weight:800; letter-spacing:.04em; opacity:.85; margin-bottom:10px; }
+  .swipe-card .sc-text{ font-size:1.2rem; font-weight:800; line-height:1.45; }
+  .swipe-card.top{ z-index:3; }
+  .swipe-card.behind-1{ transform: scale(.95) translateY(10px); opacity:.75; z-index:2; }
+  .swipe-card.behind-2{ transform: scale(.9) translateY(18px); opacity:.45; z-index:1; }
+  .swipe-actions{ display:flex; gap:22px; }
+  .swipe-btn{
+    width:58px; height:58px; border-radius:50%; border:none; font-size:1.5rem; cursor:pointer;
+    box-shadow: var(--shadow); background: var(--bg-elevated);
+  }
+  .swipe-btn.reject{ color: var(--danger); }
+  .swipe-btn.accept{ color: var(--ok); }
+  .swipe-empty{ text-align:center; color: var(--text-muted); padding: 30px 10px; font-size:.85rem; }
+  .swipe-count{ font-size:.78rem; color: var(--text-muted); }
+
+  /* ---------- self-discovery Q&A (journal) ---------- */
+  .today-q{
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; border-radius: var(--radius-lg);
+    padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow);
+  }
+  .today-q .tq-label{ font-size:.7rem; opacity:.85; font-weight:700; letter-spacing:.04em; }
+  .today-q .tq-text{ font-size:1rem; font-weight:800; margin: 6px 0 10px; }
+  .today-q textarea{
+    width:100%; border-radius: var(--radius-md); border:none; padding:10px 12px; font-size:.88rem;
+    min-height:56px; background: rgba(255,255,255,.92); color:#2b2a33;
+  }
+  .today-q .tq-actions{ display:flex; justify-content:flex-end; margin-top:8px; }
+  .today-q .tq-actions button{
+    border:none; background: rgba(255,255,255,.9); color: var(--accent); font-weight:700;
+    padding: 7px 16px; border-radius: var(--radius-sm); font-size:.82rem; cursor:pointer;
+  }
+
+  .qa-item{ background: var(--bg-elevated); border:1px solid var(--border); border-radius: var(--radius-md); padding: 13px 14px; margin-bottom: 10px; box-shadow: var(--shadow); }
+  .qa-item .qa-cat{ font-size:.68rem; color: var(--accent); font-weight:700; }
+  .qa-item .qa-text{ font-size:.9rem; font-weight:700; margin: 4px 0 8px; }
+  .qa-item textarea{ width:100%; border-radius: var(--radius-md); border:1px solid var(--border); background: var(--bg); color: var(--text); padding:9px 11px; font-size:.85rem; min-height:52px; }
+  .qa-item .qa-save{ border:none; background: var(--accent); color: var(--accent-text); padding:7px 14px; border-radius: var(--radius-sm); font-size:.78rem; font-weight:700; cursor:pointer; margin-top:6px; }
+  .qa-answer{ background: var(--chip-bg); border-radius: var(--radius-md); padding: 10px 12px; font-size:.86rem; }
+  .qa-answer .qa-date{ font-size:.68rem; color: var(--text-muted); margin-top:4px; }
+  .qa-item-actions{ display:flex; gap:8px; margin-top:8px; }
+  .qa-item-actions button{ border:none; background:transparent; color: var(--accent); font-size:.76rem; font-weight:700; cursor:pointer; padding:4px 0; }
+  .qa-history{ margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 8px; }
+  .qa-history .hist-entry{ font-size:.78rem; color: var(--text-muted); margin-bottom:6px; }
+  .qa-history .hist-entry .hd{ font-size:.68rem; }
+
+  /* ---------- personality quiz ---------- */
+  .convergence-badge{ display:inline-block; font-size:.72rem; font-weight:700; padding:5px 12px; border-radius: var(--radius-sm); background: var(--chip-bg); color: var(--accent); margin-bottom:12px; }
+  .trait-bar-row{ margin-bottom:12px; }
+  .trait-bar-row:last-child{ margin-bottom:0; }
+  .trait-bar-row .tb-head{ display:flex; justify-content:space-between; font-size:.82rem; font-weight:700; margin-bottom:5px; gap:8px; }
+  .trait-bar-row .tb-head .tb-count{ font-weight:500; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .trait-bar-row .tb-track{ height:10px; border-radius:999px; background: var(--chip-bg); overflow:hidden; }
+  .trait-bar-row .tb-fill{ height:100%; border-radius:999px; background: linear-gradient(90deg,var(--accent),var(--accent-2)); transition: width .4s ease; }
+  .trait-bar-row .tb-desc{ font-size:.76rem; color: var(--text-muted); margin-top:5px; }
+  .quiz-likert{ display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+  .quiz-likert button{
+    flex:1; min-width:58px; border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 11px 4px; border-radius: var(--radius-md); font-size:.74rem; cursor:pointer; font-weight:600;
+  }
+  .quiz-likert button:hover{ border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- intro text / card ---------- */
+  .gen-btn{ width:100%; border:none; background: var(--accent); color: var(--accent-text); padding: 12px; border-radius: var(--radius-md); font-size:.92rem; font-weight:800; cursor:pointer; }
+  .gen-output{
+    margin-top: 12px; background: var(--chip-bg); border-radius: var(--radius-md); padding: 14px; font-size:.92rem;
+    white-space: pre-wrap; min-height: 60px;
+  }
+  .gen-output.empty{ color: var(--text-muted); font-size:.85rem; }
+  .gen-actions{ display:flex; gap:8px; margin-top:10px; }
+  .gen-actions button{
+    flex:1; border:1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    padding: 9px; border-radius: var(--radius-sm); font-size:.82rem; font-weight:700; cursor:pointer;
+  }
+
+  .card-color-row{ display:flex; gap:8px; margin: 4px 0 14px; }
+  .card-color-swatch{ width:32px; height:32px; border-radius:50%; border:2px solid transparent; cursor:pointer; padding:0; }
+  .card-color-swatch.active{ border-color: var(--text); }
+
+  .intro-card-preview{
+    border-radius:24px; padding:26px 24px; color:#fff; box-shadow: var(--shadow); position:relative; overflow:hidden;
+  }
+  .intro-card-preview .ic-name{ font-size:1.5rem; font-weight:800; }
+  .intro-card-preview .ic-sub{ font-size:.8rem; opacity:.85; margin-top:2px; }
+  .intro-card-preview .ic-motto{ margin:14px 0 0; font-size:.95rem; font-style:italic; opacity:.95; }
+  .intro-card-preview .ic-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .intro-card-preview .ic-chip{ background: rgba(255,255,255,.22); padding:4px 11px; border-radius:999px; font-size:.72rem; font-weight:600; }
+  .intro-card-preview .ic-footer{ margin-top:18px; font-size:.66rem; opacity:.7; text-align:right; }
+  .intro-card-preview .ic-empty{ font-size:.85rem; opacity:.85; }
+
+  /* ---------- settings ---------- */
+  .stat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-bottom: 4px; }
+  .stat-box{ background: var(--chip-bg); border-radius: var(--radius-md); padding: 12px 8px; text-align:center; }
+  .stat-box .num{ font-size:1.3rem; font-weight:800; color: var(--accent); }
+  .stat-box .lbl{ font-size:.68rem; color: var(--text-muted); margin-top:2px; }
+  .settings-btn{
+    width:100%; text-align:left; border:1px solid var(--border); background: var(--bg); color: var(--text);
+    padding: 12px 14px; border-radius: var(--radius-md); font-size:.85rem; cursor:pointer; margin-bottom:8px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .settings-btn.danger{ color: var(--danger); border-color: var(--danger); }
+  #importFile{ display:none; }
+
+  .settings-footnote{
+    margin: 4px 0 0; padding: 0 2px; font-size: .72rem; color: var(--text-muted); text-align:center;
   }
 
   .toast{
-    position: fixed; left:50%; bottom: 18px; transform: translateX(-50%);
+    position: absolute; left:50%; bottom: 84px; transform: translateX(-50%);
     background: var(--text); color: var(--bg); padding: 9px 16px; border-radius: var(--radius-sm);
     font-size:.8rem; opacity:0; pointer-events:none; transition: opacity .2s ease; z-index: 50;
+    max-width: 88%; text-align:center;
   }
   .toast.show{ opacity:1; }
 
-  @media (min-width: 640px){
-    .search-row{ align-items:center; }
-    .view-tabs{ max-width: 220px; }
+  /* ---------- splash screen ---------- */
+  .splash{
+    position:absolute; inset:0; z-index:200;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    background: linear-gradient(160deg, var(--accent), var(--accent-2));
+    color:#fff; text-align:center; padding:0 24px;
+    transition: opacity .4s ease, visibility .4s ease;
   }
+  .splash.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  .splash-icon{ font-size:3.6rem; animation: splash-pop .6s cubic-bezier(.2,.9,.3,1.2); }
+  .splash-title{ font-size:1.5rem; font-weight:800; letter-spacing:.03em; }
+  .splash-tagline{ font-size:.8rem; opacity:.85; }
+  @keyframes splash-pop{ 0%{ transform:scale(.6); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+  @media (prefers-reduced-motion: reduce){ .splash-icon{ animation:none; } .splash{ transition:none; } }
+
+  /* ---------- onboarding (first-launch tutorial) ---------- */
+  .phone-screen.chrome-hidden > header.topbar,
+  .phone-screen.chrome-hidden > nav.bottom-nav{ display:none; }
+  .onboarding-wrap{ height:100%; display:flex; flex-direction:column; padding-top: env(safe-area-inset-top); }
+  .onboarding-top-row{ display:flex; align-items:center; justify-content:space-between; padding: 14px 10px 4px; }
+  .onboarding-skip, .onboarding-end-link{
+    border:none; background:transparent; color: var(--text-muted);
+    font-size:.8rem; font-weight:700; padding:6px; cursor:pointer;
+  }
+  .onboarding-end-link{ margin-left:auto; text-decoration:underline; text-underline-offset:2px; }
+  .field-nudge{
+    margin-top:12px; font-size:.78rem; color: var(--text-muted); text-align:center;
+    animation: hint-fade-in .35s ease;
+  }
+  .onboarding-body{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:14px; padding: 10px 26px 20px;
+  }
+  .onboarding-icon{ font-size:4rem; animation: splash-pop .5s cubic-bezier(.2,.9,.3,1.2); }
+  .onboarding-title{ font-size:1.25rem; font-weight:800; }
+  .onboarding-desc{ font-size:.88rem; color: var(--text-muted); max-width:280px; line-height:1.75; }
+  .onboarding-dots{ display:flex; gap:6px; justify-content:center; margin: 6px 0 18px; }
+  .onboarding-dots span{ width:7px; height:7px; border-radius:50%; background: var(--chip-bg); transition: width .25s ease, background .25s ease; }
+  .onboarding-dots span.active{ background: var(--accent); width:20px; border-radius:4px; }
+  .onboarding-progress-text{ text-align:center; font-size:.75rem; color: var(--text-muted); margin: 6px 0 18px; font-variant-numeric: tabular-nums; }
+  .onboarding-input-wrap{ width:100%; max-width:300px; margin-top:8px; }
+  .onboarding-input-wrap .field input[type="text"]{ text-align:center; font-size:1.05rem; padding:14px; }
+  .onboarding-swipe-wrap{ max-width:300px; margin-left:auto; margin-right:auto; }
+  .onboarding-nav{ display:flex; gap:10px; padding: 0 20px calc(20px + env(safe-area-inset-bottom)); }
+  @media (prefers-reduced-motion: reduce){ .onboarding-icon{ animation:none; } }
+
+  /* 必須項目が埋まった瞬間、次へボタンで「進めます」を知らせる */
+  @keyframes next-ready-pulse{
+    0%{ transform:scale(1); box-shadow:none; }
+    35%{ transform:scale(1.035); box-shadow:0 0 0 6px rgba(124,111,224,.22); }
+    100%{ transform:scale(1); box-shadow:none; }
+  }
+  .wz-btn.ready-pulse{ animation: next-ready-pulse .55s ease-out; }
+  @media (prefers-reduced-motion: reduce){ .wz-btn.ready-pulse{ animation:none; } }
+
+  /* ---------- iris-out spotlight（迷ったときのヒント演出） ---------- */
+  .iris-overlay{ position:absolute; inset:0; z-index:85; cursor:pointer; overflow:hidden; }
+  .iris-ring{ position:absolute; border-radius:50%; box-shadow: 0 0 0 9999px rgba(8,6,14,.62); }
+  .iris-tutorial-text{
+    position:absolute; left:50%; top:20%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 64px); max-width:290px;
+    color:#fff; text-align:center; font-size:.92rem; line-height:1.8;
+    opacity:0; transition: opacity .45s ease .55s;
+  }
+  .iris-tutorial-text.show{ opacity:1; }
+  .iris-tutorial-text .its-sub{ display:block; margin-top:8px; font-size:.72rem; opacity:.75; }
+
+  /* ---------- in-app modal (confirm / alert) ---------- */
+  .modal-overlay{
+    position:absolute; inset:0; z-index:90; background: rgba(10,8,16,.5);
+    display:flex; align-items:center; justify-content:center; padding: 24px;
+  }
+  .modal-box{
+    background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 22px 20px;
+    max-width: 300px; width:100%; box-shadow: var(--shadow); text-align:center;
+  }
+  .modal-box p{ font-size:.88rem; margin:0 0 18px; color: var(--text); line-height:1.6; white-space:pre-line; }
+  .modal-actions{ display:flex; gap:8px; }
+  .modal-actions button{ flex:1; border:none; padding:11px; border-radius: var(--radius-md); font-size:.85rem; font-weight:700; cursor:pointer; }
+  .modal-actions .btn-cancel{ background: var(--chip-bg); color: var(--text); }
+  .modal-actions .btn-confirm{ background: var(--accent); color: var(--accent-text); }
+  .modal-actions .btn-confirm.danger{ background: var(--danger); color:#fff; }
 </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="topbar-row">
-      <div>
-        <h1>🥤 日芸自販機まっぷ</h1>
-        <p class="subtitle">日本大学芸術学部 江古田キャンパス</p>
-      </div>
-      <div class="header-actions">
-        <button class="icon-btn" id="themeToggle" title="ダークモード切替">🌙</button>
-        <button class="icon-btn" id="shareBtn" title="このフィルタ条件を共有">🔗</button>
-      </div>
-    </div>
-  </div>
-</header>
+<div class="phone-frame">
+  <div class="phone-notch"></div>
+  <div class="phone-screen">
 
-<div class="controls">
-  <div class="search-row">
-    <input type="search" id="searchInput" placeholder="商品名・棟名・場所で検索（例：コーラ、A館、正面玄関）">
-  </div>
-  <div class="view-tabs">
-    <button data-view="list" class="active">📋 一覧</button>
-    <button data-view="map">🗺️ マップ</button>
-  </div>
-  <div class="filter-toggle-row">
-    <button id="filterToggle">🔍 絞り込み <span id="filterActiveCount"></span>▾</button>
-    <button id="favToggle" title="お気に入りのみ表示">☆ お気に入り</button>
-    <span class="result-count" id="resultCount"></span>
-  </div>
-
-  <div class="filter-panel hidden" id="filterPanel">
-    <section>
-      <h3>棟</h3>
-      <div class="chip-group" id="buildingChips"></div>
-    </section>
-    <section>
-      <h3>階</h3>
-      <div class="chip-group" id="floorChips"></div>
-    </section>
-    <section>
-      <h3>種類</h3>
-      <div class="chip-group" id="typeChips"></div>
-    </section>
-    <section>
-      <h3>支払い方法</h3>
-      <div class="chip-group" id="paymentChips"></div>
-    </section>
-    <div class="filter-panel-footer">
-      <button id="clearFilters">条件をクリア</button>
+    <div class="splash" id="splash">
+      <div class="splash-icon">📔</div>
+      <div class="splash-title">じぶん手帳</div>
+      <div class="splash-tagline">自己紹介にもう困らない、わたしのプロフィール帳</div>
     </div>
+
+    <header class="topbar">
+      <div class="topbar-row">
+        <div>
+          <h1 id="titleHome">📔 じぶん手帳</h1>
+          <p class="subtitle">自己紹介にもう困らない、わたしのプロフィール帳</p>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" id="themeToggle" title="ダークモード切替">🌙</button>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>プロフィール充実度</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+    </header>
+
+    <main id="app"></main>
+
+    <nav class="bottom-nav">
+      <div class="bn-buttons">
+        <button data-view="home"><span class="nav-icon">🏠</span><span>ホーム</span></button>
+        <button data-view="swipe"><span class="nav-icon">🔀</span><span>発見</span></button>
+        <button data-view="quiz"><span class="nav-icon">🧭</span><span>診断</span></button>
+        <button data-view="intro"><span class="nav-icon">💬</span><span>自己紹介</span></button>
+        <button data-view="settings"><span class="nav-icon">⚙️</span><span>データ</span></button>
+      </div>
+      <div class="home-indicator-bar"></div>
+    </nav>
+
+    <div class="toast" id="toast"></div>
   </div>
 </div>
-
-<main id="listView"></main>
-<main id="mapView" class="hidden"></main>
-
-<footer class="app-footer">
-  ※ 掲載データはサンプルです。実際の設置状況と異なる場合があります。情報の追加・修正は学部窓口へご連絡ください。<br>
-  file:// で開いてもオフラインで全機能が動作します。
-</footer>
-
-<div class="toast" id="toast"></div>
 
 <script>
 (function(){
@@ -319,615 +583,1787 @@
      1. データ定義
   ========================================================= */
 
-  // キャンパス内の棟・階構成（データが無い棟・階でも一覧に表示するための台帳）
-  var CAMPUS_STRUCTURE = {
-    "A館": ["B1F","1F","2F","3F","4F"],
-    "B館": ["1F","2F","3F"],
-    "C館": ["1F","2F"],
-    "1号館": ["1F","2F"],
-    "東棟": ["1F"],
-    "西棟": ["1F","2F"]
-  };
+  var STORAGE_KEY = "jibun-techo-data-v1";
+  var THEME_KEY = "jibun-techo-theme";
+  var CARD_COLOR_KEY = "jibun-techo-card-color";
 
-  var VM_DATA = [
-    {
-      id: "vm001", building: "A館", floor: "B1F", location: "学生食堂前",
-      type: "食品", payment: ["現金","IC"],
-      items: [
-        { name: "カップヌードル（しょうゆ）", price: 220 },
-        { name: "カップヌードル（カレー）", price: 220 },
-        { name: "どん兵衛（きつねうどん）", price: 230 }
-      ],
-      note: "学生食堂の営業時間内のみ利用可能です。",
-      updatedAt: "2026-06-20", mapX: 50
-    },
-    {
-      id: "vm002", building: "A館", floor: "1F", location: "正面玄関横",
-      type: "飲料", payment: ["現金","IC","PayPay"],
-      items: [
-        { name: "コカ・コーラ", price: 160 },
-        { name: "綾鷹（緑茶）", price: 150 },
-        { name: "アクエリアス", price: 150 },
-        { name: "ブラックコーヒー", price: 130 }
-      ],
-      note: "夜21時以降は稼働停止します。",
-      updatedAt: "2026-07-01", mapX: 15
-    },
-    {
-      id: "vm003", building: "A館", floor: "1F", location: "エレベーター横",
-      type: "アイス", payment: ["現金","IC"],
-      items: [
-        { name: "ガリガリ君（ソーダ）", price: 80 },
-        { name: "パルム（チョコレート）", price: 160 },
-        { name: "ハーゲンダッツ（バニラ）", price: 320 }
-      ],
-      updatedAt: "2026-05-14", mapX: 80
-    },
-    {
-      id: "vm004", building: "A館", floor: "3F", location: "自習室前",
-      type: "飲料", payment: ["IC","PayPay"],
-      items: [
-        { name: "綾鷹（緑茶）", price: 150 },
-        { name: "い・ろ・は・す", price: 130 },
-        { name: "レモンウォーター", price: 150 }
-      ],
-      note: "試験期間中は品切れになりやすいです。",
-      updatedAt: "2026-06-02", mapX: 40
-    },
-    {
-      id: "vm005", building: "B館", floor: "1F", location: "エントランス",
-      type: "飲料", payment: ["現金","IC","PayPay"],
-      items: [
-        { name: "コカ・コーラ", price: 160 },
-        { name: "ファンタグレープ", price: 160 },
-        { name: "午後の紅茶（ミルクティー）", price: 150 }
-      ],
-      updatedAt: "2026-06-25", mapX: 25
-    },
-    {
-      id: "vm006", building: "B館", floor: "2F", location: "廊下（印刷室横）",
-      type: "飲料", payment: ["現金"],
-      items: [
-        { name: "缶コーヒー（微糖）", price: 120 },
-        { name: "十六茶", price: 140 }
-      ],
-      note: "硬貨投入のみ対応。両替機はありません。",
-      updatedAt: "2026-04-30", mapX: 60
-    },
-    {
-      id: "vm007", building: "C館", floor: "1F", location: "正面入口",
-      type: "アイス", payment: ["現金","IC"],
-      items: [
-        { name: "ガリガリ君（梨）", price: 80 },
-        { name: "MOW（バニラ）", price: 180 }
-      ],
-      updatedAt: "2026-06-10", mapX: 30
-    },
-    {
-      id: "vm008", building: "C館", floor: "2F", location: "実習室前",
-      type: "飲料", payment: ["IC","PayPay"],
-      items: [
-        { name: "天然水", price: 130 },
-        { name: "炭酸水", price: 140 },
-        { name: "ポカリスエット", price: 160 }
-      ],
-      updatedAt: "2026-05-28", mapX: 70
-    },
-    {
-      id: "vm009", building: "1号館", floor: "1F", location: "ロビー",
-      type: "飲料", payment: ["現金","IC"],
-      items: [
-        { name: "コカ・コーラ", price: 160 },
-        { name: "おーいお茶", price: 150 },
-        { name: "ジョージア（微糖）", price: 130 }
-      ],
-      note: "24時間稼働しています。",
-      updatedAt: "2026-06-30", mapX: 50
-    },
-    {
-      id: "vm010", building: "東棟", floor: "1F", location: "入口横",
-      type: "カップ麺", payment: ["現金","IC","PayPay"],
-      items: [
-        { name: "カップヌードル（シーフード）", price: 220 },
-        { name: "日清麺職人（醤油）", price: 230 }
-      ],
-      updatedAt: "2026-06-18", mapX: 50
-    }
+  var FAV_CATEGORIES = ["食べ物","飲み物","音楽・アーティスト","映画・アニメ","本・漫画","スポーツ","場所・旅先","言葉・座右の銘","その他"];
+
+  // 入力ウィザードのステップ定義（ホームのショートカット一覧にも使う）
+  var STEPS = [
+    { id:"name", icon:"🪪", label:"名前", desc:"下の名前でもフルネームでもOK。呼ばれたい名前で大丈夫です。", type:"text", basicKey:"name", ph:"例：山田 太郎" },
+    { id:"nickname", icon:"😊", label:"ニックネーム", desc:"友達から呼ばれたい呼び方があれば。", type:"text", basicKey:"nickname", ph:"例：たろちゃん" },
+    { id:"birthday", icon:"🎂", label:"誕生日", desc:"", type:"date", basicKey:"birthday" },
+    { id:"bloodType", icon:"🩸", label:"血液型", desc:"", type:"blood", basicKey:"bloodType" },
+    { id:"hometown", icon:"🏡", label:"出身地", desc:"", type:"text", basicKey:"hometown", ph:"例：東京都" },
+    { id:"occupation", icon:"🎓", label:"所属・職業", desc:"学校名や職業など。", type:"text", basicKey:"occupation", ph:"例：大学生／◯◯部" },
+    { id:"motto", icon:"📜", label:"座右の銘", desc:"大切にしている言葉。思い浮かばなければ、名言をスワイプして探せます。", type:"text", basicKey:"motto", ph:"例：一期一会", swipeCat:"motto" },
+    { id:"skills", icon:"🛠️", label:"特技", desc:"できること・得意なことをいくつでも登録できます。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"skills", ph:"例：ピアノ、料理、Excel", swipeCat:"skill" },
+    { id:"hobbies", icon:"🎨", label:"趣味", desc:"好きでよくやっていることを登録しましょう。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"hobbies", ph:"例：読書、映画鑑賞、キャンプ", swipeCat:"hobby" },
+    { id:"strengths", icon:"💪", label:"長所", desc:"自分の強みだと思うところ。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"strengths", ph:"例：計画的、聞き上手", swipeCat:"strength" },
+    { id:"weaknesses", icon:"🌱", label:"短所", desc:"直したい・課題だと感じているところ。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"weaknesses", ph:"例：心配性、飽きっぽい", swipeCat:"weakness" },
+    { id:"dislikes", icon:"🙅", label:"苦手なもの", desc:"苦手なこと・避けたいこと。思い浮かばなければスワイプで探せます。", type:"taglist", listKey:"dislikes", ph:"例：早起き、虫", swipeCat:"dislike" },
+    { id:"favorites", icon:"❤️", label:"好きなもの", desc:"カテゴリ別に好きなものを登録できます。思い浮かばなければスワイプで探せます。", type:"favorites", swipeCat:"favorite" },
+    { id:"goals", icon:"🎯", label:"将来の夢・目標", desc:"今後やりたいこと、目指していることを自由に書いてください。", type:"textarea", key:"goals", ph:"例：◯◯の資格を取りたい／◯◯の仕事に就きたい" },
+    { id:"custom", icon:"✨", label:"じぶんだけの項目", desc:"用意された項目以外にも、自分について記録したいことを自由に追加できます。", type:"custom" }
   ];
 
-  var TYPE_LIST = ["飲料","食品","アイス","カップ麺"];
-  var PAYMENT_LIST = ["現金","IC","PayPay"];
+  var QUESTION_BANK = [
+    { id:"q1",  cat:"価値観", text:"仕事や勉強で、いちばん大事にしていることは何ですか？" },
+    { id:"q2",  cat:"価値観", text:"「これだけは譲れない」と思う考え方はありますか？" },
+    { id:"q3",  cat:"価値観", text:"尊敬する人・憧れる人は誰ですか？その理由は？" },
+    { id:"q4",  cat:"価値観", text:"お金を使うとき、何に一番お金をかけたいですか？" },
+    { id:"q5",  cat:"過去", text:"子どもの頃、夢中になっていたものは何でしたか？" },
+    { id:"q6",  cat:"過去", text:"人生でいちばん頑張ったと思う出来事は？" },
+    { id:"q7",  cat:"過去", text:"これまでで一番うれしかったことは何ですか？" },
+    { id:"q8",  cat:"過去", text:"失敗から学んだ、印象に残っていることはありますか？" },
+    { id:"q9",  cat:"好み", text:"一日ずっと家にいるとしたら、何をして過ごしますか？" },
+    { id:"q10", cat:"好み", text:"最近ハマっていること・気になっていることは？" },
+    { id:"q11", cat:"好み", text:"好きな季節・好きな時間帯はいつですか？その理由は？" },
+    { id:"q12", cat:"好み", text:"疲れたとき、何をすると元気になりますか？" },
+    { id:"q13", cat:"好み", text:"誰かに一つだけおすすめするなら、何を紹介したいですか？" },
+    { id:"q14", cat:"人間関係", text:"友人からよく言われる自分の性格は？" },
+    { id:"q15", cat:"人間関係", text:"人と話すとき、意識していることはありますか？" },
+    { id:"q16", cat:"人間関係", text:"どんな人と一緒にいると居心地がいいですか？" },
+    { id:"q17", cat:"人間関係", text:"初対面の人に、まず何を知ってもらいたいですか？" },
+    { id:"q18", cat:"未来", text:"1年後、どんな自分になっていたいですか？" },
+    { id:"q19", cat:"未来", text:"いつか挑戦してみたいことは何ですか？" },
+    { id:"q20", cat:"未来", text:"今、頑張っている・伸ばしたいと思っているスキルは？" },
+    { id:"q21", cat:"未来", text:"将来、どんな形で人の役に立ちたいですか？" },
+    { id:"q22", cat:"自分らしさ", text:"自分の長所を一言で言うと？" },
+    { id:"q23", cat:"自分らしさ", text:"自分の短所だと思うところ、直したいところは？" },
+    { id:"q24", cat:"自分らしさ", text:"周りの人と自分は、どこが違うと思いますか？" },
+    { id:"q25", cat:"自分らしさ", text:"「自分らしいな」と感じる瞬間はどんなときですか？" },
+    { id:"q26", cat:"自分らしさ", text:"もし自分にキャッチコピーをつけるなら？" }
+  ];
 
-  var TYPE_META = {
-    "飲料":   { icon: "🥤", cls: "drink"  },
-    "食品":   { icon: "🍱", cls: "food"   },
-    "アイス": { icon: "🍦", cls: "ice"    },
-    "カップ麺": { icon: "🍜", cls: "noodle" }
+  // ---- 性格診断（無限に答えるほど収束していく簡易ビッグファイブ診断） ----
+  var PERSONALITY_TRAITS = {
+    O: { label:"開放性" },
+    C: { label:"誠実性" },
+    E: { label:"外向性" },
+    A: { label:"協調性" },
+    N: { label:"情緒安定性" }
   };
-  function typeMeta(t){ return TYPE_META[t] || { icon: "🛒", cls: "other" }; }
+  var LEVEL_DESC = {
+    O: { low:"じっくり型。慣れた方法を大事にしながら着実に取り組むタイプ。", mid:"新しいことにも慣れたことにもバランスよく対応できるタイプ。", high:"好奇心旺盛型。新しい発想や体験を積極的に楽しむタイプ。" },
+    C: { low:"自由奔放型。計画より直感やその場のノリを大事にするタイプ。", mid:"状況に応じて計画的にも柔軟にも動けるタイプ。", high:"コツコツ型。計画を立てて着実にやり遂げるタイプ。" },
+    E: { low:"内省型。ひとりの時間でエネルギーを充電するタイプ。", mid:"ひとりの時間も人との時間もどちらも楽しめるタイプ。", high:"社交型。人と関わることで元気になるタイプ。" },
+    A: { low:"自分軸型。自分の考えをはっきり伝えることを大事にするタイプ。", mid:"自分の意見と周りへの配慮のバランスを取れるタイプ。", high:"協調型。周りの気持ちを大切に、協力を大事にするタイプ。" },
+    N: { low:"繊細型。物事を敏感に感じ取り、深く考えるタイプ。", mid:"状況に応じて冷静さと繊細さのバランスを取れるタイプ。", high:"安定型。プレッシャーの中でも落ち着いていられるタイプ。" }
+  };
+  var PERSONALITY_STATEMENTS = [
+    { id:"p1",  trait:"O", text:"新しい場所やお店に行ってみるのが好きだ" },
+    { id:"p2",  trait:"O", text:"アイデアを考えたり、創造的なことをするのが楽しい" },
+    { id:"p3",  trait:"O", text:"抽象的な話や哲学的な話に興味がある" },
+    { id:"p4",  trait:"O", text:"普段と違うやり方をあえて試すのが好きだ" },
+    { id:"p5",  trait:"O", text:"芸術や音楽、デザインに関心がある" },
+    { id:"p6",  trait:"O", text:"知らないジャンルの本や映画にも挑戦する方だ" },
+    { id:"p7",  trait:"O", text:"ルーティンよりも変化がある方が好きだ" },
+    { id:"p8",  trait:"O", text:"慣れたやり方を変えるのは苦手だ", reverse:true },
+    { id:"p9",  trait:"O", text:"新しいことより、慣れたことをする方が落ち着く", reverse:true },
+    { id:"p10", trait:"C", text:"締め切りは余裕を持って守る方だ" },
+    { id:"p11", trait:"C", text:"物事を計画的に進めるのが得意だ" },
+    { id:"p12", trait:"C", text:"部屋や持ち物はきちんと整理整頓されている" },
+    { id:"p13", trait:"C", text:"一度決めたことは最後までやり遂げる" },
+    { id:"p14", trait:"C", text:"細かい作業でも丁寧に取り組む方だ" },
+    { id:"p15", trait:"C", text:"目標を立てたら、それに向けてコツコツ努力できる" },
+    { id:"p16", trait:"C", text:"やるべきことを後回しにしてしまいがちだ", reverse:true },
+    { id:"p17", trait:"C", text:"計画を立てるより、思いついたら動くタイプだ", reverse:true },
+    { id:"p18", trait:"C", text:"片付けや整理は苦手な方だ", reverse:true },
+    { id:"p19", trait:"E", text:"大勢の人が集まる場が好きだ" },
+    { id:"p20", trait:"E", text:"初対面の人ともすぐに打ち解けられる" },
+    { id:"p21", trait:"E", text:"人と話していると元気が出てくる" },
+    { id:"p22", trait:"E", text:"自分から話しかけることが多い" },
+    { id:"p23", trait:"E", text:"目立つことや注目されることに抵抗がない" },
+    { id:"p24", trait:"E", text:"パーティーやイベントに誘われるとうれしい" },
+    { id:"p25", trait:"E", text:"ひとりで過ごす時間の方が落ち着く", reverse:true },
+    { id:"p26", trait:"E", text:"大人数の場は疲れてしまう方だ", reverse:true },
+    { id:"p27", trait:"E", text:"静かな環境の方が集中できる", reverse:true },
+    { id:"p28", trait:"A", text:"人の気持ちに共感しやすい方だ" },
+    { id:"p29", trait:"A", text:"困っている人を見ると放っておけない" },
+    { id:"p30", trait:"A", text:"争いごとはできるだけ避けたい" },
+    { id:"p31", trait:"A", text:"相手の意見をまず尊重するようにしている" },
+    { id:"p32", trait:"A", text:"チームで協力して物事を進めるのが好きだ" },
+    { id:"p33", trait:"A", text:"人に優しくすることを大切にしている" },
+    { id:"p34", trait:"A", text:"自分の意見をはっきり主張する方だ", reverse:true },
+    { id:"p35", trait:"A", text:"人に合わせるより、自分のペースを優先する", reverse:true },
+    { id:"p36", trait:"A", text:"遠慮せずズバズバ言うタイプだ", reverse:true },
+    { id:"p37", trait:"N", text:"プレッシャーがかかる場面でも冷静でいられる" },
+    { id:"p38", trait:"N", text:"気持ちの浮き沈みは少ない方だ" },
+    { id:"p39", trait:"N", text:"失敗してもすぐに切り替えられる" },
+    { id:"p40", trait:"N", text:"予定外のことが起きても慌てにくい" },
+    { id:"p41", trait:"N", text:"大きな決断でも落ち着いて考えられる" },
+    { id:"p42", trait:"N", text:"ちょっとしたことで不安になりやすい", reverse:true },
+    { id:"p43", trait:"N", text:"些細なことでもくよくよ悩んでしまう", reverse:true },
+    { id:"p44", trait:"N", text:"緊張するとうまく力を発揮できないことがある", reverse:true },
+    { id:"p45", trait:"N", text:"気分が変わりやすいと言われる", reverse:true }
+  ];
+  var CONVERGE_TARGET = 8; // このくらい答えると「安定度100%」表示になる
 
-  var PAYMENT_ICON = { "現金": "💴", "IC": "📶", "PayPay": "📱" };
+  // ---- スワイプ発見のカードバンク ----
+  var SWIPE_CAT_META = {
+    motto:    { label:"座右の銘・名言", icon:"📜", grad:["#7c6fe0","#a695f2"] },
+    skill:    { label:"特技のヒント",   icon:"🛠️", grad:["#2563eb","#93c5fd"] },
+    hobby:    { label:"趣味のヒント",   icon:"🎨", grad:["#16a34a","#86efac"] },
+    strength: { label:"長所のヒント",   icon:"💪", grad:["#0d9488","#5eead4"] },
+    weakness: { label:"短所のヒント",   icon:"🌱", grad:["#c2760f","#f2b06e"] },
+    dislike:  { label:"苦手のヒント",   icon:"🙅", grad:["#64748b","#cbd5e1"] },
+    favorite: { label:"好きなものかも", icon:"❤️", grad:["#d0466a","#f2a3b4"] }
+  };
+  // カテゴリ名 → data.lists のキー（taglist系のスワイプ判定・追加・件数カウントを共通化するための対応表）
+  var SWIPE_LIST_KEY = { skill:"skills", hobby:"hobbies", strength:"strengths", weakness:"weaknesses", dislike:"dislikes" };
+  var MOTTO_BANK = ["一期一会","七転び八起き","継続は力なり","初心忘るべからず","笑う門には福来る","石の上にも三年","有言実行","臨機応変","日々是好日","終わりよければ全てよし","塞翁が馬","為せば成る","人事を尽くして天命を待つ","備えあれば憂いなし","急がば回れ","千里の道も一歩から","失敗は成功のもと","縁の下の力持ち","不撓不屈","自分らしく生きる","感謝を忘れない","挑戦し続ける","マイペースが一番","今を大切に","小さな一歩を積み重ねる","楽あれば苦あり"];
+  var SKILL_BANK = ["料理","写真撮影","イラスト・絵を描くこと","楽器演奏","プログラミング","文章を書くこと","英会話","人前で話すこと","データ分析","デザイン","裁縫・手芸","DIY・日曜大工","動画編集","整理整頓","暗算・計算","記憶力","方向感覚","聞き上手","段取り・計画立て","スポーツ全般","ダンス","歌うこと","語学","パソコン操作","接客・ホスピタリティ"];
+  var HOBBY_BANK = ["読書","映画鑑賞","音楽鑑賞","カフェ巡り","キャンプ","登山・ハイキング","釣り","ゲーム","写真撮影","旅行","料理・お菓子作り","筋トレ","ランニング","ヨガ","ガーデニング","美術館・博物館めぐり","ドライブ","カラオケ","楽器演奏","手芸・ハンドメイド","アニメ・漫画","スポーツ観戦","温泉巡り","ボードゲーム","ライブ・舞台観賞","プラモデル・模型","ペットと過ごすこと","日記を書くこと"];
+  var STRENGTH_BANK = ["誰とでもすぐ仲良くなれる","約束をきちんと守る","困っている人を放っておけない","コツコツ努力できる","気持ちの切り替えが早い","聞き上手だと言われる","行動力がある","冷静に物事を判断できる","新しいことに挑戦するのが好き","計画を立てるのが得意","細かいところによく気がつく","ポジティブに考えられる","責任感が強い","柔軟に対応できる","好奇心が旺盛","人の話を最後まで聞ける","約束の時間を守る","周りをよく観察している","粘り強く続けられる","素直に人の意見を聞ける"];
+  var WEAKNESS_BANK = ["心配性なところがある","人に頼るのが少し苦手","飽きっぽいところがある","頼まれごとを断るのが苦手","完璧を求めすぎることがある","朝がとにかく弱い","考えすぎてしまう","人前で緊張しやすい","マイペースすぎると言われる","片付けがやや苦手","せっかちなところがある","落ち込みやすい","優柔不断なところがある","人と比べてしまいがち","スケジュールを詰め込みすぎる","初対面だと緊張してしまう","つい後回しにしてしまう","夜更かししがち","感情が顔に出やすい","甘いものがやめられない"];
+  var DISLIKE_BANK = ["早起き","虫","高いところ","人前で話すこと","満員電車","運動","数字を扱うこと","辛い食べ物","寒さ","暑さ","待つこと","大人数の飲み会","急な予定変更","機械の操作","方向を覚えること","細かい作業","電話対応","初対面の人と話すこと","締め切りに追われること","長時間の移動"];
+  var FAVORITE_BANK = [
+    {c:"食べ物", v:"ラーメン"},{c:"食べ物", v:"寿司"},{c:"食べ物", v:"カレー"},{c:"食べ物", v:"焼肉"},
+    {c:"飲み物", v:"コーヒー"},{c:"飲み物", v:"紅茶"},{c:"飲み物", v:"タピオカ"},
+    {c:"音楽・アーティスト", v:"邦ロック"},{c:"音楽・アーティスト", v:"J-POP"},{c:"音楽・アーティスト", v:"洋楽"},
+    {c:"映画・アニメ", v:"ジブリ作品"},{c:"映画・アニメ", v:"ディズニー映画"},{c:"映画・アニメ", v:"アクション映画"},
+    {c:"本・漫画", v:"ミステリー小説"},{c:"本・漫画", v:"少年漫画"},
+    {c:"スポーツ", v:"野球観戦"},{c:"スポーツ", v:"サッカー"},{c:"スポーツ", v:"ランニング"},
+    {c:"場所・旅先", v:"温泉"},{c:"場所・旅先", v:"海"},{c:"場所・旅先", v:"カフェ巡り"},
+    {c:"その他", v:"猫"},{c:"その他", v:"ゲーム"},{c:"その他", v:"写真を撮ること"}
+  ];
+
+  var CARD_THEMES = [
+    { id:"violet", grad:["#7c6fe0","#a695f2"] },
+    { id:"teal",   grad:["#0d9488","#5eead4"] },
+    { id:"coral",  grad:["#d0466a","#f2a3b4"] },
+    { id:"navy",   grad:["#2b3a67","#5c73b8"] },
+    { id:"amber",  grad:["#c2760f","#f2b06e"] }
+  ];
+
+  var DEFAULT_DATA = {
+    basic: { name:"", furigana:"", nickname:"", birthday:"", bloodType:"", hometown:"", occupation:"", motto:"" },
+    lists: { skills:[], hobbies:[], strengths:[], weaknesses:[], dislikes:[] },
+    favorites: [],
+    goals: "",
+    customSections: [],
+    qa: {},
+    personality: { responses: {} },
+    meta: { createdAt:null, updatedAt:null, onboardingSeen:false, wizardStarted:false, wizardStep:0, wizardDone:false }
+  };
+
+  // 初回起動時に表示するチュートリアル（オンボーディング）のスライド
+  var ONBOARDING_SLIDES = [
+    { icon:"📔", title:"じぶん手帳へようこそ", desc:"自己紹介でいつも何を話すか困ってしまう…その悩みを解決する、自分だけのプロフィール帳です。" },
+    { icon:"✍️", title:"ひとつずつ記入", desc:"名前や趣味などの質問に、ひとつずつ答えるだけ。途中でやめても大丈夫、いつでも続きから再開できます。" },
+    { icon:"🔀", title:"スワイプで発見", desc:"長所や座右の銘が思いつかないときは、候補カードをスワイプして選ぶだけで登録できます。" },
+    { icon:"🧠", title:"自分を知り、伝える", desc:"答えるほど結果が収束していく性格診断や、自己紹介文・カードの自動生成で、自分をもっと深く知って伝えられます。" }
+  ];
 
   /* =========================================================
-     2. 状態管理
+     2. 状態管理・永続化
   ========================================================= */
 
-  var state = {
-    q: "",
-    buildings: new Set(),
-    floors: new Set(),
-    types: new Set(),
-    payments: new Set(),
-    view: "list",
-    favOnly: false
-  };
+  var data = loadData();
+  var cardColorId = localStorage.getItem(CARD_COLOR_KEY) || "violet";
+  var state = { view:"home", diagSub:"personality", introSub:"text", swipeCat:"motto", swipeQueue:null, wizardReturnView:"home" };
+  var wizardState = { stepIndex: 0 };
+  var onboardingState = { index: 0, mode: "field" };
 
-  var expandedBuildings = new Set(Object.keys(CAMPUS_STRUCTURE)); // デフォルトは全て展開
-  var expandedCards = new Set();
-  var FAV_KEY = "vm-favorites";
-  var THEME_KEY = "vm-theme";
-  var favorites = loadFavorites();
-
-  function loadFavorites(){
+  function loadData(){
     try{
-      var raw = localStorage.getItem(FAV_KEY);
-      return raw ? new Set(JSON.parse(raw)) : new Set();
-    }catch(e){ return new Set(); }
-  }
-  function saveFavorites(){
-    try{ localStorage.setItem(FAV_KEY, JSON.stringify(Array.from(favorites))); }catch(e){}
-  }
-
-  function parseFloor(f){
-    var m = f.match(/^B(\d+)F$/i);
-    if(m) return -Number(m[1]);
-    m = f.match(/^(\d+)F$/i);
-    if(m) return Number(m[1]);
-    return 9999;
-  }
-
-  function anyFilterActive(){
-    return !!(state.q || state.buildings.size || state.floors.size || state.types.size || state.payments.size || state.favOnly);
-  }
-
-  /* =========================================================
-     3. URL クエリパラメータとの同期
-  ========================================================= */
-
-  function loadStateFromUrl(){
-    var params = new URLSearchParams(location.search);
-    state.q = params.get("q") || "";
-    ["building","floor","type","payment"].forEach(function(key){
-      var val = params.get(key);
-      var target = { building: state.buildings, floor: state.floors, type: state.types, payment: state.payments }[key];
-      if(val){
-        val.split(",").filter(Boolean).forEach(function(v){ target.add(decodeURIComponent(v)); });
-      }
-    });
-    if(params.get("view") === "map") state.view = "map";
-    if(params.get("fav") === "1") state.favOnly = true;
-  }
-
-  function syncUrl(){
-    var params = new URLSearchParams();
-    if(state.q) params.set("q", state.q);
-    if(state.buildings.size) params.set("building", Array.from(state.buildings).join(","));
-    if(state.floors.size) params.set("floor", Array.from(state.floors).join(","));
-    if(state.types.size) params.set("type", Array.from(state.types).join(","));
-    if(state.payments.size) params.set("payment", Array.from(state.payments).join(","));
-    if(state.view === "map") params.set("view", "map");
-    if(state.favOnly) params.set("fav", "1");
-    var qs = params.toString();
-    var newUrl = location.pathname + (qs ? "?" + qs : "");
-    history.replaceState(null, "", newUrl);
-  }
-
-  /* =========================================================
-     4. フィルタリング
-  ========================================================= */
-
-  function matchesQuery(m, q){
-    q = q.toLowerCase();
-    if(m.building.toLowerCase().indexOf(q) !== -1) return true;
-    if(m.location.toLowerCase().indexOf(q) !== -1) return true;
-    if(m.floor.toLowerCase().indexOf(q) !== -1) return true;
-    return m.items.some(function(it){ return it.name.toLowerCase().indexOf(q) !== -1; });
-  }
-
-  function machineMatches(m){
-    if(state.buildings.size && !state.buildings.has(m.building)) return false;
-    if(state.floors.size && !state.floors.has(m.floor)) return false;
-    if(state.types.size && !state.types.has(m.type)) return false;
-    if(state.payments.size){
-      var ok = Array.from(state.payments).every(function(p){ return m.payment.indexOf(p) !== -1; });
-      if(!ok) return false;
-    }
-    if(state.favOnly && !favorites.has(m.id)) return false;
-    if(state.q && !matchesQuery(m, state.q)) return false;
-    return true;
-  }
-
-  function getFiltered(){ return VM_DATA.filter(machineMatches); }
-
-  /* =========================================================
-     5. レンダリング：フィルタパネル
-  ========================================================= */
-
-  function el(tag, cls, html){
-    var e = document.createElement(tag);
-    if(cls) e.className = cls;
-    if(html !== undefined) e.innerHTML = html;
-    return e;
-  }
-
-  function renderChipGroup(container, options, activeSet, onToggle){
-    container.innerHTML = "";
-    options.forEach(function(opt){
-      var chip = el("button", "chip" + (activeSet.has(opt) ? " active" : ""), opt);
-      chip.type = "button";
-      chip.addEventListener("click", function(){
-        if(activeSet.has(opt)) activeSet.delete(opt); else activeSet.add(opt);
-        onToggle();
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return deepClone(DEFAULT_DATA);
+      var parsed = JSON.parse(raw);
+      return Object.assign(deepClone(DEFAULT_DATA), parsed, {
+        basic: Object.assign({}, DEFAULT_DATA.basic, parsed.basic),
+        lists: Object.assign({}, DEFAULT_DATA.lists, parsed.lists),
+        personality: Object.assign({ responses:{} }, parsed.personality),
+        meta: Object.assign({}, DEFAULT_DATA.meta, parsed.meta)
       });
-      container.appendChild(chip);
-    });
+    }catch(e){ return deepClone(DEFAULT_DATA); }
   }
 
-  function allFloorsSorted(){
-    var set = new Set();
-    Object.keys(CAMPUS_STRUCTURE).forEach(function(b){ CAMPUS_STRUCTURE[b].forEach(function(f){ set.add(f); }); });
-    return Array.from(set).sort(function(a,b){ return parseFloor(a) - parseFloor(b); });
+  function saveData(){
+    data.meta.updatedAt = new Date().toISOString();
+    if(!data.meta.createdAt) data.meta.createdAt = data.meta.updatedAt;
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }catch(e){}
   }
 
-  function renderFilters(){
-    renderChipGroup(document.getElementById("buildingChips"), Object.keys(CAMPUS_STRUCTURE), state.buildings, onFilterChange);
-    renderChipGroup(document.getElementById("floorChips"), allFloorsSorted(), state.floors, onFilterChange);
-    renderChipGroup(document.getElementById("typeChips"), TYPE_LIST, state.types, onFilterChange);
-    renderChipGroup(document.getElementById("paymentChips"), PAYMENT_LIST, state.payments, onFilterChange);
+  function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
 
-    var count = state.buildings.size + state.floors.size + state.types.size + state.payments.size;
-    document.getElementById("filterActiveCount").textContent = count ? "(" + count + ") " : "";
-
-    var favBtn = document.getElementById("favToggle");
-    favBtn.classList.toggle("active", state.favOnly);
-    favBtn.textContent = (state.favOnly ? "★" : "☆") + " お気に入り";
+  function pickTodayQuestionId(){
+    var d = new Date();
+    var seed = Number(d.getFullYear()+""+(d.getMonth()+1)+""+d.getDate());
+    return QUESTION_BANK[seed % QUESTION_BANK.length].id;
   }
 
-  function onFilterChange(){
-    syncUrl();
-    renderFilters();
-    renderAll();
-  }
-
-  /* =========================================================
-     6. レンダリング：一覧ビュー
-  ========================================================= */
-
-  function buildMenuTable(items){
-    var table = el("table", "menu-table");
-    items.forEach(function(it){
-      var row = el("tr");
-      row.appendChild(el("td", null, escapeHtml(it.name)));
-      row.appendChild(el("td", null, "¥" + it.price.toLocaleString()));
-      table.appendChild(row);
-    });
-    return table;
-  }
+  function uid(){ return "id" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
   function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, function(c){
-      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
     });
   }
 
-  function buildVmCard(m){
-    var card = el("div", "vm-card");
-    card.id = "card-" + m.id;
-    if(expandedCards.has(m.id)) card.classList.add("expanded");
-
-    var head = el("div", "vm-card-head");
-    var tm = typeMeta(m.type);
-
-    var badge = el("div", "type-badge " + tm.cls, tm.icon);
-    head.appendChild(badge);
-
-    var main = el("div", "vm-card-main");
-    var title = el("div", "vm-card-title");
-    title.innerHTML = escapeHtml(m.building) + " " + escapeHtml(m.floor) +
-      '<span class="mini-badge">' + escapeHtml(m.type) + '</span>';
-    main.appendChild(title);
-    main.appendChild(el("div", "vm-card-loc", escapeHtml(m.location)));
-
-    var meta = el("div", "vm-card-meta");
-    m.payment.forEach(function(p){
-      meta.appendChild(el("span", "mini-badge", (PAYMENT_ICON[p]||"") + " " + escapeHtml(p)));
-    });
-    meta.appendChild(el("span", "mini-badge", "🍽️ " + m.items.length + "品"));
-    main.appendChild(meta);
-    head.appendChild(main);
-
-    var star = el("button", "star-btn" + (favorites.has(m.id) ? " active" : ""), favorites.has(m.id) ? "★" : "☆");
-    star.type = "button";
-    star.title = "お気に入り登録/解除";
-    star.addEventListener("click", function(ev){
-      ev.stopPropagation();
-      if(favorites.has(m.id)) favorites.delete(m.id); else favorites.add(m.id);
-      saveFavorites();
-      renderAll();
-      renderFilters();
-    });
-    head.appendChild(star);
-    head.appendChild(el("div", "expand-caret", "▾"));
-
-    head.addEventListener("click", function(){
-      if(expandedCards.has(m.id)) expandedCards.delete(m.id); else expandedCards.add(m.id);
-      card.classList.toggle("expanded");
-    });
-    card.appendChild(head);
-
-    var detail = el("div", "vm-card-detail");
-    detail.appendChild(buildMenuTable(m.items));
-    if(m.note) detail.appendChild(el("div", "vm-note", "💡 " + escapeHtml(m.note)));
-    detail.appendChild(el("div", "vm-updated", "最終更新: " + escapeHtml(m.updatedAt)));
-    card.appendChild(detail);
-
-    return card;
+  function fmtDate(iso){
+    if(!iso) return "";
+    var d = new Date(iso);
+    if(isNaN(d)) return iso;
+    return d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate();
   }
 
-  function renderListView(filtered){
-    var root = document.getElementById("listView");
-    root.innerHTML = "";
-
-    Object.keys(CAMPUS_STRUCTURE).forEach(function(building){
-      var rawForBuilding = VM_DATA.filter(function(m){ return m.building === building; });
-      var filteredForBuilding = filtered.filter(function(m){ return m.building === building; });
-
-      var block = el("div", "building-block" + (expandedBuildings.has(building) ? " open" : ""));
-      var head = el("button", "building-head");
-      head.type = "button";
-      head.innerHTML = "🏢 " + escapeHtml(building) +
-        '<span class="count-badge">' + filteredForBuilding.length + "件</span>";
-      var chevron = el("span", "chevron", "▾");
-      head.appendChild(chevron);
-      head.addEventListener("click", function(){
-        if(expandedBuildings.has(building)) expandedBuildings.delete(building); else expandedBuildings.add(building);
-        block.classList.toggle("open");
-      });
-      block.appendChild(head);
-
-      var body = el("div", "building-body");
-
-      if(rawForBuilding.length === 0){
-        body.appendChild(el("div", "empty-state",
-          '<span class="emoji">📭</span>情報募集中：この棟の自販機情報はまだ登録されていません。<br>知っている情報があれば学部窓口までご連絡ください。'));
-      } else if(filteredForBuilding.length === 0){
-        body.appendChild(el("div", "empty-state",
-          '<span class="emoji">🔍</span>条件に一致する自販機が見つかりませんでした。'));
-      } else {
-        var floors = CAMPUS_STRUCTURE[building].slice().sort(function(a,b){ return parseFloor(a) - parseFloor(b); });
-        floors.forEach(function(floor){
-          var floorRaw = rawForBuilding.filter(function(m){ return m.floor === floor; });
-          var floorFiltered = filteredForBuilding.filter(function(m){ return m.floor === floor; });
-
-          if(floorRaw.length === 0){
-            if(!anyFilterActive()){
-              var fg = el("div", "floor-group");
-              fg.appendChild(el("div", "floor-label", floor));
-              fg.appendChild(el("div", "floor-empty-note", "この階の情報はまだありません。"));
-              body.appendChild(fg);
-            }
-            return;
-          }
-          if(floorFiltered.length === 0) return;
-
-          var group = el("div", "floor-group");
-          group.appendChild(el("div", "floor-label", floor));
-          floorFiltered.forEach(function(m){ group.appendChild(buildVmCard(m)); });
-          body.appendChild(group);
-        });
-      }
-
-      block.appendChild(body);
-      root.appendChild(block);
-    });
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function shuffle(arr){
+    for(var i=arr.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var tmp = arr[i]; arr[i]=arr[j]; arr[j]=tmp;
+    }
+    return arr;
   }
 
   /* =========================================================
-     7. レンダリング：マップビュー
+     3. テーマ
   ========================================================= */
 
-  function renderMapView(filtered){
-    var root = document.getElementById("mapView");
-    root.innerHTML = "";
-
-    Object.keys(CAMPUS_STRUCTURE).forEach(function(building){
-      if(state.buildings.size && !state.buildings.has(building)) return;
-
-      var rawForBuilding = VM_DATA.filter(function(m){ return m.building === building; });
-      var filteredForBuilding = filtered.filter(function(m){ return m.building === building; });
-
-      var panel = el("div", "map-building");
-      panel.appendChild(el("h2", null, "🏢 " + escapeHtml(building)));
-
-      if(rawForBuilding.length === 0){
-        panel.appendChild(el("div", "map-nodata", "📭 情報募集中：この棟の自販機情報はまだありません。"));
-        root.appendChild(panel);
-        return;
-      }
-      if(filteredForBuilding.length === 0){
-        panel.appendChild(el("div", "map-nodata", "🔍 条件に一致する自販機がありません。"));
-        root.appendChild(panel);
-        return;
-      }
-
-      var floors = CAMPUS_STRUCTURE[building].slice().sort(function(a,b){ return parseFloor(b) - parseFloor(a); });
-      floors.forEach(function(floor){
-        var machinesOnFloor = filteredForBuilding.filter(function(m){ return m.floor === floor; });
-        var row = el("div", "floor-row");
-        row.appendChild(el("div", "floor-tag", floor));
-        var track = el("div", "floor-track");
-        machinesOnFloor.forEach(function(m){
-          var tm = typeMeta(m.type);
-          var pin = el("button", "pin " + tm.cls, tm.icon);
-          pin.type = "button";
-          pin.style.left = (m.mapX != null ? m.mapX : 50) + "%";
-          pin.title = m.building + " " + m.floor + " " + m.location;
-          pin.addEventListener("click", function(){ jumpToCard(m); });
-          track.appendChild(pin);
-        });
-        row.appendChild(track);
-        panel.appendChild(row);
-      });
-
-      root.appendChild(panel);
-    });
+  function applyTheme(t){
+    if(t === "dark"){ document.documentElement.setAttribute("data-theme","dark"); }
+    else if(t === "light"){ document.documentElement.setAttribute("data-theme","light"); }
+    document.getElementById("themeToggle").textContent = effectiveIsDark() ? "☀️" : "🌙";
   }
-
-  function jumpToCard(m){
-    setView("list");
-    expandedBuildings.add(m.building);
-    expandedCards.add(m.id);
-    renderAll();
-    requestAnimationFrame(function(){
-      var cardEl = document.getElementById("card-" + m.id);
-      if(cardEl){
-        cardEl.scrollIntoView({ behavior: "smooth", block: "center" });
-        cardEl.classList.add("highlight");
-        setTimeout(function(){ cardEl.classList.remove("highlight"); }, 1800);
-      }
-    });
+  function effectiveIsDark(){
+    var attr = document.documentElement.getAttribute("data-theme");
+    if(attr === "dark") return true;
+    if(attr === "light") return false;
+    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
   }
-
-  /* =========================================================
-     8. 全体レンダリング
-  ========================================================= */
-
-  function renderAll(){
-    var filtered = getFiltered();
-    document.getElementById("resultCount").textContent = filtered.length + " / " + VM_DATA.length + " 件表示中";
-    renderListView(filtered);
-    renderMapView(filtered);
-  }
-
-  function setView(view){
-    state.view = view;
-    document.querySelectorAll(".view-tabs button").forEach(function(btn){
-      btn.classList.toggle("active", btn.getAttribute("data-view") === view);
-    });
-    document.getElementById("listView").classList.toggle("hidden", view !== "list");
-    document.getElementById("mapView").classList.toggle("hidden", view !== "map");
-    syncUrl();
-  }
-
-  /* =========================================================
-     9. テーマ（ダークモード）
-  ========================================================= */
-
-  function applyTheme(theme){
-    document.documentElement.setAttribute("data-theme", theme);
-    document.getElementById("themeToggle").textContent = theme === "dark" ? "☀️" : "🌙";
-  }
-
   function initTheme(){
-    var stored = null;
-    try{ stored = localStorage.getItem(THEME_KEY); }catch(e){}
-    if(stored){ applyTheme(stored); return; }
-    var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    applyTheme(prefersDark ? "dark" : "light");
+    var saved = localStorage.getItem(THEME_KEY);
+    if(saved === "dark" || saved === "light"){ applyTheme(saved); }
+    else{ document.getElementById("themeToggle").textContent = effectiveIsDark() ? "☀️" : "🌙"; }
   }
+  document.getElementById("themeToggle").addEventListener("click", function(){
+    var next = effectiveIsDark() ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
+  document.getElementById("titleHome").addEventListener("click", function(){ switchView("home"); });
 
   /* =========================================================
-     10. 共有（URL コピー）
+     4. トースト・ファイル保存
   ========================================================= */
 
-  function showToast(msg){
-    var toast = document.getElementById("toast");
-    toast.textContent = msg;
-    toast.classList.add("show");
-    setTimeout(function(){ toast.classList.remove("show"); }, 2000);
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
   }
 
-  function copyShareUrl(){
-    var url = location.href;
+  // 画面内モーダル（確認・通知）。Claude Artifactのサンドボックス内ではブラウザ標準の
+  // confirm()/alert() がブロックされ何も起きないことがあるため、自前で実装している。
+  function closeModal(overlay){ if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay); }
+  function showConfirm(message, onConfirm, opts){
+    opts = opts || {};
+    var overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    var confirmClass = "btn-confirm" + (opts.danger ? " danger" : "");
+    overlay.innerHTML =
+      '<div class="modal-box"><p>' + escapeHtml(message) + '</p><div class="modal-actions">' +
+      '<button class="btn-cancel" id="modalCancelBtn">' + escapeHtml(opts.cancelLabel || "キャンセル") + '</button>' +
+      '<button class="' + confirmClass + '" id="modalConfirmBtn">' + escapeHtml(opts.confirmLabel || "OK") + '</button>' +
+      '</div></div>';
+    document.querySelector(".phone-screen").appendChild(overlay);
+    overlay.querySelector("#modalCancelBtn").addEventListener("click", function(){ closeModal(overlay); });
+    overlay.querySelector("#modalConfirmBtn").addEventListener("click", function(){ closeModal(overlay); onConfirm(); });
+  }
+  function showAlert(message){
+    var overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.innerHTML =
+      '<div class="modal-box"><p>' + escapeHtml(message) + '</p><div class="modal-actions">' +
+      '<button class="btn-confirm" id="modalOkBtn">OK</button></div></div>';
+    document.querySelector(".phone-screen").appendChild(overlay);
+    overlay.querySelector("#modalOkBtn").addEventListener("click", function(){ closeModal(overlay); });
+  }
+
+  function copyText(text){
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(url).then(function(){
-        showToast("リンクをコピーしました");
-      }).catch(function(){ legacyCopy(url); });
-    } else {
-      legacyCopy(url);
-    }
+      navigator.clipboard.writeText(text).then(function(){ toast("コピーしました"); }, function(){ fallbackCopy(text); });
+    }else{ fallbackCopy(text); }
+  }
+  function fallbackCopy(text){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); toast("コピーしました"); }catch(e){ toast("コピーできませんでした"); }
+    document.body.removeChild(ta);
   }
 
-  function legacyCopy(text){
-    try{
-      var ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.focus(); ta.select();
-      var ok = document.execCommand("copy");
-      document.body.removeChild(ta);
-      showToast(ok ? "リンクをコピーしました" : "コピーできませんでした: " + text);
-    }catch(e){
-      showToast("コピーできませんでした: " + text);
+  // Claude Artifact上ではサンドボックスの制約で通常のダウンロードリンクが動作しないため、
+  // downloads機能が使えればそちらを使い、なければブラウザの通常ダウンロードにフォールバックする。
+  function offerFileDownload(filename, dataVal, mime){
+    if(window.claude && typeof window.claude.use === "function"){
+      window.claude.use("downloads").then(function(downloads){
+        if(!downloads){ fallbackDownload(filename, dataVal, mime); return; }
+        downloads.save({ filename: filename, data: dataVal }).then(function(){
+          toast("保存しました");
+        }, function(err){
+          if(err && err.code === "declined") return;
+          fallbackDownload(filename, dataVal, mime);
+        });
+      }, function(){ fallbackDownload(filename, dataVal, mime); });
+      return;
     }
+    fallbackDownload(filename, dataVal, mime);
+  }
+  function fallbackDownload(filename, dataVal, mime){
+    var blob = (dataVal instanceof Blob) ? dataVal : new Blob([dataVal], { type: mime || "application/octet-stream" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast("保存しました");
   }
 
   /* =========================================================
-     11. 初期化
+     5. プロフィール充実度
   ========================================================= */
 
-  function init(){
-    loadStateFromUrl();
-    initTheme();
-
-    document.getElementById("searchInput").value = state.q;
-    document.getElementById("searchInput").addEventListener("input", function(e){
-      state.q = e.target.value;
-      syncUrl();
-      renderAll();
-    });
-
-    document.querySelectorAll(".view-tabs button").forEach(function(btn){
-      btn.addEventListener("click", function(){ setView(btn.getAttribute("data-view")); });
-    });
-    setView(state.view);
-
-    document.getElementById("filterToggle").addEventListener("click", function(){
-      document.getElementById("filterPanel").classList.toggle("hidden");
-    });
-
-    document.getElementById("favToggle").addEventListener("click", function(){
-      state.favOnly = !state.favOnly;
-      onFilterChange();
-    });
-
-    document.getElementById("clearFilters").addEventListener("click", function(){
-      state.q = ""; state.buildings.clear(); state.floors.clear();
-      state.types.clear(); state.payments.clear(); state.favOnly = false;
-      document.getElementById("searchInput").value = "";
-      onFilterChange();
-    });
-
-    document.getElementById("themeToggle").addEventListener("click", function(){
-      var current = document.documentElement.getAttribute("data-theme");
-      var next = current === "dark" ? "light" : "dark";
-      applyTheme(next);
-      try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
-    });
-
-    document.getElementById("shareBtn").addEventListener("click", copyShareUrl);
-
-    renderFilters();
-    renderAll();
+  function computeCompleteness(){
+    var total = 0, filled = 0;
+    var basicFields = ["name","nickname","birthday","bloodType","hometown","occupation","motto"];
+    basicFields.forEach(function(k){ total++; if(data.basic[k]) filled++; });
+    Object.keys(data.lists).forEach(function(k){ total++; if(data.lists[k].length) filled++; });
+    total++; if(data.favorites.length) filled++;
+    total++; if(data.goals) filled++;
+    total++; if(Object.keys(data.qa).length) filled++;
+    total++; if(Object.keys(data.personality.responses).length) filled++;
+    return Math.round((filled/total)*100);
   }
 
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
+  function renderProgress(){
+    var pct = computeCompleteness();
+    document.getElementById("progressPct").textContent = pct + "%";
+    document.getElementById("progressFill").style.width = pct + "%";
   }
+
+  /* =========================================================
+     6. 画面切り替え・描画
+  ========================================================= */
+
+  document.querySelectorAll(".bn-buttons button").forEach(function(btn){
+    btn.addEventListener("click", function(){ switchView(btn.dataset.view); });
+  });
+
+  function switchView(view){
+    state.view = view;
+    document.querySelectorAll(".bn-buttons button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === view); });
+    render();
+  }
+
+  function goToStep(id, returnView){
+    var idx = -1;
+    for(var i=0;i<STEPS.length;i++){ if(STEPS[i].id === id){ idx = i; break; } }
+    if(idx < 0) idx = 0;
+    wizardState.stepIndex = idx;
+    state.wizardReturnView = returnView || "home";
+    state.view = "wizard";
+    document.querySelectorAll(".bn-buttons button").forEach(function(b){ b.classList.remove("active"); });
+    render();
+  }
+
+  function render(){
+    renderProgress();
+    var screenEl = document.querySelector(".phone-screen");
+    if(screenEl) screenEl.classList.toggle("chrome-hidden", state.view === "onboarding");
+    var app = document.getElementById("app");
+    if(state.view === "onboarding") app.innerHTML = renderOnboarding();
+    else if(state.view === "wizard") app.innerHTML = renderWizard();
+    else if(state.view === "swipe") app.innerHTML = renderSwipeView();
+    else if(state.view === "quiz") app.innerHTML = renderQuizView();
+    else if(state.view === "intro") app.innerHTML = renderIntroTabView();
+    else if(state.view === "settings") app.innerHTML = renderSettingsView();
+    else app.innerHTML = renderHome();
+    bindViewEvents();
+  }
+
+  function bindViewEvents(){
+    if(state.view === "onboarding") bindOnboardingEvents();
+    else if(state.view === "wizard") bindWizardEvents(STEPS[wizardState.stepIndex]);
+    else if(state.view === "swipe") bindSwipeEvents();
+    else if(state.view === "quiz") bindQuizEvents();
+    else if(state.view === "intro") bindIntroEvents();
+    else if(state.view === "settings") bindSettingsEvents();
+    else bindHomeEvents();
+  }
+
+  /* =========================================================
+     6b. オンボーディング（初回チュートリアル）
+  ========================================================= */
+
+  // オンボーディングは「4枚のチュートリアルスライド」→「プロフィール全15項目」を
+  // ひとつながりの流れとして扱う（合計 onboardingTotal() ページ）。こうすることで
+  // チュートリアルの途中で急に普段の画面へ切り替わって迷子になることがないようにしている。
+  function onboardingTotal(){ return ONBOARDING_SLIDES.length + STEPS.length; }
+
+  function renderOnboarding(){
+    var total = onboardingTotal();
+    var idx = Math.max(0, Math.min(onboardingState.index, total-1));
+    onboardingState.index = idx;
+
+    // 途中で「スワイプして探す」を開いた場合は、チュートリアルの流れを離脱させず、
+    // 同じ画面の中にスワイプ発見を埋め込んで表示する
+    if(onboardingState.mode === "swipe"){
+      return '<div class="onboarding-wrap"><button class="wz-home-btn" id="obSwipeBack">← もどる</button>' + renderSwipeView() + '</div>';
+    }
+
+    var isIntro = idx < ONBOARDING_SLIDES.length;
+    var html = '<div class="onboarding-wrap">';
+
+    html += '<div class="onboarding-top-row">';
+    if(isIntro) html += '<button class="onboarding-skip" id="obSkip">スキップ</button>';
+    html += '<button class="onboarding-end-link" id="obEnd">あとで続ける</button>';
+    html += '</div>';
+
+    if(isIntro){
+      var slide = ONBOARDING_SLIDES[idx];
+      html += '<div class="onboarding-body"><div class="onboarding-icon">'+slide.icon+'</div>';
+      html += '<div class="onboarding-title">'+escapeHtml(slide.title)+'</div>';
+      html += '<div class="onboarding-desc">'+escapeHtml(slide.desc)+'</div></div>';
+      html += '<div class="onboarding-dots">' + ONBOARDING_SLIDES.map(function(_,i){ return '<span class="'+(i===idx?"active":"")+'"></span>'; }).join("") + '</div>';
+    }else{
+      var step = STEPS[idx - ONBOARDING_SLIDES.length];
+      var required = !!step.basicKey;
+      html += '<div class="onboarding-body"><div class="onboarding-icon">'+step.icon+'</div>';
+      html += '<div class="onboarding-title">'+escapeHtml(step.label)+'</div>';
+      if(step.desc) html += '<div class="onboarding-desc">'+escapeHtml(step.desc)+'</div>';
+      html += '<div class="onboarding-input-wrap">'+renderStepBody(step)+'</div>';
+      if(required && !step.swipeCat && (step.type === "text" || step.type === "date")){
+        html += '<p class="field-nudge hidden" id="fieldNudge"></p>';
+      }
+      if(step.type === "textarea") html += renderGoalHelpBlock();
+      html += renderSwipeLinkBlock(step, true);
+      html += renderDeferLink(step);
+      html += '</div>';
+      html += '<div class="onboarding-progress-text">'+(idx - ONBOARDING_SLIDES.length + 1)+' / '+STEPS.length+'</div>';
+    }
+
+    html += '<div class="onboarding-nav">';
+    if(idx > 0) html += '<button class="wz-btn ghost" id="obBack">戻る</button>';
+    var isLastIntro = idx === ONBOARDING_SLIDES.length - 1;
+    var isLastField = idx === total - 1;
+    html += '<button class="wz-btn primary" id="obNext">'+(isLastIntro ? "はじめる" : (isLastField ? "完了 🎉" : "次へ"))+'</button>';
+    html += '</div></div>';
+    return html;
+  }
+
+  function bindOnboardingEvents(){
+    if(onboardingState.mode === "swipe"){
+      var swipeBack = document.getElementById("obSwipeBack");
+      if(swipeBack) swipeBack.addEventListener("click", function(){ onboardingState.mode = "field"; render(); });
+      bindSwipeEvents();
+      return;
+    }
+
+    var idx = onboardingState.index;
+    var isIntro = idx < ONBOARDING_SLIDES.length;
+
+    var skip = document.getElementById("obSkip");
+    if(skip) skip.addEventListener("click", function(){ onboardingState.index = ONBOARDING_SLIDES.length; render(); });
+    var end = document.getElementById("obEnd");
+    if(end) end.addEventListener("click", endOnboardingEarly);
+    var back = document.getElementById("obBack");
+    if(back) back.addEventListener("click", function(){ onboardingState.index--; render(); });
+    var next = document.getElementById("obNext");
+    if(next) next.addEventListener("click", advanceOnboarding);
+
+    if(!isIntro){
+      var step = STEPS[idx - ONBOARDING_SLIDES.length];
+      bindStepFieldEvents(step, advanceOnboarding, { required: !!step.basicKey, nextBtnId: "obNext", swipeMode: "embedded" });
+    }
+  }
+
+  function advanceOnboarding(){
+    if(onboardingState.index >= onboardingTotal() - 1) finishOnboarding();
+    else{ onboardingState.index++; render(); }
+  }
+
+  function finishOnboarding(){
+    data.meta.onboardingSeen = true;
+    data.meta.wizardStarted = true;
+    data.meta.wizardDone = true;
+    data.meta.wizardStep = STEPS.length - 1;
+    saveData();
+    switchView("home");
+    toast("プロフィールの入力、お疲れさまでした！🎉");
+  }
+
+  // チュートリアルを途中でやめて、ここまでの内容を保存したままホームへ。
+  // 押しただけで即終了させず、必ず注意書きを見せてから確定させる。
+  function endOnboardingEarly(){
+    showConfirm(
+      "ここでチュートリアルを終了しますか？\nここまで入力した内容はきちんと保存されています。続きはホーム画面の「入力を続ける」から、いつでも好きな項目に戻って再開できます。",
+      function(){
+        var idx = onboardingState.index;
+        var resumeStep = idx < ONBOARDING_SLIDES.length ? 0 : Math.min(idx - ONBOARDING_SLIDES.length, STEPS.length - 1);
+        data.meta.onboardingSeen = true;
+        data.meta.wizardStarted = true;
+        data.meta.wizardStep = resumeStep;
+        saveData();
+        switchView("home");
+        toast("ここまでの内容を保存しました");
+      },
+      { confirmLabel: "終了する", cancelLabel: "続ける" }
+    );
+  }
+
+  /* =========================================================
+     7. ホーム
+  ========================================================= */
+
+  function stepPreview(step){
+    if(step.type === "text" || step.type === "date"){
+      var v = data.basic[step.basicKey];
+      if(!v) return "";
+      return step.type === "date" ? fmtDate(v) : v;
+    }
+    if(step.type === "blood") return data.basic.bloodType ? data.basic.bloodType + "型" : "";
+    if(step.type === "taglist"){
+      var items = data.lists[step.listKey];
+      if(!items.length) return "";
+      return items.slice(0,3).join("、") + (items.length > 3 ? " 他" : "");
+    }
+    if(step.type === "favorites") return data.favorites.length ? data.favorites.length + "件登録済み" : "";
+    if(step.type === "textarea") return data[step.key] ? (data[step.key].slice(0,20) + (data[step.key].length > 20 ? "…" : "")) : "";
+    if(step.type === "custom") return data.customSections.length ? data.customSections.length + "個の項目" : "";
+    return "";
+  }
+
+  function renderHome(){
+    var name = data.basic.nickname || data.basic.name;
+    var html = "";
+    html += '<div class="card home-hero"><h2>' + (name ? ("👋 " + escapeHtml(name) + "さん") : "👋 ようこそ") + '</h2>';
+    if(!data.meta.wizardDone){
+      html += '<p class="card-desc">まだ入力の途中です。ひとつずつ、気が向いたときに埋めていきましょう。途中でやめても、続きから再開できます。</p>';
+      html += '<button class="wz-btn primary" id="continueWizard">入力を続ける（' + ((data.meta.wizardStep||0) + 1) + ' / ' + STEPS.length + '）</button>';
+    }else{
+      html += '<p class="card-desc">プロフィールは一通り入力済みです。いつでも見直せます。</p>';
+      html += '<button class="wz-btn ghost" id="continueWizard">最初から見直す</button>';
+    }
+    html += '</div>';
+
+    html += '<div class="card"><h2>📚 プロフィール項目</h2><p class="card-desc">タップすると、その項目だけ編集できます。好きな順番でどうぞ。</p><div class="shortcut-grid">';
+    STEPS.forEach(function(step){
+      var preview = stepPreview(step);
+      html += '<button class="shortcut-item" data-jump-step="' + step.id + '"><span class="si-icon">' + step.icon + '</span><span class="si-label">' + escapeHtml(step.label) + '</span><span class="si-preview">' + (preview ? escapeHtml(preview) : "未入力") + '</span></button>';
+    });
+    html += '</div></div>';
+
+    html += '<div class="card"><h2>🧭 もっと自分を知る・伝える</h2><div class="quick-links">';
+    html += '<button class="quick-link" data-goto-tab="swipe"><span class="ql-icon">🔀</span><span>スワイプ発見</span></button>';
+    html += '<button class="quick-link" data-goto-tab="quiz"><span class="ql-icon">🧠</span><span>性格診断</span></button>';
+    html += '<button class="quick-link" data-goto-tab="intro"><span class="ql-icon">💬</span><span>自己紹介文・カード</span></button>';
+    html += '</div></div>';
+    return html;
+  }
+
+  function bindHomeEvents(){
+    var app = document.getElementById("app");
+    var cont = document.getElementById("continueWizard");
+    if(cont){
+      cont.addEventListener("click", function(){
+        var idx = Math.min(data.meta.wizardStep || 0, STEPS.length - 1);
+        goToStep(STEPS[idx].id, "home");
+      });
+    }
+    app.querySelectorAll("[data-jump-step]").forEach(function(btn){
+      btn.addEventListener("click", function(){ goToStep(btn.dataset.jumpStep, "home"); });
+    });
+    app.querySelectorAll("[data-goto-tab]").forEach(function(btn){
+      btn.addEventListener("click", function(){ switchView(btn.dataset.gotoTab); });
+    });
+  }
+
+  /* =========================================================
+     8. 入力ウィザード（ひとつずつ記入）
+  ========================================================= */
+
+  // スワイプ発見への導線。座右の銘など「自分から思い浮かびにくい」項目では、
+  // 数秒操作がないと「わからない場合は〜」というヒントが控えめに浮かび上がる。
+  function renderSwipeLinkBlock(step, isOnboarding){
+    if(!step.swipeCat) return "";
+    var wrapCls = "swipe-hint-wrap" + (isOnboarding ? " onboarding-swipe-wrap" : "");
+    var html = '<div class="' + wrapCls + '">';
+    html += '<p class="swipe-hint-msg hidden" id="swipeHintMsg">💡 わからない場合は、下のボタンでスワイプして探してみましょう</p>';
+    html += '<button class="swipe-link" id="swipeHintBtn" data-goto-swipe="' + step.swipeCat + '">🔀 スワイプして探す</button>';
+    html += '</div>';
+    return html;
+  }
+
+  // オンボーディング中、まだ何も入力していない任意項目（特技・趣味・目標）に対して
+  // 「今は決めなくていい」ことを明示するためのリンクボタン
+  var DEFER_LABELS = { skills:"特技はあとで追加する", hobbies:"趣味はあとで追加する", goals:"これから書く" };
+  function renderDeferLink(step){
+    var label = DEFER_LABELS[step.id];
+    if(!label) return "";
+    var isEmpty = step.type === "taglist" ? data.lists[step.listKey].length === 0 : !data[step.key];
+    if(!isEmpty) return "";
+    return '<button class="onboarding-defer-link" data-defer-advance="1">'+escapeHtml(label)+'</button>';
+  }
+
+  // 将来の夢・目標に困った人向けの、タップで挿入できる例文チップ
+  var GOAL_EXAMPLES = ["◯◯の資格を取りたい","新しいスキルを身につけたい","海外で暮らしてみたい","自分のお店を持ちたい","本を出してみたい","健康的な生活を送りたい"];
+  function renderGoalHelpBlock(){
+    var html = '<div class="goal-help">';
+    html += '<p class="goal-help-label">💡 困ったらタップして挿入</p>';
+    html += '<div class="goal-help-chips">';
+    GOAL_EXAMPLES.forEach(function(ex){ html += '<button class="goal-example-chip" data-goal-example="'+escapeHtml(ex)+'">'+escapeHtml(ex)+'</button>'; });
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderWizard(){
+    var idx = Math.max(0, Math.min(wizardState.stepIndex, STEPS.length - 1));
+    wizardState.stepIndex = idx;
+    var step = STEPS[idx];
+    var html = "";
+    html += '<div class="wizard-top"><button class="wz-home-btn" id="wzHome">← ホームに戻る</button><div class="wz-progress">' + (idx+1) + ' / ' + STEPS.length + '</div></div>';
+    html += '<div class="card wizard-card">';
+    html += '<div class="wz-icon">' + step.icon + '</div>';
+    html += '<h2>' + escapeHtml(step.label) + '</h2>';
+    if(step.desc) html += '<p class="card-desc">' + escapeHtml(step.desc) + '</p>';
+    html += '<div class="wz-body">' + renderStepBody(step) + '</div>';
+    html += renderSwipeLinkBlock(step, false);
+    html += '</div>';
+    html += '<div class="wizard-nav">';
+    html += '<button id="wzBack" class="wz-btn ghost"' + (idx===0 ? " disabled" : "") + '>戻る</button>';
+    html += '<button id="wzNext" class="wz-btn primary">' + (idx === STEPS.length-1 ? "完了 🎉" : "次へ") + '</button>';
+    html += '</div>';
+    return html;
+  }
+
+  function renderStepBody(step){
+    if(step.type === "text"){
+      return '<div class="field"><input type="text" id="wzInput" placeholder="' + escapeHtml(step.ph||"") + '" value="' + escapeHtml(data.basic[step.basicKey]||"") + '"></div>';
+    }
+    if(step.type === "date"){
+      var val = data.basic[step.basicKey] || "";
+      var dparts = val.split("-");
+      var yy = dparts[0] || "", mm = dparts[1] || "", dd = dparts[2] || "";
+      var nowY = new Date().getFullYear();
+      var hd = '<div class="date-picker-row">';
+      hd += '<select id="wzYear"><option value="">年</option>';
+      for(var y1=nowY; y1>=nowY-100; y1--){ hd += '<option value="'+y1+'"'+(String(y1)===yy?" selected":"")+'>'+y1+'</option>'; }
+      hd += '</select>';
+      hd += '<select id="wzMonth"><option value="">月</option>';
+      for(var m1=1; m1<=12; m1++){ var mv=String(m1).padStart(2,"0"); hd += '<option value="'+mv+'"'+(mv===mm?" selected":"")+'>'+m1+'</option>'; }
+      hd += '</select>';
+      hd += '<select id="wzDay"><option value="">日</option>';
+      for(var d1=1; d1<=31; d1++){ var dv=String(d1).padStart(2,"0"); hd += '<option value="'+dv+'"'+(dv===dd?" selected":"")+'>'+d1+'</option>'; }
+      hd += '</select>';
+      hd += '</div>';
+      return hd;
+    }
+    if(step.type === "blood"){
+      var opts = ["A","B","O","AB"];
+      var hb = '<div class="blood-grid">';
+      opts.forEach(function(o){ hb += '<button class="blood-btn'+(data.basic.bloodType===o?" active":"")+'" data-blood="'+o+'">'+o+'型</button>'; });
+      hb += '</div>';
+      hb += '<button class="blood-btn full'+(!data.basic.bloodType?" active":"")+'" data-blood="">わからない・未設定</button>';
+      return hb;
+    }
+    if(step.type === "textarea"){
+      return '<div class="field"><textarea id="wzInput" placeholder="' + escapeHtml(step.ph||"") + '">' + escapeHtml(data[step.key]||"") + '</textarea></div>';
+    }
+    if(step.type === "taglist"){
+      var items = data.lists[step.listKey];
+      var h2 = '<div class="chip-list">';
+      if(!items.length) h2 += '<div class="chip-empty">まだ登録がありません</div>';
+      items.forEach(function(v,i){ h2 += '<span class="chip">'+escapeHtml(v)+'<button data-remove-tag="'+step.listKey+'" data-idx="'+i+'">×</button></span>'; });
+      h2 += '</div><div class="add-row"><input type="text" id="wzTagInput" placeholder="'+escapeHtml(step.ph||"")+'"><button class="add-btn" id="wzTagAdd">追加</button></div>';
+      return h2;
+    }
+    if(step.type === "favorites"){
+      if(!state.favSelectedCat) state.favSelectedCat = FAV_CATEGORIES[0];
+      var h3 = data.favorites.length ? "" : '<div class="chip-empty">まだ登録がありません</div>';
+      data.favorites.forEach(function(f,i){
+        h3 += '<div class="fav-item"><span class="fav-cat">'+escapeHtml(f.category)+'</span><span class="fav-val">'+escapeHtml(f.value)+'</span><button class="del-btn" data-del-fav="'+i+'">🗑️</button></div>';
+      });
+      h3 += '<div class="fav-cat-chips">' + FAV_CATEGORIES.map(function(c){
+        return '<button class="fav-cat-chip'+(state.favSelectedCat===c?" active":"")+'" data-fav-cat-select="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>';
+      }).join("") + '</div>';
+      h3 += '<div class="fav-add-row"><input type="text" id="wzFavVal" placeholder="'+escapeHtml(state.favSelectedCat)+'を入力"><button class="add-btn" id="wzFavAdd">追加</button></div>';
+      return h3;
+    }
+    if(step.type === "custom"){
+      var h4 = "";
+      data.customSections.forEach(function(sec){
+        h4 += '<div class="custom-section" data-cs-id="'+sec.id+'">';
+        h4 += '<div class="cs-head"><input type="text" data-cs-title="'+sec.id+'" placeholder="項目名（例：休日の過ごし方）" value="'+escapeHtml(sec.title)+'"><button class="cs-del" data-cs-del="'+sec.id+'">🗑️</button></div>';
+        h4 += '<div class="chip-list">';
+        if(!sec.items.length) h4 += '<div class="chip-empty">まだ登録がありません</div>';
+        sec.items.forEach(function(v,i){ h4 += '<span class="chip">'+escapeHtml(v)+'<button data-cs-remove="'+sec.id+'" data-idx="'+i+'">×</button></span>'; });
+        h4 += '</div><div class="add-row"><input type="text" data-cs-input="'+sec.id+'" placeholder="内容を入力"><button class="add-btn" data-cs-add="'+sec.id+'">追加</button></div>';
+        h4 += '</div>';
+      });
+      h4 += '<button class="add-section-btn" id="addSectionBtn">＋ 新しい項目を追加</button>';
+      return h4;
+    }
+    return "";
+  }
+
+  function wizardAdvance(){
+    if(wizardState.stepIndex >= STEPS.length - 1){
+      data.meta.wizardDone = true; saveData();
+      toast("プロフィールの入力、お疲れさまでした！");
+      switchView(state.wizardReturnView || "home");
+    }else{
+      wizardState.stepIndex++; data.meta.wizardStep = wizardState.stepIndex; saveData(); render();
+    }
+  }
+
+  // 基本情報（text / date / blood）の入力欄を、通常のウィザードとオンボーディングの
+  // どちらからでも共通で扱うためのバインド処理。advanceFn には「次へ進む」処理を渡す。
+  // opts.required: true にすると、この項目に答えるまで次へボタンを無効化する
+  // （チュートリアル＝オンボーディングだけで使う。通常のウィザードでは常にfalse）
+  function bindBasicFieldInputs(step, advanceFn, opts){
+    opts = opts || {};
+    var nextBtn = opts.required ? document.getElementById(opts.nextBtnId || "obNext") : null;
+    var wzInput = document.getElementById("wzInput");
+    var yearSel = document.getElementById("wzYear"), monthSel = document.getElementById("wzMonth"), daySel = document.getElementById("wzDay");
+    // 座右の銘（swipeCatあり）はアイリス演出、血液型はボタン操作自体が答えなので、
+    // 「入力してください」の一般的な呼びかけはそれ以外の必須テキスト/日付項目だけに出す
+    var nudgeEl = (opts.required && step.basicKey && !step.swipeCat && (step.type === "text" || step.type === "date"))
+      ? document.getElementById("fieldNudge") : null;
+    var nudgeTimer = null;
+
+    function refreshNextDisabled(){
+      if(!nextBtn) return;
+      var filled = true;
+      if(step.type === "text") filled = !!(wzInput && wzInput.value.trim());
+      else if(step.type === "date") filled = !!(yearSel && monthSel && daySel && yearSel.value && monthSel.value && daySel.value);
+      else if(step.type === "blood") filled = false; // 血液型はボタンを選ぶこと自体で進むため、次へは常に無効
+      var wasDisabled = nextBtn.disabled;
+      nextBtn.disabled = !filled;
+      // 必須項目が今まさに埋まったら、次へボタンをふわっと光らせて「進めます」を伝える
+      if(wasDisabled && filled){
+        nextBtn.classList.remove("ready-pulse");
+        void nextBtn.offsetWidth;
+        nextBtn.classList.add("ready-pulse");
+      }
+      if(filled && nudgeEl) nudgeEl.classList.add("hidden");
+    }
+    refreshNextDisabled();
+
+    function scheduleNudge(){
+      if(!nudgeEl) return;
+      clearTimeout(nudgeTimer);
+      nudgeEl.classList.add("hidden");
+      nudgeTimer = setTimeout(function(){
+        if(nextBtn && !nextBtn.disabled) return; // 既に入力済みなら不要
+        nudgeEl.textContent = step.type === "date" ? "💬 生年月日を選ぶと次に進めます" : ("💬 " + step.label + "を入力すると次に進めます");
+        nudgeEl.classList.remove("hidden");
+      }, 4000);
+    }
+    if(nudgeEl) scheduleNudge();
+
+    // テキスト系の項目は自動でフォーカスし、Enterキーでも次へ進めるようにする（より直感的な入力のため）
+    if(wzInput){
+      wzInput.addEventListener("change", function(){
+        if(step.basicKey) data.basic[step.basicKey] = wzInput.value;
+        else if(step.key) data[step.key] = wzInput.value;
+        saveData(); renderProgress();
+      });
+      if(step.type === "text" || step.type === "textarea"){
+        setTimeout(function(){ wzInput.focus(); }, 30);
+      }
+      if(step.type === "text"){
+        wzInput.addEventListener("input", function(){ refreshNextDisabled(); scheduleNudge(); });
+        wzInput.addEventListener("keydown", function(e){
+          if(e.key === "Enter"){
+            e.preventDefault();
+            if(opts.required && !wzInput.value.trim()) return;
+            wzInput.dispatchEvent(new Event("change"));
+            advanceFn();
+          }
+        });
+      }
+    }
+
+    // 血液型：選んだらすぐ次へ進む
+    document.querySelectorAll("[data-blood]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        data.basic.bloodType = btn.dataset.blood;
+        saveData(); render();
+        setTimeout(advanceFn, 220);
+      });
+    });
+
+    // 誕生日：年・月・日をそれぞれ選ぶドラム式ピッカー
+    if(yearSel && monthSel && daySel){
+      var updateBirthday = function(){
+        if(yearSel.value && monthSel.value && daySel.value) data.basic.birthday = yearSel.value + "-" + monthSel.value + "-" + daySel.value;
+        else data.basic.birthday = "";
+        saveData(); renderProgress();
+        refreshNextDisabled();
+        scheduleNudge();
+      };
+      [yearSel, monthSel, daySel].forEach(function(sel){ sel.addEventListener("change", updateBirthday); });
+    }
+
+    // 座右の銘など、自分では思い浮かびにくい項目：数秒操作がなければ
+    // アイリスアウト風に画面を絞り込んでスワイプ発見ボタンへ視線を誘導する
+    // （taglist/favoritesは追加・削除のたびに再描画されるので自然に再スケジュールされる。
+    //   テキスト項目だけは打鍵のたびに明示的に仕切り直す必要がある）
+    if(step.type === "text" && step.swipeCat && wzInput){
+      wzInput.addEventListener("input", function(){ scheduleSwipeIdleHint(step); });
+    }
+  }
+
+  // どの項目タイプが「空」かを判定した上で、アイリスアウト演出をスケジュールする。
+  // text/taglist/favoritesいずれのswipeCat付き項目からも共通で呼び出す。
+  function scheduleSwipeIdleHint(step){
+    if(!step.swipeCat) return;
+    var hintMsg = document.getElementById("swipeHintMsg");
+    var hintBtn = document.getElementById("swipeHintBtn");
+    if(!hintBtn) return;
+    clearTimeout(hintBtn._idleTimer);
+    hintMsg && hintMsg.classList.add("hidden");
+    hintBtn.classList.remove("pulse");
+    removeIrisOverlay();
+    hintBtn._idleTimer = setTimeout(function(){
+      var empty = false;
+      if(step.type === "text"){ var el = document.getElementById("wzInput"); empty = !(el && el.value.trim()); }
+      else if(step.type === "taglist"){ empty = data.lists[step.listKey].length === 0; }
+      else if(step.type === "favorites"){ empty = data.favorites.length === 0; }
+      if(!empty) return;
+      hintMsg && hintMsg.classList.remove("hidden");
+      hintBtn.classList.add("pulse");
+      triggerIrisHint(hintBtn);
+    }, 4000);
+  }
+
+  // 画面全体を暗くしながら、対象ボタンだけを丸く残して絞り込んでいく
+  // 「アイリスアウト」風の演出。影の部分にチュートリアル文を表示し、
+  // 画面をタップすると1回で消える。
+  function removeIrisOverlay(){
+    var existing = document.querySelector(".iris-overlay");
+    if(existing && existing.parentNode) existing.parentNode.removeChild(existing);
+  }
+  function dismissIrisOverlay(overlay){
+    overlay.style.transition = "opacity .3s ease";
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
+    setTimeout(removeIrisOverlay, 320);
+  }
+  function triggerIrisHint(targetEl){
+    removeIrisOverlay();
+    if(!targetEl) return;
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduceMotion) return;
+    var screenEl = document.querySelector(".phone-screen");
+    if(!screenEl) return;
+
+    var screenRect = screenEl.getBoundingClientRect();
+    var btnRect = targetEl.getBoundingClientRect();
+    var cx = btnRect.left - screenRect.left + btnRect.width / 2;
+    var cy = btnRect.top - screenRect.top + btnRect.height / 2;
+    var smallR = Math.max(btnRect.width, btnRect.height) / 2 + 16;
+    var largeR = Math.hypot(Math.max(cx, screenRect.width - cx), Math.max(cy, screenRect.height - cy)) + 40;
+
+    // チュートリアル文は、円の外側に残る暗い余白のちょうど真ん中に来るよう動的に位置を決める
+    var circleTop = cy - smallR, circleBottom = cy + smallR;
+    var textY;
+    if(circleTop > 90) textY = circleTop / 2;
+    else if(screenRect.height - circleBottom > 90) textY = circleBottom + (screenRect.height - circleBottom) / 2;
+    else textY = Math.max(70, circleTop / 2);
+
+    var overlay = document.createElement("div");
+    overlay.className = "iris-overlay";
+    var ring = document.createElement("div");
+    ring.className = "iris-ring";
+    var tutorialText = document.createElement("div");
+    tutorialText.className = "iris-tutorial-text";
+    tutorialText.style.top = textY + "px";
+    tutorialText.innerHTML = "💡 わからない時は、下のボタンでスワイプして探すのがおすすめです<span class=\"its-sub\">画面をタップすると閉じます</span>";
+    overlay.appendChild(ring);
+    overlay.appendChild(tutorialText);
+    overlay.addEventListener("click", function(){ dismissIrisOverlay(overlay); });
+    screenEl.appendChild(overlay);
+
+    function setRing(r){
+      ring.style.width = (r * 2) + "px";
+      ring.style.height = (r * 2) + "px";
+      ring.style.left = (cx - r) + "px";
+      ring.style.top = (cy - r) + "px";
+    }
+    setRing(largeR);
+    ring.getBoundingClientRect(); // 強制リフローで開始状態を確定させる
+    ring.style.transition = "width .7s cubic-bezier(.3,.9,.4,1), height .7s cubic-bezier(.3,.9,.4,1), left .7s cubic-bezier(.3,.9,.4,1), top .7s cubic-bezier(.3,.9,.4,1)";
+    requestAnimationFrame(function(){
+      setRing(smallR);
+      tutorialText.classList.add("show");
+    });
+  }
+
+  function bindWizardEvents(step){
+    var app = document.getElementById("app");
+
+    var wzHome = document.getElementById("wzHome");
+    if(wzHome) wzHome.addEventListener("click", function(){ switchView(state.wizardReturnView || "home"); });
+
+    var wzBack = document.getElementById("wzBack");
+    if(wzBack) wzBack.addEventListener("click", function(){
+      if(wizardState.stepIndex > 0){
+        wizardState.stepIndex--; data.meta.wizardStep = wizardState.stepIndex; saveData(); render();
+      }
+    });
+
+    var wzNext = document.getElementById("wzNext");
+    if(wzNext) wzNext.addEventListener("click", wizardAdvance);
+
+    bindStepFieldEvents(step, wizardAdvance, { swipeMode: "tab" });
+  }
+
+  // すべての項目タイプ（text/date/blood/taglist/favorites/textarea/custom）の
+  // 入力操作を、通常のウィザードとオンボーディングどちらからでも同じように扱う。
+  // opts.swipeMode: "tab"（スワイプタブへ切り替える） / "embedded"（オンボーディング内に埋め込む）
+  function bindStepFieldEvents(step, advanceFn, opts){
+    opts = opts || {};
+    bindBasicFieldInputs(step, advanceFn, opts);
+
+    var swipeLinkBtn = document.querySelector("[data-goto-swipe]");
+    if(swipeLinkBtn){
+      swipeLinkBtn.addEventListener("click", function(){
+        state.swipeCat = swipeLinkBtn.dataset.gotoSwipe;
+        state.swipeQueue = null;
+        if(opts.swipeMode === "embedded"){ onboardingState.mode = "swipe"; render(); }
+        else{ switchView("swipe"); }
+      });
+    }
+
+    // タグリスト
+    var tagAdd = document.getElementById("wzTagAdd");
+    var tagInput = document.getElementById("wzTagInput");
+    if(tagAdd && tagInput){
+      tagAdd.addEventListener("click", function(){ addTag(step.listKey, tagInput); });
+      tagInput.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); addTag(step.listKey, tagInput); } });
+    }
+    document.querySelectorAll("[data-remove-tag]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        data.lists[btn.dataset.removeTag].splice(Number(btn.dataset.idx),1);
+        saveData(); render();
+      });
+    });
+
+    // 好きなもの
+    document.querySelectorAll("[data-fav-cat-select]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state.favSelectedCat = btn.dataset.favCatSelect; render(); });
+    });
+    var favAdd = document.getElementById("wzFavAdd");
+    if(favAdd){
+      favAdd.addEventListener("click", function(){
+        var input = document.getElementById("wzFavVal");
+        var val = input.value.trim();
+        if(!val) return;
+        data.favorites.push({ category: state.favSelectedCat, value: val });
+        saveData(); render();
+        toast("追加しました");
+      });
+    }
+    var favVal = document.getElementById("wzFavVal");
+    if(favVal){
+      favVal.addEventListener("keydown", function(e){
+        if(e.key === "Enter"){ e.preventDefault(); document.getElementById("wzFavAdd").click(); }
+      });
+    }
+    document.querySelectorAll("[data-del-fav]").forEach(function(btn){
+      btn.addEventListener("click", function(){ data.favorites.splice(Number(btn.dataset.delFav),1); saveData(); render(); });
+    });
+
+    // じぶんだけの項目
+    var addSectionBtn = document.getElementById("addSectionBtn");
+    if(addSectionBtn){
+      addSectionBtn.addEventListener("click", function(){
+        data.customSections.push({ id: uid(), title:"", items:[] });
+        saveData(); render();
+      });
+    }
+    document.querySelectorAll("[data-cs-title]").forEach(function(el){
+      el.addEventListener("change", function(){
+        var sec = data.customSections.find(function(s){ return s.id === el.dataset.csTitle; });
+        if(sec){ sec.title = el.value; saveData(); }
+      });
+    });
+    document.querySelectorAll("[data-cs-del]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        data.customSections = data.customSections.filter(function(s){ return s.id !== btn.dataset.csDel; });
+        saveData(); render();
+      });
+    });
+    document.querySelectorAll("[data-cs-add]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.dataset.csAdd;
+        addCustomItem(id, document.querySelector('[data-cs-input="'+id+'"]'));
+      });
+    });
+    document.querySelectorAll("[data-cs-input]").forEach(function(input){
+      input.addEventListener("keydown", function(e){
+        if(e.key === "Enter"){ e.preventDefault(); addCustomItem(input.dataset.csInput, input); }
+      });
+    });
+    document.querySelectorAll("[data-cs-remove]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var sec = data.customSections.find(function(s){ return s.id === btn.dataset.csRemove; });
+        if(sec){ sec.items.splice(Number(btn.dataset.idx),1); saveData(); render(); }
+      });
+    });
+
+    // 「あとで追加する／これから書く」リンク：入力せずそのまま次へ進む
+    var deferBtn = document.querySelector("[data-defer-advance]");
+    if(deferBtn) deferBtn.addEventListener("click", advanceFn);
+
+    // 将来の夢・目標の例文チップ：タップした例文をテキストエリアに挿入する
+    document.querySelectorAll("[data-goal-example]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var goalInput = document.getElementById("wzInput");
+        if(!goalInput) return;
+        var example = btn.dataset.goalExample;
+        goalInput.value = goalInput.value ? (goalInput.value + "\n" + example) : example;
+        goalInput.dispatchEvent(new Event("change"));
+        render(); // 「これから書く」リンクの表示・非表示を反映するため再描画する
+        var refreshed = document.getElementById("wzInput");
+        if(refreshed) refreshed.focus();
+      });
+    });
+
+    // 追加・削除のたびにこの関数ごと呼び直されるので、taglist/favoritesは自然に
+    // アイドルタイマーが仕切り直される（テキスト項目はinputイベント側でも仕切り直す）
+    scheduleSwipeIdleHint(step);
+  }
+
+  function addTag(key, input){
+    var val = input.value.trim();
+    if(!val) return;
+    if(data.lists[key].indexOf(val) !== -1){ toast("すでに登録されています"); return; }
+    data.lists[key].push(val);
+    saveData(); render();
+  }
+
+  function addCustomItem(id, input){
+    var val = input.value.trim();
+    if(!val) return;
+    var sec = data.customSections.find(function(s){ return s.id === id; });
+    if(sec){ sec.items.push(val); saveData(); render(); }
+  }
+
+  /* =========================================================
+     9. スワイプ発見
+  ========================================================= */
+
+  function swipeBank(cat){
+    if(cat === "motto") return MOTTO_BANK;
+    if(cat === "skill") return SKILL_BANK;
+    if(cat === "hobby") return HOBBY_BANK;
+    if(cat === "strength") return STRENGTH_BANK;
+    if(cat === "weakness") return WEAKNESS_BANK;
+    if(cat === "dislike") return DISLIKE_BANK;
+    return FAVORITE_BANK.map(function(f){ return { category:f.c, value:f.v }; });
+  }
+  function swipeAlreadyHas(cat, item){
+    if(cat === "motto") return data.basic.motto === item;
+    if(cat === "favorite") return data.favorites.some(function(f){ return f.category===item.category && f.value===item.value; });
+    var listKey = SWIPE_LIST_KEY[cat];
+    if(listKey) return data.lists[listKey].indexOf(item) !== -1;
+    return false;
+  }
+  function buildSwipeQueue(cat){
+    var bank = swipeBank(cat);
+    var avail = bank.filter(function(item){ return !swipeAlreadyHas(cat,item); });
+    if(!avail.length) avail = bank.slice();
+    state.swipeCat = cat;
+    state.swipeQueue = shuffle(avail.slice());
+  }
+  function countAdded(cat){
+    if(cat === "motto") return data.basic.motto ? 1 : 0;
+    if(cat === "favorite") return data.favorites.length;
+    var listKey = SWIPE_LIST_KEY[cat];
+    if(listKey) return data.lists[listKey].length;
+    return 0;
+  }
+  function applySwipeAccept(cat, item){
+    if(cat === "motto"){ data.basic.motto = item; toast("座右の銘に設定しました"); return; }
+    if(cat === "favorite"){
+      if(!data.favorites.some(function(f){return f.category===item.category&&f.value===item.value;})){ data.favorites.push({category:item.category, value:item.value}); }
+      toast("好きなものに追加しました");
+      return;
+    }
+    var listKey = SWIPE_LIST_KEY[cat];
+    if(listKey){
+      if(data.lists[listKey].indexOf(item) === -1) data.lists[listKey].push(item);
+      toast(SWIPE_CAT_META[cat].label.replace("のヒント","") + "に追加しました");
+    }
+  }
+
+  function renderSwipeView(){
+    if(!state.swipeQueue || !state.swipeQueue.length) buildSwipeQueue(state.swipeCat);
+    var meta = SWIPE_CAT_META[state.swipeCat];
+    var html = '<div class="cat-chips">';
+    Object.keys(SWIPE_CAT_META).forEach(function(k){
+      html += '<button class="cat-chip'+(state.swipeCat===k?" active":"")+'" data-swipecat="'+k+'">'+SWIPE_CAT_META[k].icon+' '+SWIPE_CAT_META[k].label+'</button>';
+    });
+    html += '</div>';
+    // オンボーディング中は、1件でも見つかったら「戻り方」をその場でテキストで案内する
+    // （座右の銘は自動で戻るので不要。他の項目は複数選べるので手動の「もどる」を案内する）
+    if(state.view === "onboarding" && onboardingState.mode === "swipe" && state.swipeCat !== "motto"){
+      var found = countAdded(state.swipeCat);
+      if(found > 0){
+        html += '<div class="swipe-return-hint">✓ ' + found + '件見つかりました。戻るときは上の「← もどる」をタップしてください</div>';
+      }
+    }
+    html += '<div class="swipe-wrap"><div class="swipe-stage" id="swipeStage">';
+    var queue = state.swipeQueue;
+    if(!queue.length){
+      html += '<div class="swipe-empty">候補がありません</div>';
+    }else{
+      var count = Math.min(3, queue.length);
+      for(var i=count-1;i>=0;i--){
+        var item = queue[i];
+        var text = state.swipeCat === "favorite" ? item.value : item;
+        var cls = "swipe-card" + (i===0 ? " top" : " behind-"+i);
+        html += '<div class="'+cls+'"'+(i===0?' id="swipeTopCard"':'')+' style="background:linear-gradient(135deg,'+meta.grad[0]+','+meta.grad[1]+')">';
+        if(state.swipeCat === "favorite") html += '<div class="sc-cat">'+escapeHtml(item.category)+'</div>';
+        html += '<div class="sc-text">'+escapeHtml(text)+'</div></div>';
+      }
+    }
+    html += '</div>';
+    html += '<div class="swipe-actions"><button class="swipe-btn reject" id="swipeRejectBtn" title="スキップ">✕</button><button class="swipe-btn accept" id="swipeAcceptBtn" title="追加する">♥</button></div>';
+    html += '<div class="swipe-count">これまでに ' + countAdded(state.swipeCat) + ' 個 追加済み</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function bindSwipeEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-swipecat]").forEach(function(btn){
+      btn.addEventListener("click", function(){ buildSwipeQueue(btn.dataset.swipecat); render(); });
+    });
+    var acceptBtn = document.getElementById("swipeAcceptBtn");
+    if(acceptBtn) acceptBtn.addEventListener("click", function(){ commitSwipe(true); });
+    var rejectBtn = document.getElementById("swipeRejectBtn");
+    if(rejectBtn) rejectBtn.addEventListener("click", function(){ commitSwipe(false); });
+    var topCard = document.getElementById("swipeTopCard");
+    if(topCard) bindDrag(topCard);
+  }
+
+  function commitSwipe(accepted){
+    var queue = state.swipeQueue;
+    if(!queue || !queue.length) return;
+    var item = queue[0];
+    if(accepted) applySwipeAccept(state.swipeCat, item);
+    queue.shift();
+    if(!queue.length) buildSwipeQueue(state.swipeCat);
+    saveData();
+    // 座右の銘は一つに決まるものなので、チュートリアル中にひとつ選べたら
+    // すぐにチュートリアルへ戻す（長所・短所・好きなものは複数選べるので継続する）
+    if(accepted && state.swipeCat === "motto" && state.view === "onboarding" && onboardingState.mode === "swipe"){
+      onboardingState.mode = "field";
+      toast("座右の銘を選びました");
+    }
+    render();
+  }
+
+  function bindDrag(el){
+    var startX=0, startY=0, dx=0, dragging=false;
+    el.addEventListener("pointerdown", function(e){
+      dragging = true; startX = e.clientX; startY = e.clientY;
+      try{ el.setPointerCapture(e.pointerId); }catch(err){}
+      el.style.transition = "none";
+    });
+    el.addEventListener("pointermove", function(e){
+      if(!dragging) return;
+      dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+      el.style.transform = "translate("+dx+"px,"+dy+"px) rotate("+(dx/18)+"deg)";
+    });
+    function release(){
+      if(!dragging) return;
+      dragging = false;
+      if(Math.abs(dx) > 90){ commitSwipe(dx > 0); }
+      else{ el.style.transition = "transform .25s ease"; el.style.transform = ""; }
+      dx = 0;
+    }
+    el.addEventListener("pointerup", release);
+    el.addEventListener("pointercancel", release);
+  }
+
+  /* =========================================================
+     10. 診断（性格診断 / じぶんを知る質問）
+  ========================================================= */
+
+  function renderQuizView(){
+    var html = '<div class="toggle-row">';
+    html += '<button data-diagsub="personality" class="'+(state.diagSub==="personality"?"active":"")+'">🧠 性格診断</button>';
+    html += '<button data-diagsub="reflect" class="'+(state.diagSub==="reflect"?"active":"")+'">🔍 じぶんを知る質問</button>';
+    html += '</div>';
+    html += state.diagSub === "reflect" ? renderReflectView() : renderPersonalityQuiz();
+    return html;
+  }
+
+  function bindQuizEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-diagsub]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state.diagSub = btn.dataset.diagsub; render(); });
+    });
+    if(state.diagSub === "reflect") bindReflectEvents();
+    else{
+      app.querySelectorAll("[data-likert]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          data.personality.responses[btn.dataset.stid] = { value: Number(btn.dataset.likert), updatedAt: new Date().toISOString() };
+          saveData(); render();
+        });
+      });
+    }
+  }
+
+  // ---- 性格診断 ----
+  function computeTraitStats(){
+    var sums = {}; Object.keys(PERSONALITY_TRAITS).forEach(function(k){ sums[k] = { sum:0, count:0 }; });
+    PERSONALITY_STATEMENTS.forEach(function(s){
+      var r = data.personality.responses[s.id];
+      if(!r) return;
+      var val = s.reverse ? (6 - r.value) : r.value;
+      sums[s.trait].sum += val; sums[s.trait].count++;
+    });
+    var out = {};
+    Object.keys(sums).forEach(function(k){
+      var st = sums[k];
+      var avg = st.count ? st.sum/st.count : 3;
+      var pct = Math.round(((avg-1)/4)*100);
+      out[k] = { pct: pct, count: st.count, level: pct<40?"low":(pct<65?"mid":"high") };
+    });
+    return out;
+  }
+  function getTopPersonalityTrait(){
+    var totalAnswered = Object.keys(data.personality.responses).length;
+    if(totalAnswered < 5) return null;
+    var stats = computeTraitStats();
+    var topKey = null;
+    Object.keys(stats).forEach(function(k){ if(!topKey || stats[k].pct > stats[topKey].pct) topKey = k; });
+    return topKey ? (PERSONALITY_TRAITS[topKey].label + "高め") : null;
+  }
+  function pickNextStatement(){
+    var unanswered = PERSONALITY_STATEMENTS.filter(function(s){ return !data.personality.responses[s.id]; });
+    return unanswered.length ? pick(unanswered) : pick(PERSONALITY_STATEMENTS);
+  }
+
+  function renderPersonalityQuiz(){
+    var stats = computeTraitStats();
+    var confSum = 0;
+    Object.keys(stats).forEach(function(k){ confSum += Math.min(1, stats[k].count / CONVERGE_TARGET); });
+    var confPct = Math.round(confSum/5*100);
+
+    var html = '<div class="card"><h2>🧠 性格診断</h2><p class="card-desc">直感で答えてください。何度でも答えられ、答えるほど結果がはっきり収束していきます。</p>';
+    html += '<div class="convergence-badge">診断の安定度：' + confPct + '%</div>';
+    Object.keys(PERSONALITY_TRAITS).forEach(function(k){
+      var t = PERSONALITY_TRAITS[k], st = stats[k];
+      html += '<div class="trait-bar-row"><div class="tb-head"><span>'+t.label+'</span><span class="tb-count">'+st.pct+'%・'+st.count+'回回答</span></div>';
+      html += '<div class="tb-track"><div class="tb-fill" style="width:'+st.pct+'%"></div></div>';
+      html += '<div class="tb-desc">'+escapeHtml(LEVEL_DESC[k][st.level])+'</div></div>';
+    });
+    html += '</div>';
+
+    var stmt = pickNextStatement();
+    var reinforcement = !!data.personality.responses[stmt.id];
+    html += '<div class="card">';
+    html += '<h2>'+(reinforcement ? "🔁 もう一度答えてみましょう" : "❓ 質問")+'</h2>';
+    if(reinforcement) html += '<p class="card-desc">回答済みの質問です。同じでも違ってもOK、答えるたびに精度が上がります。</p>';
+    html += '<p style="font-size:1rem;font-weight:700;margin:6px 0 0;">'+escapeHtml(stmt.text)+'</p>';
+    html += '<div class="quiz-likert">';
+    [[1,"全く違う"],[2,"やや違う"],[3,"どちらとも"],[4,"ややそう"],[5,"まさにそう"]].forEach(function(o){
+      html += '<button data-likert="'+o[0]+'" data-stid="'+stmt.id+'">'+o[1]+'</button>';
+    });
+    html += '</div></div>';
+    return html;
+  }
+
+  // ---- じぶんを知る質問（内省ジャーナル） ----
+  function renderReflectView(){
+    var answeredCount = Object.keys(data.qa).length;
+    var total = QUESTION_BANK.length;
+    var cats = ["すべて"].concat(uniq(QUESTION_BANK.map(function(q){ return q.cat; })));
+    if(!state.reflectCat) state.reflectCat = "すべて";
+    if(!state.todayQId) state.todayQId = pickTodayQuestionId();
+
+    var html = "";
+    var todayQ = QUESTION_BANK.find(function(q){ return q.id === state.todayQId; });
+    if(todayQ){
+      var already = data.qa[todayQ.id];
+      html += '<div class="today-q"><div class="tq-label">📅 今日の質問</div><div class="tq-text">'+escapeHtml(todayQ.text)+'</div>';
+      html += '<textarea id="todayQInput" placeholder="思いつくまま書いてみましょう">'+(already ? escapeHtml(already[already.length-1].text) : "")+'</textarea>';
+      html += '<div class="tq-actions"><button id="todayQSave">記録する</button></div></div>';
+    }
+
+    html += '<p class="card-desc" style="margin:0 0 10px;">回答した質問：'+answeredCount+' / '+total+'　自分について書き溜めるほど、自己紹介文の材料が増えていきます。</p>';
+    html += '<div class="cat-chips">';
+    cats.forEach(function(c){ html += '<button class="cat-chip'+(state.reflectCat===c?" active":"")+'" data-cat="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>'; });
+    html += '</div>';
+
+    var list = QUESTION_BANK.filter(function(q){ return state.reflectCat === "すべて" || q.cat === state.reflectCat; });
+    list.forEach(function(q){ html += renderQaItem(q); });
+    return html;
+  }
+  function uniq(arr){ return arr.filter(function(v,i){ return arr.indexOf(v) === i; }); }
+
+  function renderQaItem(q){
+    var hist = data.qa[q.id] || [];
+    var latest = hist[hist.length-1];
+    var html = '<div class="qa-item" data-qid="'+q.id+'"><div class="qa-cat">'+escapeHtml(q.cat)+'</div><div class="qa-text">'+escapeHtml(q.text)+'</div>';
+    if(latest && !state["editing_"+q.id]){
+      html += '<div class="qa-answer">'+escapeHtml(latest.text)+'<div class="qa-date">'+fmtDate(latest.date)+' に記録</div></div>';
+      html += '<div class="qa-item-actions"><button data-qa-edit="'+q.id+'">✏️ 書き直す</button>';
+      if(hist.length > 1) html += '<button data-qa-hist="'+q.id+'">🕰️ 過去の回答（'+(hist.length-1)+'件）</button>';
+      html += '</div>';
+      if(state["hist_"+q.id] && hist.length > 1){
+        html += '<div class="qa-history">';
+        for(var i=hist.length-2;i>=0;i--){ html += '<div class="hist-entry">'+escapeHtml(hist[i].text)+'<div class="hd">'+fmtDate(hist[i].date)+'</div></div>'; }
+        html += '</div>';
+      }
+    }else{
+      html += '<textarea data-qa-input="'+q.id+'" placeholder="回答を入力">'+(latest ? escapeHtml(latest.text) : "")+'</textarea>';
+      html += '<button class="qa-save" data-qa-save="'+q.id+'">保存する</button>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function bindReflectEvents(){
+    var app = document.getElementById("app");
+    var todaySave = document.getElementById("todayQSave");
+    if(todaySave){
+      todaySave.addEventListener("click", function(){
+        var val = document.getElementById("todayQInput").value.trim();
+        if(!val) return;
+        saveAnswer(state.todayQId, val);
+        toast("記録しました");
+        render();
+      });
+    }
+    app.querySelectorAll("[data-cat]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state.reflectCat = btn.dataset.cat; render(); });
+    });
+    app.querySelectorAll("[data-qa-edit]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state["editing_"+btn.dataset.qaEdit] = true; render(); });
+    });
+    app.querySelectorAll("[data-qa-hist]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state["hist_"+btn.dataset.qaHist] = !state["hist_"+btn.dataset.qaHist]; render(); });
+    });
+    app.querySelectorAll("[data-qa-save]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.dataset.qaSave;
+        var val = app.querySelector('[data-qa-input="'+id+'"]').value.trim();
+        if(!val) return;
+        saveAnswer(id, val);
+        state["editing_"+id] = false;
+        toast("保存しました");
+        render();
+      });
+    });
+  }
+
+  function saveAnswer(qid, text){
+    if(!data.qa[qid]) data.qa[qid] = [];
+    data.qa[qid].push({ text: text, date: new Date().toISOString() });
+    saveData();
+  }
+
+  /* =========================================================
+     11. 自己紹介（文章 / カード）
+  ========================================================= */
+
+  function renderIntroTabView(){
+    var html = '<div class="toggle-row">';
+    html += '<button data-introsub="text" class="'+(state.introSub==="text"?"active":"")+'">💬 文章</button>';
+    html += '<button data-introsub="card" class="'+(state.introSub==="card"?"active":"")+'">🪪 カード</button>';
+    html += '</div>';
+    html += state.introSub === "card" ? renderIntroCardView() : renderIntroTextView();
+    return html;
+  }
+
+  function bindIntroEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-introsub]").forEach(function(btn){
+      btn.addEventListener("click", function(){ state.introSub = btn.dataset.introsub; render(); });
+    });
+    if(state.introSub === "card") bindIntroCardEvents();
+    else bindIntroTextEvents();
+  }
+
+  // ---- 文章ジェネレーター ----
+  var introState = { length:"standard", tone:"formal", lastText:"" };
+  var PHRASES = {
+    formal: { opening:["はじめまして、{name}です。","{name}と申します。","こんにちは、{name}です。"], closing:["よろしくお願いいたします。","本日はよろしくお願いいたします。","これからよろしくお願いします。"] },
+    casual: { opening:["はじめまして、{name}です！","{name}です！よろしく！","こんにちは、{name}です。"], closing:["よろしくお願いします！","仲良くしてください！","よろしくね！"] }
+  };
+
+  function renderIntroTextView(){
+    var html = '<div class="card"><h2>💬 自己紹介文ジェネレーター</h2>';
+    html += '<p class="card-desc">プロフィールタブに登録した内容から、話す内容を自動で組み立てます。項目を増やすほど自然な文章になります。</p>';
+    html += '<label style="display:block;font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">長さ</label><div class="toggle-row">';
+    [["compact","短め（30秒）"],["standard","標準"],["detailed","しっかり"]].forEach(function(o){
+      html += '<button data-len="'+o[0]+'" class="'+(introState.length===o[0]?"active":"")+'">'+o[1]+'</button>';
+    });
+    html += '</div>';
+    html += '<label style="display:block;font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">トーン</label><div class="toggle-row">';
+    [["formal","丁寧"],["casual","カジュアル"]].forEach(function(o){
+      html += '<button data-tone="'+o[0]+'" class="'+(introState.tone===o[0]?"active":"")+'">'+o[1]+'</button>';
+    });
+    html += '</div>';
+    html += '<button class="gen-btn" id="genBtn">✨ 自己紹介文をつくる</button>';
+    html += '<div class="gen-output'+(introState.lastText?"":" empty")+'" id="genOutput">'+(introState.lastText ? escapeHtml(introState.lastText) : "ボタンを押すと、ここに自己紹介文が表示されます。")+'</div>';
+    if(introState.lastText) html += '<div class="gen-actions"><button id="copyBtn">📋 コピー</button><button id="regenBtn">🔁 表現を変える</button></div>';
+    html += '</div>';
+    return html;
+  }
+
+  function buildIntro(){
+    var b = data.basic;
+    var name = b.nickname || b.name || "（名前未登録）";
+    var p = PHRASES[introState.tone];
+    var parts = [pick(p.opening).replace("{name}", name)];
+
+    if(b.occupation && introState.length !== "compact") parts.push(b.occupation + "です。");
+    if(b.hometown && introState.length === "detailed") parts.push("出身は" + b.hometown + "です。");
+
+    var hobbySrc = data.lists.hobbies, skillSrc = data.lists.skills;
+    if(introState.length === "compact"){
+      if(hobbySrc.length) parts.push("趣味は" + joinList(hobbySrc,2) + "です。");
+      else if(skillSrc.length) parts.push("特技は" + joinList(skillSrc,2) + "です。");
+    }else{
+      if(hobbySrc.length) parts.push("趣味は" + joinList(hobbySrc,3) + "です。");
+      if(skillSrc.length) parts.push("特技は" + joinList(skillSrc,3) + "です。");
+    }
+
+    if(introState.length !== "compact" && data.favorites.length){
+      var fav = pick(data.favorites);
+      parts.push("最近は" + fav.value + "（" + fav.category + "）にはまっています。");
+    }
+
+    if(introState.length === "detailed"){
+      if(data.lists.strengths.length) parts.push("長所は" + joinList(data.lists.strengths,2) + "なところです。");
+      if(b.motto) parts.push("大切にしている言葉は「" + b.motto + "」です。");
+      if(data.goals) parts.push("今後は" + data.goals.replace(/\n/g," ") + "と思っています。");
+      var topTrait = getTopPersonalityTrait();
+      if(topTrait) parts.push("性格診断では" + topTrait.replace("高め","") + "が高めという結果が出ています。");
+    }
+
+    parts.push(pick(p.closing));
+    return parts.join("");
+  }
+  function joinList(arr,max){
+    var picked = arr.length <= max ? arr.slice() : shuffle(arr.slice()).slice(0,max);
+    return picked.join("、");
+  }
+
+  function bindIntroTextEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-len]").forEach(function(btn){ btn.addEventListener("click", function(){ introState.length = btn.dataset.len; render(); }); });
+    app.querySelectorAll("[data-tone]").forEach(function(btn){ btn.addEventListener("click", function(){ introState.tone = btn.dataset.tone; render(); }); });
+    var genBtn = document.getElementById("genBtn");
+    if(genBtn) genBtn.addEventListener("click", function(){ introState.lastText = buildIntro(); render(); });
+    var regenBtn = document.getElementById("regenBtn");
+    if(regenBtn) regenBtn.addEventListener("click", function(){ introState.lastText = buildIntro(); render(); });
+    var copyBtn = document.getElementById("copyBtn");
+    if(copyBtn) copyBtn.addEventListener("click", function(){ copyText(introState.lastText); });
+  }
+
+  // ---- 自己紹介カード ----
+  function hasAnyCardContent(){
+    return !!(data.basic.name || data.basic.nickname || data.basic.motto || data.lists.skills.length || data.lists.hobbies.length || data.favorites.length);
+  }
+
+  function renderIntroCardView(){
+    var html = '<div class="card"><h2>🪪 自己紹介カード</h2><p class="card-desc">登録した内容から、見せたり保存したりできる自己紹介カードを作れます。</p>';
+    html += '<div class="card-color-row">' + CARD_THEMES.map(function(t){
+      return '<button class="card-color-swatch'+(t.id===cardColorId?" active":"")+'" data-card-color="'+t.id+'" style="background:linear-gradient(135deg,'+t.grad[0]+','+t.grad[1]+')" title="'+t.id+'"></button>';
+    }).join("") + '</div>';
+    html += renderCardPreviewHtml();
+    if(hasAnyCardContent()) html += '<div class="gen-actions" style="margin-top:14px;"><button id="cardSaveBtn">🖼️ 画像として保存</button><button id="cardCopyBtn">📋 テキストをコピー</button></div>';
+    html += '</div>';
+    return html;
+  }
+
+  function cardTheme(){ return CARD_THEMES.find(function(t){ return t.id === cardColorId; }) || CARD_THEMES[0]; }
+
+  function cardChipList(){
+    var chips = [];
+    data.lists.skills.slice(0,3).forEach(function(v){ chips.push("🛠 "+v); });
+    data.lists.hobbies.slice(0,3).forEach(function(v){ chips.push("🎨 "+v); });
+    if(data.favorites[0]) chips.push("❤ "+data.favorites[0].value);
+    var topTrait = getTopPersonalityTrait();
+    if(topTrait) chips.push("🧠 "+topTrait);
+    return chips;
+  }
+
+  function renderCardPreviewHtml(){
+    var theme = cardTheme();
+    var name = data.basic.nickname || data.basic.name;
+    var html = '<div class="intro-card-preview" style="background:linear-gradient(135deg,'+theme.grad[0]+','+theme.grad[1]+')">';
+    if(!hasAnyCardContent()){
+      html += '<div class="ic-empty">プロフィールを入力すると、ここにカードが表示されます。</div>';
+    }else{
+      html += '<div class="ic-name">'+escapeHtml(name || "じぶん手帳ユーザー")+'</div>';
+      var sub = [data.basic.occupation, data.basic.hometown].filter(Boolean).join(" ・ ");
+      if(sub) html += '<div class="ic-sub">'+escapeHtml(sub)+'</div>';
+      if(data.basic.motto) html += '<div class="ic-motto">"'+escapeHtml(data.basic.motto)+'"</div>';
+      var chips = cardChipList();
+      if(chips.length) html += '<div class="ic-chips">'+chips.map(function(c){ return '<span class="ic-chip">'+escapeHtml(c)+'</span>'; }).join("")+'</div>';
+      html += '<div class="ic-footer">📔 じぶん手帳</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function buildCardText(){
+    var lines = [];
+    var name = data.basic.nickname || data.basic.name;
+    if(name) lines.push(name);
+    var sub = [data.basic.occupation, data.basic.hometown].filter(Boolean).join(" / ");
+    if(sub) lines.push(sub);
+    if(data.basic.motto) lines.push("「"+data.basic.motto+"」");
+    if(data.lists.skills.length) lines.push("特技: "+data.lists.skills.join("、"));
+    if(data.lists.hobbies.length) lines.push("趣味: "+data.lists.hobbies.join("、"));
+    if(data.favorites.length) lines.push("好きなもの: "+data.favorites.slice(0,3).map(function(f){ return f.value; }).join("、"));
+    var topTrait = getTopPersonalityTrait();
+    if(topTrait) lines.push("性格診断: "+topTrait);
+    return lines.join("\n");
+  }
+
+  function roundRectPath(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+  function truncateToWidth(ctx,text,maxW){
+    if(ctx.measureText(text).width <= maxW) return text;
+    var t = text;
+    while(t.length > 1 && ctx.measureText(t+"…").width > maxW){ t = t.slice(0,-1); }
+    return t + "…";
+  }
+  function drawChipsWrap(ctx, chips, startX, startY, maxWidth, fontSize){
+    ctx.font = fontSize + 'px "Hiragino Sans","Yu Gothic",sans-serif';
+    var x = startX, y = startY, lineH = fontSize + 24;
+    chips.forEach(function(label){
+      var textW = ctx.measureText(label).width;
+      var chipW = textW + 30, chipH = fontSize + 18;
+      if(x + chipW > startX + maxWidth){ x = startX; y += lineH; }
+      ctx.globalAlpha = 0.24; ctx.fillStyle = "#ffffff";
+      roundRectPath(ctx,x,y,chipW,chipH,chipH/2); ctx.fill();
+      ctx.globalAlpha = 1; ctx.fillStyle = "#ffffff";
+      ctx.fillText(label, x+15, y+chipH-11);
+      x += chipW + 10;
+    });
+    return y + lineH;
+  }
+
+  function drawIntroCard(){
+    var theme = cardTheme();
+    var W = 900, H = 560, pad = 40, radius = 36;
+    var canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#f3f2f8";
+    ctx.fillRect(0,0,W,H);
+
+    var cx = pad, cy = pad, cw = W - pad*2, ch = H - pad*2;
+    var grad = ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);
+    grad.addColorStop(0, theme.grad[0]); grad.addColorStop(1, theme.grad[1]);
+    ctx.fillStyle = grad;
+    roundRectPath(ctx,cx,cy,cw,ch,radius); ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.textBaseline = "alphabetic";
+    var name = data.basic.nickname || data.basic.name || "じぶん手帳ユーザー";
+    ctx.font = 'bold 46px "Hiragino Sans","Yu Gothic",sans-serif';
+    var curY = cy + 80;
+    ctx.fillText(truncateToWidth(ctx,name,cw-80), cx+40, curY);
+
+    var sub = [data.basic.occupation, data.basic.hometown].filter(Boolean).join("　・　");
+    if(sub){
+      ctx.font = '20px "Hiragino Sans","Yu Gothic",sans-serif';
+      ctx.globalAlpha = 0.88; curY += 34;
+      ctx.fillText(truncateToWidth(ctx,sub,cw-80), cx+40, curY);
+      ctx.globalAlpha = 1;
+    }
+    if(data.basic.motto){
+      ctx.font = 'italic 26px "Hiragino Sans","Yu Gothic",sans-serif';
+      curY += 56;
+      ctx.fillText(truncateToWidth(ctx,'"'+data.basic.motto+'"', cw-80), cx+40, curY);
+    }
+    var chips = cardChipList();
+    if(chips.length){
+      curY += 50;
+      drawChipsWrap(ctx, chips, cx+40, curY, cw-80, 17);
+    }
+
+    ctx.font = '16px "Hiragino Sans","Yu Gothic",sans-serif';
+    ctx.globalAlpha = 0.75; ctx.textAlign = "right";
+    ctx.fillText("📔 じぶん手帳", cx+cw-30, cy+ch-26);
+    ctx.textAlign = "left"; ctx.globalAlpha = 1;
+
+    return canvas;
+  }
+
+  function bindIntroCardEvents(){
+    var app = document.getElementById("app");
+    app.querySelectorAll("[data-card-color]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        cardColorId = btn.dataset.cardColor;
+        localStorage.setItem(CARD_COLOR_KEY, cardColorId);
+        render();
+      });
+    });
+    var saveBtn = document.getElementById("cardSaveBtn");
+    if(saveBtn){
+      saveBtn.addEventListener("click", function(){
+        var canvas = drawIntroCard();
+        canvas.toBlob(function(blob){
+          if(!blob){ toast("画像の作成に失敗しました"); return; }
+          offerFileDownload("jibun-card.png", blob);
+        }, "image/png");
+      });
+    }
+    var copyBtn = document.getElementById("cardCopyBtn");
+    if(copyBtn) copyBtn.addEventListener("click", function(){ copyText(buildCardText()); });
+  }
+
+  /* =========================================================
+     12. データ・設定
+  ========================================================= */
+
+  function renderSettingsView(){
+    var qaCount = Object.keys(data.qa).length;
+    var favCount = data.favorites.length;
+    var tagCount = Object.keys(data.lists).reduce(function(s,k){ return s + data.lists[k].length; },0);
+    var personalityCount = Object.keys(data.personality.responses).length;
+
+    var html = '<div class="card"><h2>📊 記録の状況</h2><div class="stat-grid">';
+    html += '<div class="stat-box"><div class="num">'+tagCount+'</div><div class="lbl">登録タグ数</div></div>';
+    html += '<div class="stat-box"><div class="num">'+favCount+'</div><div class="lbl">好きなもの</div></div>';
+    html += '<div class="stat-box"><div class="num">'+qaCount+'</div><div class="lbl">回答した質問</div></div>';
+    html += '</div>';
+    html += '<p class="card-desc" style="margin-top:10px;">性格診断への回答：'+personalityCount+'回';
+    if(data.meta.updatedAt) html += '　／　最終更新：'+fmtDate(data.meta.updatedAt);
+    html += '</p></div>';
+
+    html += '<div class="card"><h2>💾 データの管理</h2><p class="card-desc">この端末のブラウザだけに保存されています。機種変更やブラウザの変更前にバックアップしましょう。</p>';
+    html += '<button class="settings-btn" id="exportBtn">⬇️ エクスポート（JSONで保存）</button>';
+    html += '<button class="settings-btn" id="importBtn">⬆️ インポート（JSONを読み込む）</button>';
+    html += '<input type="file" id="importFile" accept="application/json">';
+    html += '<button class="settings-btn danger" id="resetBtn">🗑️ すべてのデータを削除</button>';
+    html += '<p class="settings-footnote">データはこの端末のブラウザ内（localStorage）だけに保存されます。サーバーには送信されません。</p>';
+    html += '</div>';
+    return html;
+  }
+
+  function bindSettingsEvents(){
+    var app = document.getElementById("app");
+    var exportBtn = document.getElementById("exportBtn");
+    if(exportBtn) exportBtn.addEventListener("click", exportData);
+    var importBtn = document.getElementById("importBtn");
+    var importFile = document.getElementById("importFile");
+    if(importBtn && importFile){
+      importBtn.addEventListener("click", function(){ importFile.click(); });
+      importFile.addEventListener("change", function(){ if(importFile.files[0]) importData(importFile.files[0]); });
+    }
+    var resetBtn = document.getElementById("resetBtn");
+    if(resetBtn) resetBtn.addEventListener("click", resetData);
+  }
+
+  function exportFilename(){
+    var d = new Date();
+    return "jibun-techo-" + d.getFullYear() + String(d.getMonth()+1).padStart(2,"0") + String(d.getDate()).padStart(2,"0") + ".json";
+  }
+  function exportData(){
+    offerFileDownload(exportFilename(), JSON.stringify(data,null,2), "application/json");
+  }
+
+  function importData(file){
+    var reader = new FileReader();
+    reader.onload = function(){
+      var parsed;
+      try{
+        parsed = JSON.parse(reader.result);
+      }catch(e){
+        showAlert("ファイルの読み込みに失敗しました。正しいJSONファイルか確認してください。");
+        return;
+      }
+      showConfirm("現在のデータを上書きしてインポートしますか？", function(){
+        data = Object.assign(deepClone(DEFAULT_DATA), parsed, {
+          basic: Object.assign({}, DEFAULT_DATA.basic, parsed.basic),
+          lists: Object.assign({}, DEFAULT_DATA.lists, parsed.lists),
+          personality: Object.assign({ responses:{} }, parsed.personality),
+          meta: Object.assign({}, DEFAULT_DATA.meta, parsed.meta)
+        });
+        saveData();
+        switchView("home");
+        toast("インポートしました");
+      });
+    };
+    reader.readAsText(file);
+  }
+
+  function resetData(){
+    showConfirm("すべてのプロフィールデータを削除します。この操作は取り消せません。よろしいですか？", function(){
+      showConfirm("本当に削除してよろしいですか？", function(){
+        data = deepClone(DEFAULT_DATA);
+        try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+        saveData();
+        wizardState.stepIndex = 0;
+        onboardingState.index = 0;
+        state.wizardReturnView = "home";
+        switchView("onboarding");
+        toast("データを削除しました");
+      }, { danger:true, confirmLabel:"完全に削除する" });
+    }, { danger:true, confirmLabel:"削除する" });
+  }
+
+  /* =========================================================
+     13. 初期化
+  ========================================================= */
+
+  initTheme();
+
+  if(!data.meta.onboardingSeen){
+    onboardingState.index = 0;
+    state.view = "onboarding";
+  }else if(!data.meta.wizardStarted){
+    data.meta.wizardStarted = true;
+    data.meta.wizardStep = 0;
+    saveData();
+    wizardState.stepIndex = 0;
+    state.wizardReturnView = "home";
+    state.view = "wizard";
+  }else{
+    state.view = "home";
+  }
+  document.querySelectorAll(".bn-buttons button").forEach(function(b){ b.classList.toggle("active", b.dataset.view === state.view); });
+  render();
+
+  // 起動画面（スプラッシュ）を少し見せてからアプリ本体を表示する
+  var splashEl = document.getElementById("splash");
+  if(splashEl){
+    setTimeout(function(){
+      splashEl.classList.add("hide");
+      setTimeout(function(){ if(splashEl.parentNode) splashEl.parentNode.removeChild(splashEl); }, 450);
+    }, 1000);
+  }
+
 })();
 </script>
 </body>
